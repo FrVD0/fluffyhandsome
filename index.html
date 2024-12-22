@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluffy Handsome - A Whimsical Comic Adventure</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        header {
+            background-color: #000;
+            color: white;
+            padding: 1rem 0;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            padding: 2rem;
+            margin-bottom: 4rem; /* Ensure enough space for the footer */
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #000;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        footer {
+            background-color: #000;
+            color: white;
+            padding: 1rem 0;
+            position: relative;
+            width: 100%;
+        }
+
+        footer a {
+            color: #999;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        body::-webkit-scrollbar {
+            display: none; /* Hide the scrollbar */
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: black;
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            z-index: 100;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        a:focus {
+            outline: 2px solid #555;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <header role="banner">
+        <h1>Fluffy Handsome</h1>
+        <p>Best viewed on wide screens of 27+ inches. Put down the phone. Look at me.</p>
+    </header>
+    <main id="main-content" role="main">
+        <img src="12212024_fluffyreboot_1.png" alt="Fluffy Handsome comic panel 1 with a wizard introducing the cartoonist.">
+        <img src="12212024_fluffyreboot_2.png" alt="Fluffy Handsome comic panel 2 introducing the characters and setting.">
+        <img src="12212024_fluffyreboot_3.png" alt="Fluffy Handsome comic panel 3 with swirling designs welcoming viewers to the Fluffy-verse.">
+    </main>
+    <footer role="contentinfo">
+        <p>&copy; 2024 Your Uncle Attaboy | <a href="https://www.instagram.com/uncleattaboy">Follow on Instagram</a> | <a href="https://ko-fi.com/uncleattaboy">Buy Me a Coffee</a> | <a href="mailto:uncleattaboy@gmail.com">Accessibility Feedback</a></p>
+    </footer>
+</body>
+</html>
