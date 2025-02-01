@@ -128,7 +128,26 @@ footer {
     max-width: none; /* Allows zoom beyond container */
     height: auto; /* Maintain aspect ratio */
 }
+@media (max-width: 768px) {
+    .archive-content {
+        width: 95%; /* Makes popup width flexible */
+        max-width: 90vw; /* Ensures it fits on mobile */
+        padding: 10px; /* Less padding for small screens */
+    }
 
+    #imageContainer {
+        width: 100%; /* Ensures the container fills the screen width */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #imageContainer img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 5px; /* Softer edges on mobile */
+    }
+}
     </style>
 </head>
 <body>
