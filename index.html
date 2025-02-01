@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fluffy Handsome - A Whimsical Comic Adventure</title>
+    <title>Fluffy Handsome</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,6 +18,20 @@
             color: white;
             padding: 1rem 0;
         }
+        footer a {
+        color: #FFD700; /* Light yellow */
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    footer a:visited {
+        color: #FFC300; /* Golden yellow after clicking */
+    }
+
+    footer a:hover {
+        text-decoration: underline;
+        color: #FFDA44; /* Slightly brighter yellow on hover */
+    }
 
         main {
             display: flex;
@@ -25,7 +39,7 @@
             align-items: center;
             gap: 2rem;
             padding: 2rem;
-            margin-bottom: 4rem; /* Ensure enough space for the footer */
+            margin-bottom: 4rem;
         }
 
         img {
@@ -34,51 +48,90 @@
             border: 2px solid #000;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
         }
 
-        footer {
+
+
+footer {
+    background-color: #000;
+    color: white;
+    padding: 1rem 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+
+
+        .archive-button {
             background-color: #000;
             color: white;
-            padding: 1rem 0;
-            position: relative;
-            width: 100%;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            margin-top: 20px;
         }
+        .archive-popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center; /* Centered to ensure better resizing */
+    overflow: auto;
+    padding: 2rem 0;
+    z-index: 1000;
+}
 
-        footer a {
-            color: #999;
-            text-decoration: none;
-        }
+.archive-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: auto;
+    max-width: 90%;
+    text-align: center;
+    position: relative;
+    max-height: 90vh; /* Allows scrolling if the image is too big */
+    overflow: auto;
+}
 
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        body::-webkit-scrollbar {
-            display: none; /* Hide the scrollbar */
-        }
-
-        .skip-link {
-            position: absolute;
-            top: -40px;
-            left: 0;
-            background: black;
+        .close-button, .nav-button {
+            background-color: #000;
             color: white;
-            padding: 8px;
-            text-decoration: none;
-            z-index: 100;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 3px;
+            margin: 5px;
+        
+            
         }
+        #imageContainer {
+    width: auto; /* Fit the image naturally */
+    max-width: 100%;
+    overflow: hidden; /* Remove scrolling */
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+}
 
-        .skip-link:focus {
-            top: 0;
-        }
 
-        a:focus {
-            outline: 2px solid #555;
-        }
+#imageContainer img {
+    max-width: none; /* Allows zoom beyond container */
+    height: auto; /* Maintain aspect ratio */
+}
+
     </style>
 </head>
 <body>
-    <a href="#main-content" class="skip-link">Skip to main content</a>
     <header role="banner">
         <h1>Fluffy Handsome</h1>
         <p>Best viewed on wide screens of 27+ inches. Put down the phone. Look at me.</p>
@@ -87,9 +140,161 @@
         <img src="12212024_fluffyreboot_1.png" alt="Fluffy Handsome comic panel 1 with a wizard introducing the cartoonist.">
         <img src="12212024_fluffyreboot_2.png" alt="Fluffy Handsome comic panel 2 introducing the characters and setting.">
         <img src="12212024_fluffyreboot_3.png" alt="Fluffy Handsome comic panel 3 with swirling designs welcoming viewers to the Fluffy-verse.">
+        
+        <button class="archive-button" id="openArchive">Click here for the full history of Fluffy Handsome</button>
     </main>
+    
+    <div id="archivePopup" class="archive-popup">
+        <div class="archive-content">
+            <button class="close-button" id="closeArchive">Close</button>
+            <h2>Archive</h2>
+            <div id="imageContainer">
+                <img id="chapterImage" class="zoomable" src="archive/original fluffy archive1.jpg" alt="Chapter 1: Fluffy Handsome comic panel">
+            </div>
+                        <p id="chapterText">Chapter 1</p>
+            <button class="nav-button" id="prevChapter">Previous</button>
+            <button class="nav-button" id="nextChapter">Next</button>
+        </div>
+    </div>
+    
     <footer role="contentinfo">
-        <p>&copy; 2024 Your Uncle Attaboy | <a href="https://www.instagram.com/uncleattaboy">Follow on Instagram</a> | <a href="https://ko-fi.com/uncleattaboy">Buy Me a Coffee</a> | <a href="mailto:uncleattaboy@gmail.com">Accessibility Feedback</a></p>
+        <p>&copy; MMXXV Your Uncle Attaboy | <a href="https://www.instagram.com/uncleattaboy">Follow on Instagram</a> | <a href="https://ko-fi.com/uncleattaboy">Buy Me a Coffee</a> | <a href="mailto:uncleattaboy@gmail.com">Accessibility Feedback</a></p>
     </footer>
+    
+    <script>
+        let currentChapter = 1;
+        const totalChapters = 90;
+        const chapterImage = document.getElementById("chapterImage");
+        const chapterText = document.getElementById("chapterText");
+
+        document.getElementById("openArchive").addEventListener("click", function() {
+    document.getElementById("archivePopup").style.display = "flex";
+    updateChapter(); // Ensure the correct caption appears immediately
+});
+
+        document.getElementById("closeArchive").addEventListener("click", function() {
+    document.getElementById("archivePopup").style.display = "none";
+});
+
+// Close the archive when clicking outside of it
+document.getElementById("archivePopup").addEventListener("click", function(event) {
+    if (event.target === this) {
+        this.style.display = "none";
+    }
+});
+        document.getElementById("prevChapter").addEventListener("click", function() {
+            if (currentChapter > 1) {
+                currentChapter--;
+                updateChapter();
+            }
+        });
+
+        document.getElementById("nextChapter").addEventListener("click", function() {
+            if (currentChapter < totalChapters) {
+                currentChapter++;
+                updateChapter();
+            }
+        });
+
+const captions = [
+    "The first Fluffy Handsome strip! It might not look like much now, but this comic is about to rip a hole in the fabric of (my?) reality. ",
+"The second strip ever and already Fluffy is courting controversy! ",
+"Ooh, I wonder what’s inside the marshmallow? ",
+"We all start somewhere. ",
+"Figures. You go all the way into outer space to broadcast an important message, and your audience is not even in the room. ",
+"Fluffy’s having a rough night. ",
+"Zip! ",
+"Mozart’s piano concerto no. 27 in b flat does indeed sound heavenly. ",
+"That line by Auden has always gotten to me…",
+"When was the last time you danced when no music was playing? ",
+"Just think about how old the pyramids are and try not to go insane. ",
+"A word from our sponsors. Buy your copy at Records of Imaginal Origin",
+"How is your meditation practice treating you these days? ",
+"There’s a saying in Fancy City. “Watch enough Fluffy, [and] eventually you’ll learn everything.” ",
+"Surf tuba, anyone? P.S. How did this get here? Before Fluffy Handsome, there was Flawed Masterpiece. Apparently a few of those snuck into the Fluffy file. ",
+"A cool $15B could buy a hell of a lot of beer and Salty Bites. ",
+"Oh, this one was sponsored by Merl’s Mirrors. That’s why it’s so weird. ",
+"Another flawed masterpiece—this time, a quiet domestic scene. I used to love drawing these and often fancy a return to the genre…",
+"Why, yes, I do love the work of David Lynch! How did you know? ",
+"You’re a legend, Blake! ",
+"I drew this in 2020—yes, I have been making banana art jokes since the beginning. They call me Attaboy, OG Banana. (Note to self: renew subscription to TAME.)",
+"It is 2025. I haven’t thought of the Great Forgotten since 2021. I’ve failed you, Fluffy. ",
+"Little Billy (middle panel, middle figure) sure is conscientious about buying whatever Fluffy’s selling. Let’s hope the T Rex talks some sense into him. ",
+"Ugh. I wrote “Everone” instead of “everyone” and I was going through this phase where I would just let things be and try to put them in a positive spin rather than fix them past a certain point. The idea here was that Fluffy would always “mispronounce” the word “everyone” in this manner. Did I keep this up? Well, you’ll just have to read every single comic I ever write to find out!",
+"What is happening behind Fluffy? Some kinda swirly train wreck? Is that why I can’t look away? ",
+"This panel, like all of the Flawed Masterpiece series, was executed in the year of our Lord MMXX. And history has been laughing ever since. ",
+"Me-oh-my-oh! (I had so much fun drawing Fluffy’s radio studio, listening to Fats all the while. Bliss.)",
+"This strip is a Key to the Mystery of Fluffy Handsome. ",
+"Fluffy knows. ",
+"Any questions? ",
+"NGL, I have a crush on the lead singer/keytarist. Fun tip: if you get bored, count how many buttons and dials I fit into that gear that the bassist is fiddling with in the far left corner of the stage.",
+"I used to have a mantra when I drew these early strips: “Love every brick.” ",
+"Yes, Little Billy has a friend named Billy. No, I will not share any further lore on this topic at this point. ",
+"Is that an airport, or is that an airport? That’s an airport in the middle of my comic, y’all. ",
+"For the record, I love scrambled eggs. But not so much when I was Little Billy’s age.",
+"Ever notice how some furniture is OK for feet, and some is not? ",
+"I want to know more about this epic battle between aeroplane and thunder lizard. ",
+"You see, kids? You never run out of ideas if you work without ideas to begin with! ",
+"Dood! Sick! Burrrrrrnn *passes out*",
+"I still want to know — what is INSIDE the marshmallow? ",
+"I could go for a smoothie right about now. ",
+"Yes. I wasted an entire strip to call out this weird speech habit of Fluffy’s. Brazen. ",
+"Another Key to the Mystery of Fluffy Handsome. ",
+"They haven’t made a helmet yet that can prevent a broken heart, though. ",
+"Can you find any hints in this one? ",
+"I drew this one after a rewatch of Wings of Desire. ",
+"Fluffy's drinking again. ",
+"I mean, in the face of that flower, who needs a point? ",
+"You know what? I’m still thinking about getting a smoothie. ",
+"Insurance commercials, amiright?!",
+"Man, EVERONE is wearing Fluffy Handsome slippers these days! ",
+"Squirrels are, generally speaking, never very helpful. ",
+"Ah, Merl. You wacky, mystic, mirror tycoon, you! ",
+"Love every brick. ",
+"Hey, look who’s having a smoothie! ",
+"Damn it, Little Billy … ",
+"OK, FINALLY, the Show’s about to start…",
+"This is when the comic goes from randomness to story. Buckle up! ",
+"Grunt Daggerjab: reluctant barbarian warlord. ",
+"Based on a true story. ",
+"Flurfy is not happy. ",
+"Wait … Fluffy knows who I am? ",
+"It is Good to be a god. ",
+"MEANWHILE…",
+"Fuzz Dapper truly is the model middle management minion, no? ",
+"Oh, come on! How bad could it be, Fluffy?!",
+"This is… umm… special. ",
+"Y’all know this Buzz Slouch character is how I am afraid I would act if I ever meet any of my heroes, right? The guy LOVES Fluffy Handsome. Superfan. It’s sad, really.",
+"Buzz has met the Buddha on the road. ",
+"Excel IS a great tool.",
+"Fluffy has a great ass. That’s canon. ",
+"This comic is a Key to the Mystery of Fluffy Handsome. #fluffyhandsomeisreal if you feel moved to share the good word.",
+"Welcome to the Blank Page. No tour guides. ",
+"IS Reason over-rated? ",
+"It takes a Fopsquire to experience total freedom and call it a dungeon. ",
+"Our Friends Incorporate are not known for friendliness when it’s down to the wire.",
+"This is, as of January 2025, the last appearance of Fuzz Dapper. ",
+"Buzz Slouch looks like a Cenobite when he’s anxious. ",
+"This is a Key to the Mystery of Fluffy Handsome. #whereisfluffyhandsome if you feel moved to share the good word. ",
+"If you’re gonna crack, there’s no better place than on the Blank Page. ",
+"But the most Cenobite of all my characters must be Professor Fopsquire. ",
+"Are you following all this? Take good notes. There will be a quiz. ",
+"I’m beginning to think the Blackberry was a bad idea. ",
+"Just a reminder: this comic was written in 2021. ",
+"Why do I keep delaying the Secret of Secrets? Is it for dramatic effect? Or is it because I don’t really know what it is and I’m struggling to come up with something cool? Bless my bowels! ",
+"Loose lips sink ships, Buzz. ",
+"This is a Key to the Mystery of Fluffy Handsome. #letfluffyhandsomebe if you feel moved to share the good word. ",
+"Sus. ",
+"Pretty cool trick, how I can just possess Fluffy like that, huh? ",
+"This is fairly self-explanatory, I should think. ",
+];
+
+function updateChapter() {
+    chapterImage.src = `archive/original fluffy archive${currentChapter}.jpg`;
+    chapterImage.alt = captions[currentChapter - 1] || `Chapter ${currentChapter}: Fluffy Handsome comic panel`;
+    chapterText.textContent = captions[currentChapter - 1] || `Chapter ${currentChapter}`;
+}
+
+</script>
 </body>
 </html>
