@@ -149,7 +149,7 @@ footer {
             <button class="close-button" id="closeArchive">Close</button>
             <h2>Archive</h2>
             <div id="imageContainer">
-                <img id="chapterImage" class="zoomable" src="archive/original fluffy archive1.jpg" alt="Chapter 1: Fluffy Handsome comic panel">
+                <img id="chapterImage" class="zoomable" src="Archive/original fluffy archive1.jpg" alt="Chapter 1: Fluffy Handsome comic panel">
             </div>
                         <p id="chapterText">Chapter 1</p>
             <button class="nav-button" id="prevChapter">Previous</button>
@@ -290,7 +290,7 @@ const captions = [
 ];
 
 function updateChapter() {
-    chapterImage.src = `archive/original fluffy archive${currentChapter}.jpg`;
+    chapterImage.src = `Archive/original fluffy archive${currentChapter}.jpg`;
     chapterImage.alt = captions[currentChapter - 1] || `Chapter ${currentChapter}: Fluffy Handsome comic panel`;
     chapterText.textContent = captions[currentChapter - 1] || `Chapter ${currentChapter}`;
 }
