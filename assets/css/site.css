@@ -1,0 +1,75 @@
+:root{
+  --bg:#fff; --fg:#111; --muted:#5f6368; --accent:#2b6cb0;
+  --max-w:1200px; --pad:clamp(8px,2vmin,18px);
+  --radius:14px; --shadow:0 8px 28px rgba(0,0,0,.08);
+  --transition:520ms cubic-bezier(.22,.61,.36,1);
+  --blur:6px; --scale:1.02;
+}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Arial,"Apple Color Emoji","Segoe UI Emoji");}
+
+header.site{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.9);
+  backdrop-filter:saturate(1.2) blur(6px);border-bottom:1px solid rgba(0,0,0,.08);}
+header.site .wrap{max-width:var(--max-w);margin:auto;padding:10px var(--pad);
+  display:flex;gap:16px;align-items:center;justify-content:space-between;}
+header .title{font-weight:700;letter-spacing:.02em;}
+header nav a{color:var(--fg);text-decoration:none;margin-right:14px;opacity:.8;}
+header nav a:hover{opacity:1;text-decoration:underline;}
+
+main.library{max-width:var(--max-w);margin:0 auto;padding:18px var(--pad) 80px;}
+.intro{color:var(--muted);margin:6px 0 18px;}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:22px;}
+.series{border:1px solid rgba(0,0,0,.08);border-radius:var(--radius);overflow:hidden;
+  background:#fff;box-shadow:var(--shadow);display:flex;flex-direction:column;}
+.series-head{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:10px 12px;border-bottom:1px solid rgba(0,0,0,.06);}
+.series h2{font-size:1.1rem;margin:0;}
+.progress{font-variant-numeric:tabular-nums;color:var(--muted);}
+
+/* Stage always fits (portrait fallback), image never crops */
+.stage{position:relative;width:100%;aspect-ratio:2/3;min-height:48vh;max-height:82vh;height:auto;background:#fff;overflow:hidden;cursor:pointer;}
+.layer{position:absolute;inset:0;display:grid;place-items:center;opacity:0;}
+.layer.active{opacity:1;}
+.layer img{width:100%;height:100%;object-fit:contain;object-position:center;backface-visibility:hidden;
+  filter:drop-shadow(0 8px 18px rgba(0,0,0,.08));}
+
+/* Transitions */
+.vanish{animation:vanish var(--transition) forwards;}
+.appear{animation:appear var(--transition) forwards;}
+@keyframes vanish{
+  0%{opacity:1;filter:brightness(1) blur(0);transform:scale(1);}
+  70%{opacity:0;filter:brightness(1.2) blur(var(--blur));transform:scale(var(--scale));}
+  100%{opacity:0;filter:brightness(1.2) blur(var(--blur));transform:scale(var(--scale));}
+}
+@keyframes appear{
+  0%{opacity:0;filter:brightness(1.1) blur(var(--blur));transform:scale(var(--scale));}
+  30%{opacity:.6;}
+  100%{opacity:1;filter:brightness(1) blur(0);transform:scale(1);}
+}
+
+/* Click zones */
+.zone{position:absolute;top:0;bottom:0;width:50%;}
+.zone.left{left:0;} .zone.right{right:0;}
+.zone:hover{background:linear-gradient(to var(--dir, right), rgba(0,0,0,.04), transparent 40%);}
+.zone.left{--dir:right;} .zone.right{--dir:left;}
+
+/* Controls below frame */
+.controls{display:flex;gap:12px;align-items:center;justify-content:center;padding:12px 0 14px;}
+.btn{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:999px;border:1px solid rgba(0,0,0,.15);
+  background:#fff;color:#111;cursor:pointer;user-select:none;transition:transform .12s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;box-shadow:0 1px 2px rgba(0,0,0,.06);}
+.btn:hover{transform:translateY(-1px);background:#fafafa;border-color:rgba(0,0,0,.22);box-shadow:0 2px 6px rgba(0,0,0,.12);}
+.btn[disabled]{opacity:.4;cursor:not-allowed;}
+
+footer.site{border-top:1px solid rgba(0,0,0,.08);padding:16px var(--pad) 40px;text-align:center;color:var(--muted);}
+footer.site a{color:#FFD700;text-decoration:none;}
+footer.site a:visited{color:#FFC300;}
+footer.site a:hover{text-decoration:underline;color:#FFDA44;}
+
+:fullscreen header.site, :fullscreen footer.site{display:none;}
+:fullscreen .stage{width:100vw;height:100dvh !important;max-height:none;aspect-ratio:auto;}
+
+@media (max-width:640px){ .stage{min-height:56vh;} }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce){ .vanish,.appear{animation:none !important;} }

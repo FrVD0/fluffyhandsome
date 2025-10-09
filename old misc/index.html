@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="site.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Uncle Attaboy — Library</title>
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+  <header class="site" role="banner">
+    <div class="wrap">
+      <div class="title">Uncle Attaboy — Library</div>
+      <nav>
+        <a href="#fluffy">Fluffy Handsome Show</a>
+        <a href="#fancy">Meanwhile in Fancy City</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="library" role="main">
+    <p class="intro">Click a panel to read. Use ←/→, click/tap left or right, or the buttons below each frame. Double-click/tap for fullscreen.</p>
+
+    <section class="grid">
+     <!-- Panel 1 -->
+<article class="series" id="fluffy_1" data-src="series/fluffy_1/pages.json">
+  <div class="series-head">
+    <h2>Fluffy Handsome Show, Vol. 1 (MMXXI)</h2>
+    <span class="progress" aria-live="polite">1 / ?</span>
+  </div>
+
+  <div class="stage" role="region" aria-label="Fluffy Handsome Show, Vol. 1 (MMXXI) viewer" tabindex="0">
+    <div class="layer active"><img alt=""></div>
+    <div class="layer"><img alt=""></div>
+    <div class="zone left"  aria-label="Previous page" title="Previous (←)"></div>
+    <div class="zone right" aria-label="Next page"     title="Next (→)"></div>
+  </div>
+
+  <div class="controls">
+    <button class="btn prev" aria-label="Previous" title="Previous (←)">⟵</button>
+    <button class="btn next" aria-label="Next"     title="Next (→)">⟶</button>
+  </div>
+</article>
+
+
+      <!-- Panel 2 -->
+      <article class="series" id="fancy" data-src="series/fancy/pages.json">
+        <div class="series-head">
+          <h2>Meanwhile in Fancy City</h2>
+          <span class="progress" aria-live="polite">1 / ?</span>
+        </div>
+        <div class="stage" role="region" aria-label="Meanwhile in Fancy City viewer" tabindex="0">
+          <div class="layer active"><img alt=""></div>
+          <div class="layer"><img alt=""></div>
+          <div class="zone left"  aria-label="Previous page" title="Previous (←)"></div>
+          <div class="zone right" aria-label="Next page"     title="Next (→)"></div>
+        </div>
+        <div class="controls">
+          <button class="btn prev" aria-label="Previous" title="Previous (←)">⟵</button>
+          <button class="btn next" aria-label="Next"     title="Next (→)">⟶</button>
+        </div>
+      </article>
+    </section>
+  </main>
+<!-- Panel 3 -->
+<article class="series" id="fluffy_2" data-src="series/fluffy_2/pages.json">
+  <div class="series-head">
+    <h2>Fluffy Handsome Show, Vol. 2</h2>
+    <span class="progress" aria-live="polite">1 / ?</span>
+  </div>
+  <div class="stage" role="region" aria-label="Fluffy Handsome Show, Vol. 2 viewer" tabindex="0">
+    <div class="layer active"><img alt=""></div>
+    <div class="layer"><img alt=""></div>
+    <div class="zone left"  aria-label="Previous page" title="Previous (←)"></div>
+    <div class="zone right" aria-label="Next page"     title="Next (→)"></div>
+  </div>
+  <div class="controls">
+    <button class="btn prev" aria-label="Previous" title="Previous (←)">⟵</button>
+    <button class="btn next" aria-label="Next"     title="Next (→)">⟶</button>
+  </div>
+</article>
+
+  <footer class="site" role="contentinfo">
+    <p>&copy; MMXXV Your Uncle Attaboy •
+      <a href="https://www.patreon.com/fluffyhandsome">Patreon</a> •
+      <a href="https://www.youtube.com/@UncleAttaboy">YouTube</a> •
+      <a href="https://www.instagram.com/uncleattaboy">Instagram</a> •
+      <a href="https://fluffyhandsome.threadless.com/">Merch</a> •
+      <a href="https://ko-fi.com/uncleattaboy">Buy Me a Coffee</a> •
+      <a href="mailto:uncleattaboy@gmail.com">Accessibility Feedback</a>
+    </p>
+  </footer>
+
+  <script defer src="assets/js/viewer.js"></script>
+  <script defer src="viewer.js"></script>
+</body>
+</html>

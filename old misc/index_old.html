@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fluffy Handsome</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        header {
+            background-color: #000;
+            color: white;
+            padding: 1rem 0;
+        }
+        footer a {
+        color: #FFD700; /* Light yellow */
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    footer a:visited {
+        color: #FFC300; /* Golden yellow after clicking */
+    }
+
+    footer a:hover {
+        text-decoration: underline;
+        color: #FFDA44; /* Slightly brighter yellow on hover */
+    }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            padding: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border: 2px solid #000;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+
+
+footer {
+    background-color: #000;
+    color: white;
+    padding: 1rem 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+
+
+.archive-buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Space between buttons */
+    margin-top: 20px;
+}
+
+.archive-button {
+    background-color: #000;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+}
+        .archive-popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center; /* Centered to ensure better resizing */
+    overflow: auto;
+    padding: 2rem 0;
+    z-index: 1000;
+}
+
+.archive-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: auto;
+    max-width: 90%;
+    text-align: center;
+    position: relative;
+    max-height: 90vh; /* Allows scrolling if the image is too big */
+    overflow: auto;
+}
+
+        .close-button, .nav-button {
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 3px;
+            margin: 5px;
+        
+            
+        }
+        #imageContainer {
+    width: auto; /* Fit the image naturally */
+    max-width: 100%;
+    overflow: hidden; /* Remove scrolling */
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+}
+
+
+#imageContainer img {
+    max-width: none; /* Allows zoom beyond container */
+    height: auto; /* Maintain aspect ratio */
+}
+@media (max-width: 768px) {
+    .archive-content {
+        width: 95%; /* Makes popup width flexible */
+        max-width: 90vw; /* Ensures it fits on mobile */
+        padding: 10px; /* Less padding for small screens */
+    }
+
+    #imageContainer {
+        width: 100%; /* Ensures the container fills the screen width */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #imageContainer img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 5px; /* Softer edges on mobile */
+    }
+}
+    </style>
+</head>
+<body>
+    <header role="banner">
+        <h1>Fluffy Handsome</h1>
+        <p>Best viewed on wide screens of 27+ inches. Put down the phone. Look at me.</p>
+    </header>
+    <div class="archive-buttons-container">
+        <button class="archive-button" id="openArchive">Click Here for Chapter I</button>
+        <button class="archive-button" id="openFancyCity">Click Here for the Meanwhile...</button>
+    </div>
+    <main id="main-content" role="main">
+        <img src="FHS2_01.png" alt="Fluffy Handsome, on the Blank Page, experiences side effects of going fully digital.">
+    </main>
+        <main id="main-content" role="main">
+        <img src="FHS2_02.png" alt="Fluffy Handsome reacts to learning that he is no longer made of ink.">
+    </main>
+            <main id="main-content" role="main">
+        <img src="FHS2_03.png" alt="Fluffy Handsome receives a call to action. Fancy City needs him!">
+    </main>
+         <main id="main-content" role="main">
+        <img src="FHS2_04.png" alt="Fluffy Handsome experiences a momentary crisis of faith.">
+    </main>
+    <div id="archivePopup" class="archive-popup">
+        <div class="archive-content">
+            <button class="close-button" id="closeArchive">Close</button>
+            <h2>Archive</h2>
+            <div id="imageContainer">
+                <img id="chapterImage" class="zoomable" src="Archive/original fluffy archive1.jpg" alt="Chapter 1: Fluffy Handsome comic panel">
+            </div>
+                        <p id="chapterText">Chapter 1</p>
+            <button class="nav-button" id="prevChapter">Previous</button>
+            <button class="nav-button" id="nextChapter">Next</button>
+        </div>
+    </div>
+    <div id="fancyCityPopup" class="archive-popup">
+        <div class="archive-content">
+            <button class="close-button" id="closeFancyCity">Close</button>
+            <h2>Archive</h2>
+            <div id="fancyCityImageContainer">
+                <img id="fancyCityImage" class="zoomable" src="Fancy City/fancy city archive1.jpg" alt="Chapter 1: Meanwhile, in Fancy City comic panel">
+            </div>
+            <p id="fancyCityText">Chapter 1</p>
+            <button class="nav-button" id="prevFancyCity">Previous</button>
+            <button class="nav-button" id="nextFancyCity">Next</button>
+        </div>
+    </div>
+    
+    
+    <footer role="contentinfo">
+        <p>&copy; MMXXV Your Uncle Attaboy | <a href="https://www.patreon.com/fluffyhandsome">Patreon!</a> | <a href="https://www.youtube.com/@UncleAttaboy">YouTube!</a> | <a href="https://www.instagram.com/uncleattaboy">Instagram!</a> | <a href="https://fluffyhandsome.threadless.com/">MERCH!</a> | <a href="https://ko-fi.com/uncleattaboy">Buy Me a Coffee?</a> | <a href="mailto:uncleattaboy@gmail.com">Accessibility Feedback</a></p>
+    </footer>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Fluffy Handsome Archive
+            let currentChapter = 1;
+            const totalChapters = 90;
+            const captions = [
+            "The first Fluffy Handsome strip! It might not look like much now, but this comic is about to rip a hole in the fabric of (my?) reality. ",
+"The second strip ever and already Fluffy is courting controversy! ",
+"Ooh, I wonder what’s inside the marshmallow? ",
+"We all start somewhere, right? ",
+"Figures. You go all the way into outer space to broadcast an important message, and your audience is not even in the room. ",
+"Fluffy’s having a rough night. ",
+"Zip! ",
+"Mozart’s piano concerto no. 27 in b flat does indeed sound heavenly. ",
+"That line by Auden has always gotten to me…",
+"When was the last time you danced when no music was playing? ",
+"Just think about how old the pyramids are and try not to go insane. ",
+"A word from our sponsors. Buy your copy at Records of Imaginal Origin",
+"How is your meditation practice treating you these days? ",
+"There’s a saying in Fancy City. “Watch enough Fluffy, [and] eventually you’ll learn everything.” ",
+"Surf tuba, anyone? P.S. How did this get here? Before Fluffy Handsome, there was Flawed Masterpiece. Apparently a few of those snuck into the Fluffy file. ",
+"A cool $15B could buy a hell of a lot of beer and Salty Bites. ",
+"Oh, this one was sponsored by Merl’s Mirrors. That’s why it’s so weird. ",
+"Another flawed masterpiece—this time, a quiet domestic scene. I used to love drawing these and often fancy a return to the genre…",
+"Why, yes, I do love the work of David Lynch! How did you know? ",
+"You’re a legend, Blake! ",
+"I drew this in 2020—yes, I have been making banana art jokes since the beginning. They call me Attaboy, OG Banana. (Note to self: renew subscription to TAME.)",
+"It is 2025. I haven’t thought of the Great Forgotten since 2021. I’ve failed you, Fluffy. ",
+"Little Billy (middle panel, middle figure) sure is conscientious about buying whatever Fluffy’s selling. Let’s hope the T Rex talks some sense into him. ",
+"Ugh. I wrote “Everone” instead of “everyone” and I was going through this phase where I would just let things be and try to put them in a positive spin rather than fix them past a certain point. The idea here was that Fluffy would always “mispronounce” the word “everyone” in this manner. Did I keep this up? Well, you’ll just have to read every single comic I ever write to find out!",
+"What is happening behind Fluffy? Some kinda swirly train wreck? Is that why I can’t look away? ",
+"This panel, like all of the Flawed Masterpiece series, was executed in the year of our Lord MMXX. And history has been laughing ever since. ",
+"Me-oh-my-oh! (I had so much fun drawing Fluffy’s radio studio, listening to Fats all the while. Bliss.)",
+"This strip is a Key to the Mystery of Fluffy Handsome. ",
+"Fluffy knows. ",
+"Any questions? ",
+"NGL, I have a crush on the lead singer/keytarist. Fun tip: if you get bored, count how many buttons and dials I fit into that gear that the bassist is fiddling with in the far left corner of the stage.",
+"I used to have a mantra when I drew these early strips: “Love every brick.” ",
+"Yes, Little Billy has a friend named Billy. No, I will not share any further lore on this topic at this point. ",
+"Is that an airport, or is that an airport? That’s an airport in the middle of my comic, y’all. ",
+"For the record, I love scrambled eggs. But not so much when I was Little Billy’s age.",
+"Ever notice how some furniture is OK for feet, and some is not? ",
+"I want to know more about this epic battle between aeroplane and thunder lizard. ",
+"You see, kids? You never run out of ideas if you work without ideas to begin with! ",
+"Dood! Sick! Burrrrrrnn *passes out*",
+"I still want to know — what is INSIDE the marshmallow? ",
+"I could go for a smoothie right about now. ",
+"Yes. I wasted an entire strip to call out this weird speech habit of Fluffy’s. Brazen. ",
+"Another Key to the Mystery of Fluffy Handsome. ",
+"They haven’t made a helmet yet that can prevent a broken heart, though. ",
+"Can you find any hints in this one? ",
+"I drew this one after a rewatch of Wings of Desire. ",
+"Fluffy's drinking again. ",
+"I mean, in the face of that flower, who needs a point? ",
+"You know what? I’m still thinking about getting a smoothie. ",
+"Insurance commercials, amiright?!",
+"Man, EVERONE is wearing Fluffy Handsome slippers these days! ",
+"Squirrels are, generally speaking, never very helpful. ",
+"Ah, Merl. You wacky, mystic, mirror tycoon, you! ",
+"Love every brick. ",
+"Hey, look who’s having a smoothie! ",
+"Damn it, Little Billy … ",
+"OK, FINALLY, the Show’s about to start…",
+"This is when the comic goes from randomness to story. Buckle up! ",
+"Grunt Daggerjab: reluctant barbarian warlord. ",
+"Based on a true story. ",
+"Flurfy is not happy. ",
+"Wait … Fluffy knows who I am? ",
+"It is Good to be a god. ",
+"MEANWHILE…",
+"Fuzz Dapper truly is the model middle management minion, no? ",
+"Oh, come on! How bad could it be, Fluffy?!",
+"This is… umm… special. ",
+"Y’all know this Buzz Slouch character is how I am afraid I would act if I ever meet any of my heroes, right? The guy LOVES Fluffy Handsome. Superfan. It’s sad, really.",
+"Buzz has met the Buddha on the road. ",
+"Excel IS a great tool.",
+"Fluffy has a great ass. That’s canon. ",
+"This comic is a Key to the Mystery of Fluffy Handsome. #fluffyhandsomeisreal if you feel moved to share the good word.",
+"Welcome to the Blank Page. No tour guides. ",
+"IS Reason over-rated? ",
+"It takes a Fopsquire to experience total freedom and call it a dungeon. ",
+"Our Friends Incorporate are not known for friendliness when it’s down to the wire.",
+"This is, as of January 2025, the last appearance of Fuzz Dapper. ",
+"Buzz Slouch looks like a Cenobite when he’s anxious. ",
+"This is a Key to the Mystery of Fluffy Handsome. #whereisfluffyhandsome if you feel moved to share the good word. ",
+"If you’re gonna crack, there’s no better place than on the Blank Page. ",
+"But the most Cenobite of all my characters must be Professor Fopsquire. ",
+"Are you following all this? Take good notes. There will be a quiz. ",
+"I’m beginning to think the Blackberry was a bad idea. ",
+"Just a reminder: this comic was written in 2021. ",
+"Why do I keep delaying the Secret of Secrets? Is it for dramatic effect? Or is it because I don’t really know what it is and I’m struggling to come up with something cool? Bless my bowels! ",
+"Loose lips sink ships, Buzz. ",
+"This is a Key to the Mystery of Fluffy Handsome. #letfluffyhandsomebe if you feel moved to share the good word. ",
+"Sus. ",
+"Pretty cool trick, how I can just possess Fluffy like that, huh? ",
+"This is fairly self-explanatory, I should think. "
+];
+
+            const chapterImage = document.getElementById("chapterImage");
+            const chapterText = document.getElementById("chapterText");
+        
+            document.getElementById("openArchive").addEventListener("click", function() {
+                document.getElementById("archivePopup").style.display = "flex";
+                updateChapter();
+            });
+        
+            document.getElementById("closeArchive").addEventListener("click", function() {
+                document.getElementById("archivePopup").style.display = "none";
+            });
+        
+            document.getElementById("archivePopup").addEventListener("click", function(event) {
+                if (event.target === this) {
+                    this.style.display = "none";
+                }
+            });
+        
+            document.getElementById("prevChapter").addEventListener("click", function() {
+                if (currentChapter > 1) {
+                    currentChapter--;
+                    updateChapter();
+                }
+            });
+        
+            document.getElementById("nextChapter").addEventListener("click", function() {
+                if (currentChapter < totalChapters) {
+                    currentChapter++;
+                    updateChapter();
+                }
+            });
+        
+            function updateChapter() {
+    chapterImage.src = `Archive/original fluffy archive${currentChapter}.jpg`;
+    chapterImage.alt = captions[currentChapter - 1] || `Chapter ${currentChapter}: Fluffy Handsome comic panel`;
+    chapterText.textContent = captions[currentChapter - 1] || `Chapter ${currentChapter}`;
+}
+
+        
+            // Fancy City Archive
+            let fancyCityChapter = 1;
+            const totalFancyCityChapters = 65;
+            const fancyCityCaptions = [
+    "It is a few weeks since the sudden vanishing of Fluffy Handsome. Life goes on as ever in Fancy City. This citizen has the right idea--keep going!  ",
+    "Others in Fancy City are deciding to dance the anxiety away. We all miss Fluffy so much. Like Bowie said, \"I know when to go out. I know when to stay in. Get things done.\"",
+    "Sure, Veronica is upset about the disappearance of Fluffy Handsome. She has even joined the #whereisfluffyhandsome movement. But you know what they say... the wine blog must go on. ",
+    "Is there anything more foolish than trying to cover one's own foolishness? ",
+    "I hear the line to get in to Fancy City Greasy Spoon for Sunday brunch goes on forever. Good things come to those who wait...",
+    "Tender regard is so underrated these days. Maybe that's why everyone is always at each others' throats? Eh, what do I know?",
+    "Yeah, that's me, ranting about the term \"creative.\" Sometimes the beast gets out and wreaks a little havoc on Fancy City like an invading army of anxiety monsters.",
+    "It might help you to know that I have always found the term \"elder statesman\" hilarious and I have no idea why. But Bowlcut is right--Splatter Jocks rule. ",
+    "I love libraries, y'all. A place where you can go and work on yourself, treat yourself, or even give back through community gatherings... heaven on earth, the library. ",
+    "Mind if we pop in here a bit? I'm looking for a new pair of walking shoes. ",
+    "Everything at the right time and right place.",
+    "Chapeau has the right idea. He accepts that either Fluffy is alive, or dead, or maybe both at the same time--he doesn't understand physics, only German philosophy as it pertains to death and transformation. (P.S. Which book on the shelves grabs your attention?)",
+    "Can you spot my tribute to Wayne Thiebaud in this one? ",
+    "Come on, Honey--regain your composure before you lose your dignity!",
+    "Bowlcut may be a critic, but he's pretty down to earth about it. ",
+    "Conspirafile Agents on the march! Let's go! #whereisfluffyhandsome",
+    "Our friend Chapeau will get you across, don't you worry. ",
+    "Can't decide which walking shoe to get! My brain feels like a writhing mass of worms. Not sure how those two thoughts are related. Chew on it a bit! ",
+    "More thoughts on libraries: they allow everyone in, exclude no one, always willing to teach you what you want or need to learn. Ah, libraries...",
+    "So much depends on the proper crimture of frolly leg caressers. ",
+    "#whereisfluffyhandsome",
+    "Lots of fun stuff to find in this one, but do you know what the true secret is? The light behind Nadine's eyes.",
+    "When dootie duty calls, it's best to just jump right in and get the job done. ",
+    "Been a while since I did some crate digging. Might return to my neighborhood waxmonger soon. ",
+    "Surprise! Another delicious breakfast made just the way you like it at your neighborhood Fancy City Greasy Spoon!",
+    "Love seeing a squirrel enjoy his treasure. ",
+    "Sometimes people who are content in the moment say foolish and naive things about life. ",
+    "When the going gets tough, the tough get going--to the LIBRARY, where they research the issue and chart the path forward!",
+    "All that studying--I'm famished. Let's grab a bite at Fancy City Greasy Spoon. This place is my second home, my refuge, my fortress. ",
+    "Time to dance off that heavy diner food! This club is FIRE! ",
+    "Oh, Crumpton, I am yours. You had me at \"Ambrosial.\"",
+    "Sports Fan loves everybody like a fixed star in the firmament. This is a Key to the Mystery of Fluffy Handsome. #fluffyhandsomeisreal",
+    "Bowlcut is not backing down. ",
+    "Simply put, Records of Imaginal Origin ROCKS and you should shop there often!",
+    "I hear these buildings have some rat issues, but otherwise are decent for the rent. ",
+    "These Fancy Citizens sure know how to find their inner light in the darkness. ",
+    "When you see this side of Fancy City, it all begins to look like one interdimensional family. ",
+    "\"Paint for rent!\" Ha. Ha. HA. HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARRRRRGGGGHHH!!!!!!!!!!!! ",
+    "Introspection is so important. What if I AM a monster?!",
+    "We now return to our regular, quality programming. ",
+    "Sometimes I can offer the rarest of jewels, other times just two mites, but I always give you all I've got, Fluffy Fam!",
+    "Yeah, you know it was scrumptious. Look at the dude's face. ",
+    "Make a decision already, amiright? ",
+    "I wouldn't worry about the Filigrees, Bowlcut. They never catered to the masses anyway. ",
+    "The House of Snubbingtonworchestenson is known for this sort of thing, unfortunately. ",
+    "Like an oak from an acorn, that's how we get there. ",
+    "Life has got me feeling beat -- gotta dance it off! ",
+    "Last night was a blast. Coffeeshop again! Back to the well, as they say. ",
+    "There was an actual atrocity committed on that date, even though initially I chose it randomly. Sometimes the creative process throws sparks, and sometimes those sparks get in your eyes. ",
+    "Detective Flossy's temper is a cauldron constantly aboil. ",
+    "Wow! Uh, yeah, I mean, where does one begin? ",
+    "Taking a meditative break at the ole java joint! ",
+    "And we're back on the dance floor! This is a fun crowd--let's take it slow, pick up the vibe, and who knows? Maybe we'll make a connection! ",
+    "I have a feeling the new job's about to become another old job. ",
+    "The glow in their eyes! That's why I cartoon. To find that glow. ",
+    "By now you must think my life in Fancy City is a rather predictable and boring routine. It's just that you can wander anywhere in Fancy City to find adventure--why not find HOME here, too? So I keep coming back to the same old haunts. ",
+    "Good morning! Windy out. ",
+    "They are finding their way to the Lake. ",
+    "Cindy Ribbontwirl blows me away, too, my dude. *sigh*",
+    "We all have our limitations, and even our limitations have limitations. ",
+    "Detectives Flossy and Bristles will get to the bottom of the case in Grime City, where every smear was once an inner truth. ",
+    "Like a flying bird the Heart of the Mystery alights, and is off. #fluffyhandsomeisreal",
+    "When will I draw more dinosaurs? Just remember, good things come to those who wait. ",
+    "Ugh. I need some coffee. I feel like a devastated city in the aftermath of a Godzilla attack--must have been the thought of those dinosaurs. Coffee. Coffee will rebuild me. Black, like crude oil. ",
+    "And on THAT note -- thank you so much for reading my comick! Please find me on Instagram, Facebook, KoFi, Patreon... but most of all, find me in your heart and I'll find you in mine! Be well. Be love. "
+];
+            const fancyCityImage = document.getElementById("fancyCityImage");
+            const fancyCityText = document.getElementById("fancyCityText");
+        
+            document.getElementById("openFancyCity").addEventListener("click", function() {
+                let popup = document.getElementById("fancyCityPopup");
+                if (popup) {
+                    popup.style.display = "flex";
+                    updateFancyCityChapter();
+                } else {
+                    console.error("Fancy City popup not found!");
+                }
+            });
+        
+            document.getElementById("closeFancyCity").addEventListener("click", function() {
+                document.getElementById("fancyCityPopup").style.display = "none";
+            });
+        
+            document.getElementById("fancyCityPopup").addEventListener("click", function(event) {
+                if (event.target === this) {
+                    this.style.display = "none";
+                }
+            });
+        
+            document.getElementById("prevFancyCity").addEventListener("click", function() {
+                if (fancyCityChapter > 1) {
+                    fancyCityChapter--;
+                    updateFancyCityChapter();
+                }
+            });
+        
+            document.getElementById("nextFancyCity").addEventListener("click", function() {
+                if (fancyCityChapter < totalFancyCityChapters) {
+                    fancyCityChapter++;
+                    updateFancyCityChapter();
+                }
+            });
+        
+            function updateFancyCityChapter() {
+    fancyCityImage.src = `Fancy City/fancy city archive${fancyCityChapter}.jpg`;
+    fancyCityImage.alt = fancyCityCaptions[fancyCityChapter - 1] || `Chapter ${fancyCityChapter}: Meanwhile, in Fancy City comic panel`;
+    fancyCityText.textContent = fancyCityCaptions[fancyCityChapter - 1] || `Chapter ${fancyCityChapter}`;
+}
+
+        });
+        </script>
+        
+
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Comix Hub — Seven Sister Series</title>
+  <meta name="description" content="A simple scroll of banners linking to seven sister comic sites." />
+  <meta name="color-scheme" content="light dark" />
+  <style>
+    :root{
+      --bg:#ffffff; --fg:#111; --muted:rgba(17,17,17,.7);
+      --max:1200px; --pad:clamp(12px,3vmin,24px); --gap:clamp(16px,3vmin,28px);
+      --radius:10px;
+    }
+    @media (prefers-color-scheme: dark){
+      :root{ --bg:#0e0e10; --fg:#e9e9ee; --muted:rgba(233,233,238,.8); }
+    }
+    html,body{
+      margin:0; background:var(--bg); color:var(--fg);
+      font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Noto Sans,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    }
+    header,footer{ max-width:var(--max); margin:0 auto; padding:var(--pad); }
+    header h1{ margin:0 0 .15rem; font-size:clamp(1.25rem,3.6vw,1.9rem); font-weight:700; letter-spacing:.01em; }
+    header p{ margin:.25rem 0 0; opacity:.85; }
+    .top-nav{ display:flex; gap:.75rem; align-items:center; margin-bottom:.5rem; }
+    .top-nav a{ color:inherit; opacity:.85; text-decoration:underline; }
+    main{ max-width:var(--max); margin:0 auto; padding:0 var(--pad) var(--pad); }
+    .stack{ display:grid; gap:var(--gap); }
+    figure{ margin:0; }
+    .banner{
+      width:100%; height:auto; display:block;
+      border-radius:var(--radius);
+      box-shadow:0 1px 0 rgba(0,0,0,.04), 0 8px 32px rgba(0,0,0,.08);
+      transition:transform .15s ease, box-shadow .15s ease;
+    }
+    a:where(.card){ text-decoration:none; color:inherit; display:block; }
+    a.card:focus-visible img{ outline:3px solid currentColor; outline-offset:3px; }
+    a.card:hover .banner{ transform:translateY(-1px); box-shadow:0 1px 0 rgba(0,0,0,.05), 0 10px 40px rgba(0,0,0,.12); }
+    figcaption{
+      margin-top:.6rem; font-size:clamp(.92rem,2.5vw,1rem); color:var(--muted);
+    }
+    .title{ display:block; font-weight:600; color:var(--fg); margin-bottom:.15rem; }
+    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="top-nav" aria-label="Back">
+      <a href="#"><span aria-hidden="true">←</span> Home</a>
+    </nav>
+    <h1>Seven Sister Series</h1>
+    <p>Scroll the banners and enter whichever world calls to you. Tap or click a card to visit the series.</p>
+    <p class="sr-only">Simple vertical list of seven banners. Each image links to a sister site.</p>
+  </header>
+
+  <main>
+    <div class="stack" aria-label="Seven sister sites">
+      <!-- 1 -->
+      <figure>
+        <a class="card" href="series/fluffy_1/index.html" target="_blank" rel="noopener noreferrer">
+          <img class="banner"
+               src="banner_1.png"
+               alt="Fluffy 1 — banner"
+               loading="lazy" decoding="async" fetchpriority="low"
+               sizes="(max-width: 1200px) 100vw, 1200px">
+        </a>
+        <figcaption>
+          <span class="title">Fluffy 1</span>
+          Gently enter here—tap or click if this one strikes your fancy.
+        </figcaption>
+      </figure>
+
+      <!-- 2 -->
+      <figure>
+        <a class="card" href="series/fluffy_2/index.html" target="_blank" rel="noopener noreferrer">
+          <img class="banner"
+               src="banner_2.png"
+               alt="Fluffy 2 — banner"
+               loading="lazy" decoding="async" fetchpriority="low"
+               sizes="(max-width: 1200px) 100vw, 1200px">
+        </a>
+        <figcaption>
+          <span class="title">Fluffy 2</span>
+          Another path awaits—tap or click to step through.
+        </figcaption>
+      </figure>
+
+      <!-- 3 -->
+      <figure>
+        <a class="card" href="series/MIFC/index.html" target="_blank" rel="noopener noreferrer">
+          <img class="banner"
+               src="banner_3.png"
+               alt="MIFC — banner"
+               loading="lazy" decoding="async" fetchpriority="low"
+               sizes="(max-width: 1200px) 100vw, 1200px">
+        </a>
+        <figcaption>
+          <span class="title">MIFC</span>
+          If this mood fits, tap or click to explore.
+        </figcaption>
+      </figure>
+
+      <!-- 4 -->
+      <figure>
+        <a class="card" href="series/ITM/index.html" target="_blank" rel="noopener noreferrer">
+          <img class="banner"
+               src="banner_4.png"
+               alt="ITM — banner"
+               loading="lazy" decoding="async" fetchpriority="low"
+               sizes="(max-width: 1200px) 100vw, 1200px">
+        </a>
+        <figcaption>
+          <span class="title">ITM</span>
+          Tap or click to wander in.
+        </figcaption>
+      </figure>
+
+      <!-- 5 -->
+      <figure>
+        <a class="card" href="series/BABR/index.html" target="_blank" rel="noopener noreferrer">
+          <img class="banner"
+               src="banner_5.png"
+               alt="BABR — banner"
+               loading="lazy" decoding="async" fetchpriority="low"
+               sizes="(max-width: 1200px) 100vw, 1200px">
+        </a>
+        <figcaption>
+          <span class="title">BABR</span>
+          Follow your curiosity—tap or click to visit.
+        </figcaption>
+      </figure>
+
+      <!-- 6 -->
+      <figure>
+        <a class="card" href="series/EOM/index.html" target="_blank" rel="noopener noreferrer">
+          <img class="banner"
+               src="banner_6.png"
+               alt="EOM — banner"
+               loading="lazy" decoding="async" fetchpriority="low"
+               sizes="(max-width: 1200px) 100vw, 1200px">
+        </a>
+        <figcaption>
+          <span class="title">EOM</span>
+          When this one calls, tap or click to enter.
+        </figcaption>
+      </figure>
+
+      <!-- 7 -->
+      <figure>
+        <a class="card" href="series/innersanity/index.html" target="_blank" rel="noopener noreferrer">
+          <img class="banner"
+               src="banner_7.png"
+               alt="Inner Sanity — banner"
+               loading="lazy" decoding="async" fetchpriority="low"
+               sizes="(max-width: 1200px) 100vw, 1200px">
+        </a>
+        <figcaption>
+          <span class="title">Inner Sanity</span>
+          Tap or click to step inside.
+        </figcaption>
+      </figure>
+    </div>
+  </main>
+
+  <footer>
+    <small>© <span id="y">2025</span> — A simple scroll of portals. No scripts required.</small>
+    <script>document.getElementById('y').textContent=new Date().getFullYear()</script>
+  </footer>
+</body>
+</html>
