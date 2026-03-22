@@ -3,124 +3,388 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>End of Message</title>
-  <meta name="description" content="One-sentence description of this comic/episode." />
-  <meta name="color-scheme" content="light dark" />
+  <title>End of Message: Business Comix for the Robust Generation</title>
+  <meta name="description" content="Business comix for the robust generation. Synergy happens here." />
   <style>
-    :root{
-      --bg:#ffffff; --fg:#111; --max:1200px; --pad:clamp(12px,3vmin,24px); --gap:clamp(12px,2.5vmin,24px);
+    :root {
+      --tan:       #e8d9be;
+      --tan-mid:   #c9aa7c;
+      --tan-dark:  #a87e4a;
+      --purple:    #3e1f6e;
+      --purple-mid:#6b3fa0;
+      --purple-lt: #ede4f7;
+      --bg:        #f2e8d5;
+      --fg:        #1a0a2e;
+      --muted:     rgba(26,10,46,.65);
+      --card-bg:   #faf5ec;
+      --btn-bg:    #ede4f7;
+      --btn-fg:    #3e1f6e;
+      --btn-active-bg: #3e1f6e;
+      --btn-active-fg: #f2e8d5;
+      --border:    rgba(62,31,110,.25);
+      --max:       960px;
+      --pad:       clamp(12px,3vmin,28px);
+      --gap:       clamp(12px,2.5vmin,24px);
+      --radius:    4px;
     }
-    @media (prefers-color-scheme: dark){ :root{ --bg:#0e0e10; --fg:#e9e9ee; } }
-    html,body{ margin:0; background:var(--bg); color:var(--fg);
-      font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Noto Sans,Arial,"Apple Color Emoji","Segoe UI Emoji";}
-    header,footer{ max-width:var(--max); margin:0 auto; padding:var(--pad); }
-    header h1{ margin:0 0 0.25rem; font-size:clamp(1.2rem,3.5vw,1.75rem); font-weight:700; letter-spacing:.01em; }
-    header p{ margin:.25rem 0 0; opacity:.85; }
-    main{ max-width:var(--max); margin:0 auto; padding:0 var(--pad) var(--pad); }
-    .page{ margin:0 0 var(--gap); }
-    .page img{ width:100%; height:auto; display:block; border-radius:8px; }
-    .top-nav{ display:flex; gap:.75rem; align-items:center; margin-bottom:.5rem; }
-    .top-nav a{ color:inherit; opacity:.8; text-decoration:underline; }
-    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      margin: 0; background: var(--bg); color: var(--fg);
+      font: 16px/1.5 Georgia, "Times New Roman", serif;
+      text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Masthead ── */
+    .masthead {
+      background: var(--purple);
+      color: var(--tan);
+      padding: 0;
+    }
+    .masthead-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: calc(var(--pad) * 1.25) var(--pad);
+      display: flex;
+      flex-direction: column;
+      gap: .35rem;
+    }
+    .masthead-rule {
+      border: none;
+      border-top: 2px solid var(--tan-mid);
+      margin: 0;
+    }
+    .masthead-eyebrow {
+      font: 700 .7rem/1 "Arial Narrow", Arial, sans-serif;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--tan-mid);
+      margin: 0;
+    }
+    .masthead h1 {
+      margin: 0;
+      font: 700 clamp(1.6rem,5vw,2.8rem)/1.05 Georgia, "Times New Roman", serif;
+      letter-spacing: -.01em;
+      color: var(--tan);
+    }
+    .masthead h1 em {
+      font-style: normal;
+      color: var(--tan-mid);
+    }
+    .masthead-tagline {
+      margin: 0;
+      font: italic clamp(.85rem,2vw,.95rem)/1.4 Georgia, serif;
+      color: var(--tan-mid);
+      opacity: .9;
+    }
+    .masthead-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .5rem;
+      padding-top: .35rem;
+    }
+    .masthead-byline {
+      font: .8rem/1 "Arial Narrow", Arial, sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--tan-mid);
+      opacity: .8;
+    }
+    .home-link {
+      font: .8rem/1 "Arial Narrow", Arial, sans-serif;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--tan);
+      text-decoration: none;
+      opacity: .8;
+      transition: opacity .15s;
+    }
+    .home-link:hover { opacity: 1; }
+    .home-link span[aria-hidden] { margin-right: .3em; }
+
+    /* ── Divider rule ── */
+    .section-rule {
+      border: none;
+      border-top: 3px double var(--tan-mid);
+      max-width: var(--max);
+      margin: 0 auto;
+    }
+
+    /* ── Controls bar ── */
+    main {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: var(--gap) var(--pad) var(--pad);
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .5rem;
+      margin-bottom: var(--gap);
+      padding-bottom: var(--gap);
+      border-bottom: 1px solid var(--border);
+    }
+    .mode-group { display: flex; gap: .25rem; }
+    .btn {
+      padding: .4em 1em;
+      border: 1px solid var(--purple-mid);
+      border-radius: var(--radius);
+      background: var(--btn-bg);
+      color: var(--btn-fg);
+      font: 700 .8rem/1 "Arial Narrow", Arial, sans-serif;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+    .btn:hover { opacity: .8; }
+    .btn.active {
+      background: var(--btn-active-bg);
+      color: var(--btn-active-fg);
+    }
+    .counter {
+      font: .8rem/1 "Arial Narrow", Arial, sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      opacity: .65;
+      margin-left: auto;
+    }
+
+    /* ── Comic image ── */
+    #viewer img {
+      width: 100%; height: auto; display: block;
+      border-radius: 2px;
+      box-shadow: 0 2px 16px rgba(62,31,110,.18), 0 0 0 1px var(--border);
+    }
+
+    /* ── Nav row ── */
+    .nav-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      margin-top: var(--gap);
+      flex-wrap: wrap;
+    }
+    .nav-btn {
+      padding: .5em 1.2em;
+      border: 1px solid var(--purple-mid);
+      border-radius: var(--radius);
+      background: var(--btn-bg);
+      color: var(--btn-fg);
+      font: 700 .85rem/1 "Arial Narrow", Arial, sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: var(--purple);
+      color: var(--tan);
+      border-color: var(--purple);
+    }
+    .nav-btn:disabled { opacity: .3; cursor: default; }
+    .nav-counter {
+      font: .85rem/1 "Arial Narrow", Arial, sans-serif;
+      letter-spacing: .08em;
+      opacity: .65;
+      min-width: 7ch;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--purple);
+      color: var(--tan-mid);
+      margin-top: calc(var(--pad) * 2);
+    }
+    .footer-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: var(--pad);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .4rem;
+      text-align: center;
+    }
+    .footer-motto {
+      font: italic .95rem/1.4 Georgia, serif;
+      color: var(--tan);
+      opacity: .9;
+    }
+    footer small {
+      font: .75rem/1.4 "Arial Narrow", Arial, sans-serif;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      opacity: .65;
+    }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
   </style>
 </head>
 <body>
-  <header>
-    <nav class="top-nav" aria-label="Back">
-   <a href="https://www.fluffyhandsome.com/"><span aria-hidden="true">←</span> Home</a>
-</nav>
-    <h1>EOM</h1>
-    <p>by your uncle attaboy</p>
-    <p class="sr-only">Scroll for business acumenicality!</p>
+
+  <header class="masthead">
+    <div class="masthead-inner">
+      <hr class="masthead-rule">
+      <p class="masthead-eyebrow">ATTACOMIX</p>
+      <h1>End of <em>Message</em></h1>
+      <p class="masthead-tagline">Business Comix for the Robust Generation</p>
+      <hr class="masthead-rule">
+      <div class="masthead-meta">
+        <span class="masthead-byline">by your uncle attaboy</span>
+        <a class="home-link" href="https://www.fluffyhandsome.com/">
+          <span aria-hidden="true">&#8592;</span> Home
+        </a>
+      </div>
+    </div>
   </header>
 
-  <main aria-label="Comic pages">
-    <!-- HOW TO USE
-      1) Put page images in ./img (or change src paths).
-      2) List them below in order. That’s it.
-      3) Keep consistent width (e.g., 1600–2000px) for smoother reading.
-      4) Write short, useful alt text like "Page 3: CHARACTER enters the alley."
-    -->
+  <hr class="section-rule">
 
-    <!-- EXAMPLE SEQUENCE (replace/extend): -->
-    <figure class="page">
-      <img src="img/001.png" alt="Page 1: SHORT ALT TEXT" loading="lazy" decoding="async">
+  <main aria-label="Comic viewer">
+    <div class="controls">
+      <div class="mode-group" role="group" aria-label="Viewing mode">
+        <button class="btn active" id="btn-order"  onclick="setMode('order')">In Order</button>
+        <button class="btn"        id="btn-random" onclick="setMode('random')">Randomize</button>
+      </div>
+      <span class="counter" id="counter" aria-live="polite"></span>
+    </div>
+
+    <figure id="viewer">
+      <img id="comic-img" src="" alt="" decoding="async">
     </figure>
-    <figure class="page">
-      <img src="img/002.png" alt="Page 2: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/003.png" alt="Page 3: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/004.png" alt="Page 4: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/005.png" alt="Page 5: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">       
-      <img src="img/006.png" alt="Page 6: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/007.png" alt="Page 7: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/008.png" alt="Page 8: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/009.png" alt="Page 9: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">       
-      <img src="img/010.png" alt="Page 10: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">       
-      <img src="img/011.png" alt="Page 11: SHORT ALT TEXT   " loading="lazy" decoding="async">
-    </figure>     
-        <figure class="page">       
-      <img src="img/012.png" alt="Page 12: SHORT ALT TEXT   " loading="lazy" decoding="async">
-    </figure>    
-        <figure class="page">       
-      <img src="img/013.png" alt="Page 13: SHORT ALT TEXT   " loading="lazy" decoding="async">
-    </figure>    
-        <figure class="page">       
-      <img src="img/014.png" alt="Page 14: SHORT ALT TEXT   " loading="lazy" decoding="async">
-    </figure>    
-        <figure class="page">       
-      <img src="img/015.png" alt="Page 15: SHORT ALT TEXT   " loading="lazy" decoding="async">
-    </figure>    
-        <figure class="page">       
-      <img src="img/016.png" alt="Page 16: SHORT ALT TEXT   " loading="lazy" decoding="async">
-    </figure>    
-        <figure class="page">       
-      <img src="img/017.png" alt="Page 17: SHORT ALT TEXT   " loading="lazy" decoding="async">
-    </figure>    
-        <figure class="page">       
-      <img src="img/018.png" alt="Page 18: SHORT ALT TEXT   " loading="lazy" decoding="async">
-    </figure>    
-        <figure class="page">       
-      <img src="img/019.png" alt="Page 19: SHORT ALT TEXT   " loading="lazy" decoding="async">
-    </figure>    
-        <figure class="page">       
-      <img src="img/020.png" alt="Page 20: SHORT ALT TEXT   " loading="lazy" decoding="async">
-    </figure>    
-        <figure class="page">       
-      <img src="img/021.png" alt="Page 21: SHORT ALT TEXT   " loading="lazy" decoding="async">
-    </figure>    
-        <figure class="page">       
-      <img src="img/022.png" alt="Page 22: SHORT ALT TEXT   " loading="lazy" decoding="async">
-    </figure>    
-        <figure class="page">       
-      <img src="img/023.png" alt="Page 23: SHORT ALT TEXT   " loading="lazy" decoding="async">
-    </figure>    
-        <figure class="page">       
-      <img src="img/024.png" alt="Page 24: SHORT ALT TEXT   " loading="lazy" decoding="async">
-    </figure>                                                                                                  
+
+    <div class="nav-row">
+      <button class="nav-btn" id="btn-first" onclick="jump('first')" aria-label="First page">&#8676; First</button>
+      <button class="nav-btn" id="btn-prev"  onclick="go(-1)"        aria-label="Previous page">&#8592; Prev</button>
+      <span class="nav-counter" id="nav-counter" aria-live="polite"></span>
+      <button class="nav-btn" id="btn-next"  onclick="go(1)"         aria-label="Next page">Next &#8594;</button>
+      <button class="nav-btn" id="btn-last"  onclick="jump('last')"  aria-label="Last page">Last &#8677;</button>
+    </div>
   </main>
 
   <footer>
-    <small>
-      © MMXXV your uncle attaboy. With gratitude.
-    </small>
+    <div class="footer-inner">
+      <small>&copy; MMXXV your uncle attaboy. With gratitude.</small>
+    </div>
   </footer>
+
+  <script>
+    // Auto-detects all sequential .png images in img/ (001.png, 002.png, …)
+    // No manual updates needed when new pages are added.
+
+    const MAX_PROBE = 500;
+
+    function filename(i) {
+      return String(i).padStart(3, '0');
+    }
+
+    function probeOne(n) {
+      return new Promise(resolve => {
+        const img = new Image();
+        img.onload  = () => resolve(n);
+        img.onerror = () => resolve(null);
+        img.src = `img/${filename(n)}.png`;
+      });
+    }
+
+    async function detectPages() {
+      const found = [];
+      let i = 1;
+      while (i <= MAX_PROBE) {
+        const batch = [];
+        for (let j = i; j < i + 10 && j <= MAX_PROBE; j++) batch.push(probeOne(j));
+        const results = await Promise.all(batch);
+        for (const r of results) {
+          if (r === null) return found;
+          found.push(r);
+        }
+        i += 10;
+      }
+      return found;
+    }
+
+    // ── State ──────────────────────────────────────────────────────────────
+    let pages    = [];
+    let mode     = 'order';
+    let sequence = [];
+    let pos      = 0;
+
+    function buildSequence() {
+      sequence = pages.map((_, i) => i);
+      if (mode === 'random') {
+        for (let i = sequence.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [sequence[i], sequence[j]] = [sequence[j], sequence[i]];
+        }
+      }
+      pos = 0;
+    }
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('btn-order').classList.toggle('active',  m === 'order');
+      document.getElementById('btn-random').classList.toggle('active', m === 'random');
+      buildSequence();
+      render();
+    }
+
+    function go(delta) {
+      pos = Math.max(0, Math.min(sequence.length - 1, pos + delta));
+      render();
+    }
+
+    function jump(where) {
+      pos = where === 'last' ? sequence.length - 1 : 0;
+      render();
+    }
+
+    function render() {
+      const page = pages[sequence[pos]];
+      const img  = document.getElementById('comic-img');
+      img.src = page.src;
+      img.alt = page.alt;
+
+      const total    = sequence.length;
+      const humanPos = pos + 1;
+      const label    = `${humanPos} / ${total}`;
+      document.getElementById('counter').textContent     = label;
+      document.getElementById('nav-counter').textContent = label;
+
+      document.getElementById('btn-first').disabled = pos === 0;
+      document.getElementById('btn-prev').disabled  = pos === 0;
+      document.getElementById('btn-next').disabled  = pos === total - 1;
+      document.getElementById('btn-last').disabled  = pos === total - 1;
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1);
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(-1);
+      if (e.key === 'Home') jump('first');
+      if (e.key === 'End')  jump('last');
+    });
+
+    // ── Init ────────────────────────────────────────────────────────────────
+    document.getElementById('comic-img').alt          = 'Loading…';
+    document.getElementById('counter').textContent    = 'Loading…';
+
+    detectPages().then(found => {
+      pages = found.map(n => ({
+        src: `img/${filename(n)}.png`,
+        alt: `Page ${n}`
+      }));
+      buildSequence();
+      render();
+    });
+  </script>
 </body>
 </html>

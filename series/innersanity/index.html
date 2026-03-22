@@ -8,565 +8,466 @@
   <meta name="color-scheme" content="light dark" />
   <style>
     :root{
-      --bg:#ffffff; --fg:#111; --max:1200px; --pad:clamp(12px,3vmin,24px); --gap:clamp(12px,2.5vmin,24px);
+      --bg:#ffffff; --fg:#111; --btn-bg:#eee; --btn-fg:#111;
+      --btn-active-bg:#111; --btn-active-fg:#fff;
+      --max:1200px; --pad:clamp(12px,3vmin,24px); --gap:clamp(12px,2.5vmin,24px);
     }
-    @media (prefers-color-scheme: dark){ :root{ --bg:#0e0e10; --fg:#e9e9ee; } }
-    html,body{ margin:0; background:var(--bg); color:var(--fg);
-      font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Noto Sans,Arial,"Apple Color Emoji","Segoe UI Emoji";}
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0e0e10; --fg:#e9e9ee;
+        --btn-bg:#2a2a2e; --btn-fg:#e9e9ee;
+        --btn-active-bg:#e9e9ee; --btn-active-fg:#0e0e10;
+      }
+    }
+    html,body{
+      margin:0; background:var(--bg); color:var(--fg);
+      font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Noto Sans,Arial,"Apple Color Emoji","Segoe UI Emoji";
+    }
     header,footer{ max-width:var(--max); margin:0 auto; padding:var(--pad); }
     header h1{ margin:0 0 0.25rem; font-size:clamp(1.2rem,3.5vw,1.75rem); font-weight:700; letter-spacing:.01em; }
     header p{ margin:.25rem 0 0; opacity:.85; }
     main{ max-width:var(--max); margin:0 auto; padding:0 var(--pad) var(--pad); }
-    .page{ margin:0 0 var(--gap); }
-    .page img{ width:100%; height:auto; display:block; border-radius:8px; }
+
     .top-nav{ display:flex; gap:.75rem; align-items:center; margin-bottom:.5rem; }
     .top-nav a{ color:inherit; opacity:.8; text-decoration:underline; }
+
+    /* Controls bar */
+    .controls{
+      display:flex; flex-wrap:wrap; align-items:center;
+      gap:.5rem; margin-bottom:var(--gap);
+    }
+    .mode-group, .zoom-group{ display:flex; gap:.25rem; align-items:center; }
+    .controls-sep{ width:1px; height:1.4em; background:currentColor; opacity:.2; margin:0 .25rem; }
+    .btn{
+      padding:.4em .9em; border:1px solid currentColor; border-radius:6px;
+      background:var(--btn-bg); color:var(--btn-fg);
+      font:inherit; font-size:.9rem; cursor:pointer; transition:background .15s,color .15s;
+    }
+    .btn:hover{ opacity:.8; }
+    .btn.active{
+      background:var(--btn-active-bg); color:var(--btn-active-fg);
+    }
+    .btn-icon{ padding:.4em .65em; font-size:1rem; line-height:1; }
+    .zoom-label{
+      font-size:.85rem; opacity:.7; min-width:3.5ch; text-align:center;
+      font-variant-numeric:tabular-nums;
+    }
+    .counter{
+      font-size:.9rem; opacity:.75; margin-left:auto;
+    }
+
+    /* Hint strip */
+    .hint{
+      font-size:.8rem; opacity:.55; margin-bottom:.6rem;
+      display:flex; gap:.75rem; flex-wrap:wrap;
+    }
+    .hint span::before{ content:"· "; }
+
+    /* Viewer wrapper — clips the zoomed image */
+    #viewer-wrap{
+      position:relative;
+      overflow:hidden;
+      border-radius:8px;
+      cursor:grab;
+      background:transparent;
+      /* touch-action none: we handle all gestures ourselves */
+      touch-action:none;
+      user-select:none;
+      -webkit-user-select:none;
+    }
+    #viewer-wrap.grabbing{ cursor:grabbing; }
+    #viewer-wrap.at-min{ cursor:zoom-in; }
+
+    #comic-img{
+      display:block;
+      width:100%; height:auto;
+      transform-origin:0 0;
+      will-change:transform;
+      pointer-events:none;
+      border-radius:0; /* radius is on the wrapper */
+      transition:none;
+    }
+    #comic-img.page-loading{ opacity:.4; }
+
+    /* Navigation row */
+    .nav-row{
+      display:flex; align-items:center; justify-content:center;
+      gap:.5rem; margin-top:var(--gap); flex-wrap:wrap;
+    }
+    .nav-btn{
+      padding:.5em 1.1em; border:1px solid currentColor; border-radius:8px;
+      background:var(--btn-bg); color:var(--btn-fg);
+      font:inherit; font-size:1rem; cursor:pointer; transition:background .15s,color .15s;
+    }
+    .nav-btn:hover:not(:disabled){ opacity:.8; }
+    .nav-btn:disabled{ opacity:.35; cursor:default; }
+    .nav-counter{ font-size:.95rem; opacity:.7; min-width:7ch; text-align:center; }
+
     .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
   </style>
 </head>
 <body>
   <header>
-<nav class="top-nav" aria-label="Back">
-  <a href="https://www.fluffyhandsome.com/"><span aria-hidden="true">←</span> Home</a>
-</nav>
+    <nav class="top-nav" aria-label="Back">
+      <a href="https://www.fluffyhandsome.com/"><span aria-hidden="true">←</span> Home</a>
+    </nav>
     <h1>ATTACOMIX INnerSANITIES</h1>
     <p>by your uncle attaboy</p>
-    <p class="sr-only">Scroll deeper, deeper....</p>
   </header>
 
-  <main aria-label="Comic pages">
-    <figure class="page">
-      <img src="img/001.png" alt="Page 1: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/002.png" alt="Page 2: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/003.png" alt="Page 3: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/004.png" alt="Page 4: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/005.png" alt="Page 5: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/006.png" alt="Page 6: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/007.png" alt="Page 7: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/008.png" alt="Page 8: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/009.png" alt="Page 9: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/010.png" alt="Page 10: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>       
-          <figure class="page">
-      <img src="img/011.png" alt="Page 11: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-        <figure class="page">
-      <img src="img/012.png" alt="Page 12: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>   
-    <figure class="page">
-      <img src="img/013.png" alt="Page 13: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/014.png" alt="Page 14: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/015.png" alt="Page 15: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/016.png" alt="Page 16: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/017.png" alt="Page 17: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/018.png" alt="Page 18: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/019.png" alt="Page 19: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/020.png" alt="Page 20: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>       
-          <figure class="page">
-      <img src="img/021.png" alt="Page 21: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-        <figure class="page">
-      <img src="img/022.png" alt="Page 22: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>   
-    <figure class="page">
-      <img src="img/023.png" alt="Page 23: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/024.png" alt="Page 24: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/025.png" alt="Page 25: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/026.png" alt="Page 26: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/027.png" alt="Page 27: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/028.png" alt="Page 28: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/029.png" alt="Page 29: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/030.png" alt="Page 30: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>       
-          <figure class="page">
-      <img src="img/031.png" alt="Page 31: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-        <figure class="page">
-      <img src="img/032.png" alt="Page 32: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>   
-    <figure class="page">
-      <img src="img/033.png" alt="Page 33: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/034.png" alt="Page 34: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/035.png" alt="Page 35: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/036.png" alt="Page 36: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/037.png" alt="Page 37: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/038.png" alt="Page 38: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/039.png" alt="Page 39: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/040.png" alt="Page 40: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>       
-          <figure class="page">
-      <img src="img/041.png" alt="Page 41: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-        <figure class="page">
-      <img src="img/042.png" alt="Page 42: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>   
-    <figure class="page">
-      <img src="img/043.png" alt="Page 43: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/044.png" alt="Page 44: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/045.png" alt="Page 45: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/046.png" alt="Page 46: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/047.png" alt="Page 47: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/048.png" alt="Page 48: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/049.png" alt="Page 49: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/050.png" alt="Page 50: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>       
-          <figure class="page">
-      <img src="img/051.png" alt="Page 51: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-        <figure class="page">
-      <img src="img/052.png" alt="Page 52: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>   
-    <figure class="page">
-      <img src="img/053.png" alt="Page 53: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/054.png" alt="Page 54: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/055.png" alt="Page 55: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/056.png" alt="Page 56: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/057.png" alt="Page 57: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/058.png" alt="Page 58: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/059.png" alt="Page 59: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/060.png" alt="Page 60: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>       
-          <figure class="page">
-      <img src="img/061.png" alt="Page 61: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-        <figure class="page">
-      <img src="img/062.png" alt="Page 62: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>   
-    <figure class="page">
-      <img src="img/063.png" alt="Page 63: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>  
-    <figure class="page">
-      <img src="img/064.png" alt="Page 64: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>     
-     <figure class="page">
-      <img src="img/065.png" alt="Page 65: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure> 
-    <figure class="page">
-      <img src="img/066.png" alt="Page 66: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/067.png" alt="Page 67: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/068.png" alt="Page 68: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/069.png" alt="Page 69: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/070.png" alt="Page 70: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>       
-          <figure class="page">
-      <img src="img/071.png" alt="Page 71: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-        <figure class="page">
-      <img src="img/072.png" alt="Page 72: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>     
-    <figure class="page">
-      <img src="img/073.png" alt="Page 73: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/074.png" alt="Page 74: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">           
-      <img src="img/075.png" alt="Page 75: SHORT ALT TEXT" loading="lazy" decoding="async">                       
-    </figure>
-    <figure class="page">           
-      <img src="img/076.png" alt="Page 76: SHORT ALT TEXT" loading="lazy" decoding="async">             
-    </figure>
-    <figure class="page">
-      <img src="img/077.png" alt="Page 77: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/078.png" alt="Page 78: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>                                                                               
-    <figure class="page">
-      <img src="img/079.png" alt="Page 79: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/080.png" alt="Page 80: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>>       
-          <figure class="page">
-      <img src="img/081.png" alt="Page 81: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-        <figure class="page">
-      <img src="img/082.png" alt="Page 82: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>   
-    <figure class="page">
-      <img src="img/083.png" alt="Page 83: SHORT ALT TEXT" loading="lazy" decoding="async">   
-    </figure>
-    <figure class="page">
-      <img src="img/084.png" alt="Page 84: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/085.png" alt="Page 85: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/086.png" alt="Page 86: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/087.png" alt="Page 87: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/088.png" alt="Page 88: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/089.png" alt="Page 89: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/090.png" alt="Page 90: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>>       
-          <figure class="page">
-      <img src="img/091.png" alt="Page 91: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-        <figure class="page">
-      <img src="img/092.png" alt="Page 92: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>  
-    <figure class="page">
-      <img src="img/093.png" alt="Page 93: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/094.png" alt="Page 94: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/095.png" alt="Page 95: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/096.png" alt="Page 96: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/097.png" alt="Page 97: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/098.png" alt="Page 98: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/099.png" alt="Page 99: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0100.png" alt="Page 100: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>>       
-          <figure class="page">
-      <img src="img/0101.png" alt="Page 101: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-        <figure class="page">
-      <img src="img/0102.png" alt="Page 102: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>   
-    <figure class="page">
-      <img src="img/0103.png" alt="Page 103: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0104.png" alt="Page 104: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0105.png" alt="Page 105: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0106.png" alt="Page 106: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0107.png" alt="Page 107: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0108.png" alt="Page 108: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0109.png" alt="Page 109: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0110.png" alt="Page 110: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>>       
-          <figure class="page">
-      <img src="img/0111.png" alt="Page 111: SHORT ALT  TEXT" loading="lazy" decoding="async">
-    </figure>
-        <figure class="page">
-      <img src="img/0112.png" alt="Page 112: SHORT ALT TEXT" loading="lazy" decoding="async">         
-    </figure>   
-    <figure class="page">
-      <img src="img/0113.png" alt="Page 113: SHORT ALT TEXT" loading="lazy" decoding="async">                               
-    </figure> 
-    <figure class="page">
-      <img src="img/0114.png" alt="Page 114: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0115.png" alt="Page 115: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0116.png" alt="Page 116: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0117.png" alt="Page 117: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0118.png" alt="Page 118: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0119.png" alt="Page 119: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0120.png" alt="Page 120: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>  
-  <figure class="page">
-      <img src="img/0121.png" alt="Page 121: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure> 
-    <figure class="page">
-      <img src="img/0122.png" alt="Page 122: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0123.png" alt="Page 123: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0124.png" alt="Page 124: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0125.png" alt="Page 125: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0126.png" alt="Page 126: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0127.png" alt="Page 127: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0128.png" alt="Page 128: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>   
-  <figure class="page">
-      <img src="img/0129.png" alt="Page 129: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure> 
-    <figure class="page">
-      <img src="img/0130.png" alt="Page 130: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>         
-    <figure class="page">
-      <img src="img/0131.png" alt="Page 131: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0132.png" alt="Page 132: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0133.png" alt="Page 133: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0134.png" alt="Page 134: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>   
-    <figure class="page">
-      <img src="img/0135.png" alt="Page 135: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>     
-    <figure class="page">
-      <img src="img/0136.png" alt="Page 136: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/0137.png" alt="Page 137: SHORT ALT TEXT" loading="lazy" decoding="async">           
-  <figure>
-    <img src="img/0138.png" alt="Final Page: SHORT ALT TEXT" loading="lazy" decoding="async">     
-  </figure>
-  <figure>
-    <img src="img/0139.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>
-    <img src="img/0140.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async"> 
-  </figure>
-  <figure>  
-    <img src="img/0141.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>
-    <img src="img/0142.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>   
-  <figure>
-    <img src="img/0143.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">   
-  </figure>
-  <figure>
-    <img src="img/0144.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>
-    <img src="img/0145.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>
-    <img src="img/0146.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>   
-  <figure>
-    <img src="img/0147.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">     
-  </figure>
-  <figure>
-    <img src="img/0148.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>
-    <img src="img/0149.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>
-    <img src="img/0150.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure> 
-  <figure>
-    <img src="img/0151.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>
-    <img src="img/0152.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>
-    <img src="img/0153.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>
-    <img src="img/0154.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>
-    <img src="img/0155.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>
-    <img src="img/0156.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">   
-  </figure>
-  <figure>
-    <img src="img/0157.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>
-    <img src="img/0158.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>
-    <img src="img/0159.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>
-    <img src="img/0160.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>       
-  <figure> 
-    <img src="img/0161.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">     
-  </figure>
-  <figure>
-    <img src="img/0162.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">   
-  </figure>
-  <figure>
-    <img src="img/0163.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>
-    <img src="img/0164.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure>
-      <img src="img/0165.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async"> 
-    </figure>
-    <figure>
-      <img src="img/0166.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">   
-  </figure>
-  <figure>
-    <img src="img/0167.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>
-    <img src="img/0168.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>
-    <img src="img/0169.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>
-    <img src="img/0170.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>     
-  <figure>
-    <img src="img/0171.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>
-    <img src="img/0172.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>    
-    <img src="img/0173.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>    
-    <img src="img/0174.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>
-    <img src="img/0175.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
-  <figure>
-    <img src="img/0176.png" alt="Bonus Page: SHORT ALT TEXT" loading="lazy" decoding="async">
-  </figure>
+  <main aria-label="Comic viewer">
+    <div class="controls">
+      <div class="mode-group" role="group" aria-label="Viewing mode">
+        <button class="btn active" id="btn-order"  onclick="setMode('order')">In Order</button>
+        <button class="btn"        id="btn-random" onclick="setMode('random')">Randomize</button>
+      </div>
+
+      <span class="controls-sep" aria-hidden="true"></span>
+
+      <div class="zoom-group" role="group" aria-label="Zoom controls">
+        <button class="btn btn-icon" id="btn-zoom-out" onclick="stepZoom(-1)" aria-label="Zoom out">−</button>
+        <span class="zoom-label" id="zoom-label" aria-live="polite">1×</span>
+        <button class="btn btn-icon" id="btn-zoom-in"  onclick="stepZoom(1)"  aria-label="Zoom in">+</button>
+        <button class="btn" id="btn-zoom-reset" onclick="resetZoom()" aria-label="Reset zoom">Fit</button>
+      </div>
+
+      <span class="counter" id="counter" aria-live="polite"></span>
+    </div>
+
+    <div class="hint" aria-hidden="true">
+      <span>Scroll or pinch to zoom</span>
+      <span>Drag to pan</span>
+      <span>Double-click to zoom in / reset</span>
+      <span>← → to change page</span>
+    </div>
+
+    <div id="viewer-wrap" class="at-min">
+      <img id="comic-img" src="" alt="" decoding="async">
+    </div>
+
+    <div class="nav-row">
+      <button class="nav-btn" id="btn-first" onclick="jump('first')" aria-label="First image">&#8676; First</button>
+      <button class="nav-btn" id="btn-prev"  onclick="go(-1)"        aria-label="Previous image">&#8592; Prev</button>
+      <span class="nav-counter" id="nav-counter" aria-live="polite"></span>
+      <button class="nav-btn" id="btn-next"  onclick="go(1)"         aria-label="Next image">Next &#8594;</button>
+      <button class="nav-btn" id="btn-last"  onclick="jump('last')"  aria-label="Last image">Last &#8677;</button>
+    </div>
   </main>
+
   <footer>
     <small>
-      © MMXXV your uncle attaboy. Now wasn't that fun? Why yes, yes it was!
+      &copy; MMXXV your uncle attaboy. Now wasn't that fun? Why yes, yes it was!
     </small>
   </footer>
+
+  <script>
+    // ---------------------------------------------------------------------------
+    // Naming convention used in the img/ folder:
+    //   Pages   1–99  →  001.png … 099.png   (3-digit zero-padded)
+    //   Pages 100+    →  0100.png, 0101.png … (leading "0" + number)
+    // ---------------------------------------------------------------------------
+
+    const MAX_PROBE = 500;
+    const MIN_SCALE = 1;
+    const MAX_SCALE = 8;
+    const ZOOM_STEP = 1.4;
+
+    function filename(i) {
+      return i < 100 ? String(i).padStart(3, '0') : '0' + i;
+    }
+
+    function probeOne(n) {
+      return new Promise(resolve => {
+        const img = new Image();
+        img.onload  = () => resolve(n);
+        img.onerror = () => resolve(null);
+        img.src = `img/${filename(n)}.png`;
+      });
+    }
+
+    async function detectPages() {
+      const found = [];
+      let i = 1;
+      while (i <= MAX_PROBE) {
+        const batch = [];
+        for (let j = i; j < i + 10 && j <= MAX_PROBE; j++) batch.push(probeOne(j));
+        const results = await Promise.all(batch);
+        for (const r of results) {
+          if (r === null) return found;
+          found.push(r);
+        }
+        i += 10;
+      }
+      return found;
+    }
+
+    // ---- Zoom state -----------------------------------------------------------
+    const wrap = document.getElementById('viewer-wrap');
+    const img  = document.getElementById('comic-img');
+
+    let scale = 1;
+    let tx = 0, ty = 0;
+
+    function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+    function clampTranslation() {
+      const wrapW  = wrap.clientWidth;
+      const wrapH  = wrap.clientHeight;   // = img layout height at scale 1
+      const imgW   = img.clientWidth;     // = wrapW (width:100%)
+      const imgH   = img.clientHeight;    // natural aspect
+      const visW   = imgW  * scale;
+      const visH   = imgH  * scale;
+
+      tx = clamp(tx, Math.min(0, wrapW - visW), 0);
+      ty = clamp(ty, Math.min(0, wrapH - visH), 0);
+    }
+
+    function applyTransform() {
+      img.style.transform = `translate(${tx}px,${ty}px) scale(${scale})`;
+      const pct = Math.round(scale * 100);
+      document.getElementById('zoom-label').textContent = `${pct}%`;
+      wrap.classList.toggle('at-min', scale <= MIN_SCALE + 0.05);
+      wrap.classList.toggle('grabbing', isDragging && scale > MIN_SCALE + 0.05);
+    }
+
+    function zoomAt(cx, cy, newScale) {
+      newScale = clamp(newScale, MIN_SCALE, MAX_SCALE);
+      const ratio = newScale / scale;
+      tx = cx - (cx - tx) * ratio;
+      ty = cy - (cy - ty) * ratio;
+      scale = newScale;
+      clampTranslation();
+      applyTransform();
+    }
+
+    function resetZoom() {
+      scale = MIN_SCALE; tx = 0; ty = 0;
+      applyTransform();
+    }
+
+    function stepZoom(dir) {
+      const cx = wrap.clientWidth  / 2;
+      const cy = wrap.clientHeight / 2;
+      zoomAt(cx, cy, dir > 0 ? scale * ZOOM_STEP : scale / ZOOM_STEP);
+    }
+
+    // ---- Mouse wheel ----------------------------------------------------------
+    wrap.addEventListener('wheel', e => {
+      e.preventDefault();
+      const rect   = wrap.getBoundingClientRect();
+      const cx     = e.clientX - rect.left;
+      const cy     = e.clientY - rect.top;
+      const factor = e.deltaY < 0 ? 1.12 : 1 / 1.12;
+      zoomAt(cx, cy, scale * factor);
+    }, { passive: false });
+
+    // ---- Mouse drag -----------------------------------------------------------
+    let isDragging = false;
+    let dragX0, dragY0, dragTx0, dragTy0;
+
+    wrap.addEventListener('mousedown', e => {
+      if (e.button !== 0) return;
+      isDragging = true;
+      dragX0 = e.clientX; dragY0 = e.clientY;
+      dragTx0 = tx; dragTy0 = ty;
+      wrap.classList.add('grabbing');
+    });
+
+    window.addEventListener('mousemove', e => {
+      if (!isDragging) return;
+      tx = dragTx0 + (e.clientX - dragX0);
+      ty = dragTy0 + (e.clientY - dragY0);
+      clampTranslation();
+      applyTransform();
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+      wrap.classList.remove('grabbing');
+    });
+
+    // ---- Double-click to zoom in / reset -------------------------------------
+    let lastClickTime = 0;
+    wrap.addEventListener('click', e => {
+      const now = Date.now();
+      if (now - lastClickTime < 300) {
+        // double-click
+        if (scale > MIN_SCALE + 0.05) {
+          resetZoom();
+        } else {
+          const rect = wrap.getBoundingClientRect();
+          zoomAt(e.clientX - rect.left, e.clientY - rect.top, 3);
+        }
+      }
+      lastClickTime = now;
+    });
+
+    // ---- Touch — single-finger drag & two-finger pinch -----------------------
+    let t1 = null, t2 = null;          // touch start snapshots
+    let touchDragTx0, touchDragTy0;
+    let pinchStartScale, pinchStartDist;
+    let prevPinchMidX, prevPinchMidY;
+    let lastTapTime = 0;
+
+    wrap.addEventListener('touchstart', e => {
+      e.preventDefault();
+      const touches = e.touches;
+
+      if (touches.length === 1) {
+        t1 = { x: touches[0].clientX, y: touches[0].clientY, id: touches[0].identifier };
+        t2 = null;
+        touchDragTx0 = tx; touchDragTy0 = ty;
+
+        // Double-tap detection
+        const now = Date.now();
+        if (now - lastTapTime < 300) {
+          const rect = wrap.getBoundingClientRect();
+          const cx = touches[0].clientX - rect.left;
+          const cy = touches[0].clientY - rect.top;
+          if (scale > MIN_SCALE + 0.05) resetZoom();
+          else zoomAt(cx, cy, 3);
+        }
+        lastTapTime = now;
+
+      } else if (touches.length >= 2) {
+        t1 = { x: touches[0].clientX, y: touches[0].clientY };
+        t2 = { x: touches[1].clientX, y: touches[1].clientY };
+        pinchStartScale = scale;
+        pinchStartDist  = Math.hypot(t1.x - t2.x, t1.y - t2.y);
+        prevPinchMidX   = (t1.x + t2.x) / 2;
+        prevPinchMidY   = (t1.y + t2.y) / 2;
+      }
+    }, { passive: false });
+
+    wrap.addEventListener('touchmove', e => {
+      e.preventDefault();
+      const touches = e.touches;
+      const rect    = wrap.getBoundingClientRect();
+
+      if (touches.length === 1 && t2 === null && t1 !== null) {
+        // Single-finger pan
+        tx = touchDragTx0 + (touches[0].clientX - t1.x);
+        ty = touchDragTy0 + (touches[0].clientY - t1.y);
+        clampTranslation();
+        applyTransform();
+
+      } else if (touches.length >= 2 && t2 !== null) {
+        // Two-finger pinch + pan
+        const cur1 = touches[0], cur2 = touches[1];
+        const dist  = Math.hypot(cur1.clientX - cur2.clientX, cur1.clientY - cur2.clientY);
+        const midX  = (cur1.clientX + cur2.clientX) / 2;
+        const midY  = (cur1.clientY + cur2.clientY) / 2;
+
+        // Scale increment this frame
+        const factor    = dist / pinchStartDist;
+        const newScale  = clamp(pinchStartScale * factor, MIN_SCALE, MAX_SCALE);
+        const ratio     = newScale / scale;
+        const cx        = midX - rect.left;
+        const cy        = midY - rect.top;
+
+        // Apply scale centered on midpoint
+        tx = cx - (cx - tx) * ratio;
+        ty = cy - (cy - ty) * ratio;
+        scale = newScale;
+
+        // Also apply pan from midpoint movement
+        tx += midX - prevPinchMidX;
+        ty += midY - prevPinchMidY;
+
+        prevPinchMidX = midX;
+        prevPinchMidY = midY;
+
+        clampTranslation();
+        applyTransform();
+      }
+    }, { passive: false });
+
+    wrap.addEventListener('touchend', e => {
+      if (e.touches.length < 2) t2 = null;
+      if (e.touches.length === 0) t1 = null;
+    }, { passive: true });
+
+    // ---- Page navigation state -----------------------------------------------
+    let pages    = [];
+    let mode     = 'order';
+    let sequence = [];
+    let pos      = 0;
+
+    function buildSequence() {
+      sequence = pages.map((_, i) => i);
+      if (mode === 'random') {
+        for (let i = sequence.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [sequence[i], sequence[j]] = [sequence[j], sequence[i]];
+        }
+      }
+      pos = 0;
+    }
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('btn-order').classList.toggle('active',  m === 'order');
+      document.getElementById('btn-random').classList.toggle('active', m === 'random');
+      buildSequence();
+      render();
+    }
+
+    function go(delta) {
+      pos = clamp(pos + delta, 0, sequence.length - 1);
+      render();
+    }
+
+    function jump(where) {
+      pos = where === 'last' ? sequence.length - 1 : 0;
+      render();
+    }
+
+    function render() {
+      resetZoom();
+
+      const page = pages[sequence[pos]];
+      img.classList.add('page-loading');
+      img.onload = () => img.classList.remove('page-loading');
+      img.src = page.src;
+      img.alt = page.alt;
+
+      const total    = sequence.length;
+      const humanPos = pos + 1;
+      const label    = `${humanPos} / ${total}`;
+      document.getElementById('counter').textContent     = label;
+      document.getElementById('nav-counter').textContent = label;
+
+      document.getElementById('btn-first').disabled = pos === 0;
+      document.getElementById('btn-prev').disabled  = pos === 0;
+      document.getElementById('btn-next').disabled  = pos === total - 1;
+      document.getElementById('btn-last').disabled  = pos === total - 1;
+    }
+
+    // ---- Keyboard -------------------------------------------------------------
+    document.addEventListener('keydown', e => {
+      // Page navigation
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { go(1);        return; }
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   { go(-1);       return; }
+      if (e.key === 'Home')                                  { jump('first'); return; }
+      if (e.key === 'End')                                   { jump('last');  return; }
+      // Zoom
+      if (e.key === '=' || e.key === '+') { stepZoom(1);   return; }
+      if (e.key === '-')                  { stepZoom(-1);  return; }
+      if (e.key === '0')                  { resetZoom();   return; }
+    });
+
+    // ---- Init -----------------------------------------------------------------
+    img.alt = 'Loading…';
+    document.getElementById('counter').textContent = 'Loading…';
+
+    detectPages().then(found => {
+      pages = found.map(n => ({
+        src: `img/${filename(n)}.png`,
+        alt: `Page ${n}`
+      }));
+      buildSequence();
+      render();
+    });
+  </script>
 </body>
 </html>

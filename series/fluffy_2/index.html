@@ -4,155 +4,505 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Fluffy Handsome: Return to the Blank Page</title>
-  <meta name="description" content="One-sentence description of this comic/episode." />
-  <meta name="color-scheme" content="light dark" />
+  <meta name="description" content="Fluffy Handsome: Return to the Blank Page — by your uncle attaboy" />
   <style>
-    :root{
-      --bg:#ffffff; --fg:#111; --max:1200px; --pad:clamp(12px,3vmin,24px); --gap:clamp(12px,2.5vmin,24px);
+    :root {
+      --ink:        #0f0f1a;
+      --ink-soft:   #2a2a3a;
+      --paper:      #e8dfc8;
+      --paper-dk:   #d4c9ae;
+      --cream:      #f5f0e4;
+      --caption:    #fce83a;
+      --chrome:     #8a7f6a;
+      --chrome-lt:  #c8bfa8;
+      --panel-hover: rgba(252,232,58,.18);
+      --panel-ring:  rgba(15,15,26,.25);
+      --max:        960px;
+      --pad:        clamp(12px,3vmin,28px);
+      --gap:        clamp(12px,2.5vmin,24px);
     }
-    @media (prefers-color-scheme: dark){ :root{ --bg:#0e0e10; --fg:#e9e9ee; } }
-    html,body{ margin:0; background:var(--bg); color:var(--fg);
-      font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Noto Sans,Arial,"Apple Color Emoji","Segoe UI Emoji";}
-    header,footer{ max-width:var(--max); margin:0 auto; padding:var(--pad); }
-    header h1{ margin:0 0 0.25rem; font-size:clamp(1.2rem,3.5vw,1.75rem); font-weight:700; letter-spacing:.01em; }
-    header p{ margin:.25rem 0 0; opacity:.85; }
-    main{ max-width:var(--max); margin:0 auto; padding:0 var(--pad) var(--pad); }
-    .page{ margin:0 0 var(--gap); }
-    .page img{ width:100%; height:auto; display:block; border-radius:8px; }
-    .top-nav{ display:flex; gap:.75rem; align-items:center; margin-bottom:.5rem; }
-    .top-nav a{ color:inherit; opacity:.8; text-decoration:underline; }
-    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    /* Aged newsprint with halftone dot texture */
+    html {
+      background-color: var(--paper);
+      background-image:
+        radial-gradient(circle, rgba(15,15,26,.09) 1px, transparent 1px);
+      background-size: 5px 5px;
+    }
+
+    body {
+      margin: 0;
+      background: transparent;
+      color: var(--ink);
+      font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header — cinematic title card ── */
+    .title-card {
+      background: var(--ink);
+      box-shadow: 0 4px 20px rgba(0,0,0,.55), inset 0 -3px 0 var(--chrome);
+    }
+    .title-card-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: calc(var(--pad)*1.2) var(--pad) calc(var(--pad)*1.0);
+      display: flex;
+      flex-direction: column;
+      gap: .45rem;
+    }
+    .title-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    .series-label {
+      font: 700 .68rem/1 monospace;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--chrome-lt);
+      opacity: .65;
+    }
+    .home-link {
+      font: .7rem/1 monospace;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--chrome-lt);
+      text-decoration: none;
+      opacity: .6;
+      transition: opacity .15s;
+    }
+    .home-link:hover { opacity: 1; }
+
+    .title-card h1 {
+      margin: .2rem 0 0;
+      font: 900 clamp(1.4rem,5vw,2.7rem)/1.0 system-ui, sans-serif;
+      letter-spacing: -.025em;
+      color: var(--paper);
+      text-shadow: 0 2px 12px rgba(0,0,0,.5);
+    }
+    /* "Return to the" is slightly smaller / lighter */
+    .title-card h1 .sub { font-size: .62em; font-weight: 400; opacity: .75; display: block; letter-spacing: 0; }
+    .title-card h1 .main { display: block; }
+
+    .title-byline {
+      margin: 0;
+      font-size: .82rem;
+      color: var(--chrome-lt);
+      opacity: .65;
+    }
+
+    /* Thick ink rule — the divider between title card and content */
+    .ink-rule {
+      height: 5px;
+      background: var(--ink);
+      box-shadow: 0 3px 0 var(--chrome), 0 5px 8px rgba(0,0,0,.2);
+    }
+
+    /* ── Main ── */
+    main {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: var(--gap) var(--pad) var(--pad);
+    }
+
+    /* ── Controls ── */
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      margin-bottom: var(--gap);
+      padding: .75rem 1rem;
+      background: var(--paper-dk);
+      border: 2px solid var(--ink);
+      border-radius: 3px;
+      box-shadow:
+        inset 0 2px 4px rgba(0,0,0,.1),
+        inset 0 -1px 0 rgba(255,255,255,.5),
+        3px 3px 0 var(--ink);
+    }
+    /* Audio toggle button */
+    .audio-toggle {
+      padding: .4em .85em;
+      border: 2px solid var(--ink);
+      border-radius: 3px;
+      background: var(--paper);
+      color: var(--ink);
+      font: 700 .78rem/1 system-ui, sans-serif;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 var(--ink);
+      transition: background .1s, box-shadow .07s, transform .07s;
+      white-space: nowrap;
+    }
+    .audio-toggle:active {
+      transform: translate(2px, 2px);
+      box-shadow: 0 0 0 var(--ink);
+    }
+    .audio-toggle.muted {
+      background: var(--ink);
+      color: var(--paper);
+    }
+
+    /* Caption-box counter (classic comic yellow) */
+    .counter {
+      margin-left: auto;
+      font: 900 .85rem/1 system-ui, sans-serif;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      background: var(--caption);
+      color: var(--ink);
+      padding: .4em .85em;
+      border: 2px solid var(--ink);
+      box-shadow: 2px 2px 0 var(--ink);
+      white-space: nowrap;
+    }
+
+    /* ── Page viewer ── */
+    .viewer-wrap {
+      position: relative;
+      /* Comic panel thick border */
+      border: 4px solid var(--ink);
+      box-shadow:
+        6px 6px 0 var(--ink),
+        8px 8px 20px rgba(0,0,0,.3);
+      background: var(--ink);
+      line-height: 0;
+    }
+    #comic-img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* ── 2×2 Panel overlay grid ──
+       Each button covers one quadrant of the image.
+       data-audio="" will be populated from CSV when ready.
+       Hover shows a faint highlight so the zones are discoverable. ── */
+    .panel-grid {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      z-index: 2;
+    }
+    .panel-btn {
+      background: transparent;
+      border: none;
+      border-right: 1px solid transparent;
+      border-bottom: 1px solid transparent;
+      cursor: pointer;
+      transition: background .12s;
+      /* Hint at panel boundary on hover */
+    }
+    .panel-btn:nth-child(2) { border-right: none; }
+    .panel-btn:nth-child(3),
+    .panel-btn:nth-child(4) { border-bottom: none; }
+    .panel-btn:hover {
+      background: var(--panel-hover);
+      box-shadow: inset 0 0 0 1px var(--panel-ring);
+    }
+    /* When audio IS wired up, JS will add .has-audio — ready for future styling */
+    .panel-btn.has-audio:hover {
+      background: rgba(252,232,58,.28);
+      box-shadow: inset 0 0 0 2px rgba(252,232,58,.7);
+    }
+
+    /* ── Nav row ── */
+    .nav-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .75rem;
+      margin-top: calc(var(--gap)*1.4);
+      flex-wrap: wrap;
+    }
+
+    /* Raised paper button — shared base */
+    .nav-btn {
+      padding: .55em 1.1em;
+      border: 2px solid var(--ink);
+      border-radius: 3px;
+      background: var(--paper);
+      color: var(--ink);
+      font: 700 .78rem/1 system-ui, sans-serif;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      user-select: none;
+      box-shadow:
+        3px 3px 0 var(--ink),
+        4px 4px 6px rgba(0,0,0,.18);
+      transition: box-shadow .07s, transform .07s;
+    }
+    .nav-btn:hover:not(:disabled) { filter: brightness(1.04); }
+    .nav-btn:active:not(:disabled) {
+      transform: translate(3px, 3px);
+      box-shadow: 0 0 0 var(--ink);
+    }
+    .nav-btn:disabled {
+      opacity: .35;
+      cursor: default;
+      box-shadow: 1px 1px 0 var(--chrome);
+    }
+
+    /* Round dial for Prev/Next — TV DNA */
+    .nav-btn.dial {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      font-size: 1.1rem;
+      box-shadow:
+        0 4px 0 var(--chrome),
+        0 6px 12px rgba(0,0,0,.3),
+        inset 0 1px 0 rgba(255,255,255,.55),
+        inset 0 0 0 2px var(--ink);
+      border: 2px solid var(--ink);
+      transition: box-shadow .07s, transform .07s;
+    }
+    .nav-btn.dial:active:not(:disabled) {
+      transform: translateY(4px);
+      box-shadow:
+        0 0 0 var(--chrome),
+        0 1px 4px rgba(0,0,0,.2),
+        inset 0 3px 5px rgba(0,0,0,.15),
+        inset 0 0 0 2px var(--ink);
+    }
+
+    /* Caption-box counter in nav row */
+    .nav-counter {
+      font: 900 .85rem/1 system-ui, sans-serif;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      background: var(--caption);
+      color: var(--ink);
+      padding: .4em .85em;
+      border: 2px solid var(--ink);
+      box-shadow: 2px 2px 0 var(--ink);
+      min-width: 9ch;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--ink);
+      margin-top: calc(var(--pad)*2);
+      box-shadow: 0 -3px 0 var(--chrome);
+    }
+    .footer-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: var(--pad);
+      text-align: center;
+    }
+    footer small {
+      font: .73rem/1.5 monospace;
+      letter-spacing: .06em;
+      color: var(--chrome-lt);
+      opacity: .6;
+    }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
   </style>
 </head>
 <body>
-  <header>
-<nav class="top-nav" aria-label="Back">
-    <a href="https://www.fluffyhandsome.com/"><span aria-hidden="true">←</span> Home</a>
-</nav>
-    <h1>Fluffy Handsome: Return to the Blank Page</h1>
-    <p>by your uncle attaboy</p>
-    <p class="sr-only">Scroll to the very apotheosis of the Fuzzy Cosmic Vibe!</p>
+
+  <header class="title-card">
+    <div class="title-card-inner">
+      <div class="title-meta">
+        <span class="series-label">ATTACOMIX</span>
+        <a class="home-link" href="https://www.fluffyhandsome.com/">&#8592; Home</a>
+      </div>
+      <h1>
+        <span class="sub">Return to the</span>
+        <span class="main">Blank Page</span>
+      </h1>
+      <p class="title-byline">by your uncle attaboy</p>
+    </div>
   </header>
-  <main aria-label="Comic pages">
-    <figure class="page">
-      <img src="img/057.jpg" alt="Page 1: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/058.jpg" alt="Page 2: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/059.jpg" alt="Page 3: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-      <figure class="page">
-      <img src="img/060.jpg" alt="Page 4: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-      <figure class="page">
-      <img src="img/061.jpg" alt="Page 5: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-   <figure class="page">
-      <img src="img/062.jpg" alt="Page 6: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/063.jpg" alt="Page 7: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/064.jpg" alt="Page 8: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/065.jpg" alt="Page 9: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/066.jpg" alt="Page 10: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/067.jpg" alt="Page 11: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/068.jpg" alt="Page 12: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/069.jpg" alt="Page 13: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/070.jpg" alt="Page 14: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/071.jpg" alt="Page 15: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/072.jpg" alt="Page 16: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/073.jpg" alt="Page 17: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/074.jpg" alt="Page 18: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/075.jpg" alt="Page 19: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/076.jpg" alt="Page 20: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/077.jpg" alt="Page 21: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/078.jpg" alt="Page 22: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/079.jpg" alt="Page 23: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/080.jpg" alt="Page 24: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/081.jpg" alt="Page 25: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/082.jpg" alt="Page 26: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/083.jpg" alt="Page 27: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/084.jpg" alt="Page 28: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/085.jpg" alt="Page 29: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/086.jpg" alt="Page 30: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/087.jpg" alt="Page 31: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/088.jpg" alt="Page 32: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/089.jpg" alt="Page 33: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/090.jpg" alt="Page 34: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-       <figure class="page">
-      <img src="img/FHS2_01.png" alt="Page 35: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/FHS2_02.png" alt="Page 36: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/FHS2_03.png" alt="Page 37: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/FHS2_04.png" alt="Page 38: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
+
+  <div class="ink-rule" role="presentation"></div>
+
+  <main aria-label="Comic viewer">
+
+    <div class="controls">
+      <button class="audio-toggle" id="audio-toggle" onclick="toggleAudio()" aria-pressed="true">&#9654; Audio On</button>
+      <span class="counter" id="counter" aria-live="polite"></span>
+    </div>
+
+    <div class="viewer-wrap">
+      <img id="comic-img" src="" alt="" decoding="async">
+      <!--
+        Panel audio overlay — 2×2 grid, one button per panel quadrant.
+        data-audio will be populated from CSV when ready.
+        data-panel: 1=top-left  2=top-right  3=bottom-left  4=bottom-right
+      -->
+      <div class="panel-grid" aria-hidden="true">
+        <button class="panel-btn" data-panel="1" data-audio="" tabindex="-1"></button>
+        <button class="panel-btn" data-panel="2" data-audio="" tabindex="-1"></button>
+        <button class="panel-btn" data-panel="3" data-audio="" tabindex="-1"></button>
+        <button class="panel-btn" data-panel="4" data-audio="" tabindex="-1"></button>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="nav-btn"      id="btn-first" onclick="jump('first')" aria-label="First page">&#8676; First</button>
+      <button class="nav-btn dial" id="btn-prev"  onclick="go(-1)"        aria-label="Previous page">&#8592;</button>
+      <span class="nav-counter" id="nav-counter" aria-live="polite"></span>
+      <button class="nav-btn dial" id="btn-next"  onclick="go(1)"         aria-label="Next page">&#8594;</button>
+      <button class="nav-btn"      id="btn-last"  onclick="jump('last')"  aria-label="Last page">Last &#8677;</button>
+    </div>
+
   </main>
+
   <footer>
-    <small>
-      © MMXXV your uncle attaboy.
-    </small>
+    <div class="footer-inner">
+      <small>© MMXXV your uncle attaboy.</small>
+    </div>
   </footer>
+
+  <script>
+    // ── Page manifest ─────────────────────────────────────────────────────────
+    // Order and filenames match img_audio_table.csv row order.
+    const PAGES = [
+      'img/057.jpg','img/058.jpg','img/059.jpg','img/060.jpg',
+      'img/061.jpg','img/062.jpg','img/063.jpg','img/064.jpg',
+      'img/065.jpg','img/066.jpg','img/067.jpg','img/068.jpg',
+      'img/069.jpg','img/069_01.jpg','img/069_02.jpg','img/070.jpg',
+      'img/071.jpg','img/072.jpg','img/073.jpg','img/074.jpg',
+      'img/075.jpg','img/076.jpg','img/077.jpg','img/078.jpg',
+      'img/079.jpg','img/080.jpg','img/081.jpg','img/082.jpg',
+      'img/083.jpg','img/084.jpg','img/085.jpg','img/086.jpg',
+      'img/087.jpg','img/088.jpg','img/089.jpg','img/090.jpg'
+    ];
+
+    // ── Audio map ─────────────────────────────────────────────────────────────
+    // panels: [top-left, top-right, bottom-left, bottom-right]
+    // Generated from img_audio_table.csv — update both together.
+    const AUDIO_MAP = {
+      'img/057.jpg':    ['audio/018.wav','audio/019.wav','',             'audio/020.wav'],
+      'img/058.jpg':    ['audio/022.wav','audio/023.wav','audio/024.wav','audio/025.wav'],
+      'img/059.jpg':    ['audio/026.wav','audio/027.wav','audio/028.wav','audio/029.wav'],
+      'img/060.jpg':    ['audio/030.wav','audio/031.wav','audio/032.wav','audio/033.wav'],
+      'img/061.jpg':    ['audio/034.wav','audio/035.wav','audio/036.wav','audio/037.wav'],
+      'img/062.jpg':    ['audio/038.wav','audio/039.wav','audio/040.wav','audio/041.wav'],
+      'img/063.jpg':    ['audio/042.wav','audio/043.wav','audio/044.wav','audio/046.wav'],
+      'img/064.jpg':    ['audio/047.wav','audio/047.wav','audio/047.wav','audio/047.wav'],
+      'img/065.jpg':    ['audio/048.wav','audio/049.wav','audio/050.wav','audio/051.wav'],
+      'img/066.jpg':    ['audio/052.wav','audio/053.wav','audio/054.wav','audio/056.wav'],
+      'img/067.jpg':    ['audio/057.wav','audio/061.wav','audio/065.wav','audio/069.wav'],
+      'img/068.jpg':    ['audio/073.wav','audio/074.wav','audio/076.wav','audio/077.wav'],
+      'img/069_01.jpg': ['audio/078.wav','audio/079.wav','audio/080.wav','audio/082.wav'],
+      'img/069_02.jpg': ['audio/083.wav','audio/085.wav','audio/088.wav','audio/091.wav'],
+      'img/071.jpg':    ['audio/092.wav','audio/092.wav','audio/092.wav','audio/092.wav'],
+      'img/072.jpg':    ['audio/093.wav','audio/094.wav','audio/095.wav','audio/096.wav'],
+      'img/073.jpg':    ['audio/097.wav','audio/098.wav','audio/099.wav','audio/100.wav'],
+      'img/074.jpg':    ['audio/101.wav','audio/102.wav','audio/103.wav','audio/104.wav'],
+      'img/075.jpg':    ['audio/106.wav','audio/107.wav','audio/108.wav','audio/109.wav'],
+      'img/076.jpg':    ['audio/110.wav','audio/111.wav','audio/112.wav','audio/113.wav'],
+      'img/077.jpg':    ['audio/114.wav','audio/115.wav','audio/116.wav','audio/117.wav'],
+      'img/078.jpg':    ['audio/118.wav','audio/119.wav','audio/120.wav','audio/121.wav'],
+      'img/079.jpg':    ['audio/122.wav','audio/123.wav','audio/124.wav','audio/125.wav'],
+      'img/080.jpg':    ['audio/126.wav','audio/127.wav','audio/128.wav','audio/129.wav'],
+      'img/081.jpg':    ['audio/130.wav','audio/130.wav','audio/130.wav','audio/130.wav'],
+      'img/082.jpg':    ['audio/131.wav','audio/132.wav','audio/133.wav','audio/134.wav'],
+      'img/083.jpg':    ['audio/135.wav','audio/136.wav','audio/137.wav','audio/138.wav'],
+      'img/084.jpg':    ['audio/139.wav','audio/140.wav','audio/141.wav','audio/142.wav'],
+      'img/085.jpg':    ['audio/143.wav','audio/144.wav','audio/145.wav','audio/146.wav'],
+      'img/086.jpg':    ['audio/147.wav','audio/148.wav','audio/149.wav','audio/150.wav'],
+      'img/087.jpg':    ['audio/151.wav','audio/152.wav','audio/153.wav','audio/154.wav'],
+      'img/088.jpg':    ['audio/155.wav','audio/156.wav','audio/157.wav','audio/158.wav'],
+      'img/089.jpg':    ['audio/159.wav','audio/160.wav','audio/161.wav','audio/162.wav'],
+      'img/090.jpg':    ['audio/163.wav','audio/164.wav','audio/165.wav',''],
+    };
+
+    // ── State ─────────────────────────────────────────────────────────────────
+    let pos = 0;
+    let currentAudio = null;
+    let audioEnabled = true;
+
+    // ── Render ────────────────────────────────────────────────────────────────
+    function render() {
+      const src = PAGES[pos];
+      document.getElementById('comic-img').src = src;
+      document.getElementById('comic-img').alt = `Page ${pos + 1}`;
+
+      const label = `Page ${pos + 1} / ${PAGES.length}`;
+      document.getElementById('counter').textContent     = label;
+      document.getElementById('nav-counter').textContent = label;
+
+      document.getElementById('btn-first').disabled = pos === 0;
+      document.getElementById('btn-prev').disabled  = pos === 0;
+      document.getElementById('btn-next').disabled  = pos === PAGES.length - 1;
+      document.getElementById('btn-last').disabled  = pos === PAGES.length - 1;
+
+      updatePanels(src);
+    }
+
+    // ── Panel audio wiring ────────────────────────────────────────────────────
+    function updatePanels(src) {
+      const clips = AUDIO_MAP[src] || [];
+      document.querySelectorAll('.panel-btn').forEach((btn, i) => {
+        const clip = clips[i] || '';
+        btn.dataset.audio = clip;
+        btn.classList.toggle('has-audio', !!clip);
+      });
+    }
+
+    document.querySelectorAll('.panel-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!audioEnabled) return;
+        const src = btn.dataset.audio;
+        if (!src) return;
+        if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+        currentAudio = new Audio(src);
+        currentAudio.play();
+      });
+    });
+
+    // ── Audio toggle ──────────────────────────────────────────────────────────
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      if (!audioEnabled && currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+      const btn = document.getElementById('audio-toggle');
+      btn.textContent = audioEnabled ? '\u25BA Audio On' : '\u25A0 Audio Off';
+      btn.classList.toggle('muted', !audioEnabled);
+      btn.setAttribute('aria-pressed', audioEnabled);
+    }
+
+    // ── Navigation ────────────────────────────────────────────────────────────
+    function go(delta) {
+      pos = Math.max(0, Math.min(PAGES.length - 1, pos + delta));
+      render();
+    }
+    function jump(where) {
+      pos = where === 'last' ? PAGES.length - 1 : 0;
+      render();
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1);
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(-1);
+      if (e.key === 'Home') jump('first');
+      if (e.key === 'End')  jump('last');
+    });
+
+    // ── Init ─────────────────────────────────────────────────────────────────
+    render();
+  </script>
 </body>
 </html>

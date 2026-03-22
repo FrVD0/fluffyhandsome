@@ -4,113 +4,113 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ATTACOMIX</title>
-  <meta name="description" content="A swipeable carousel of banners linking to seven sister comic sites." />
+  <meta name="description" content="The comix universe of Uncle Attaboy." />
   <meta name="color-scheme" content="light dark" />
   <style>
-    :root{
-      --bg:#ffffff; --fg:#111; --muted:rgba(17,17,17,.7);
-      --max:1200px; --pad:clamp(12px,3vmin,24px);
-      --radius:10px;
-      --gap:1rem;
-      --btn-bg:rgba(0,0,0,.45);
-      --btn-fg:#fff;
-      --btn-bg-hover:rgba(0,0,0,.6);
-      --btn-size:44px;
-      --shadow:0 2px 10px rgba(0,0,0,.12);
-      --shadow-lg:0 6px 30px rgba(0,0,0,.18);
+    :root {
+      --bg: #ffffff; --fg: #111; --muted: rgba(17,17,17,.7);
+      --max: 960px; --pad: clamp(12px,3vmin,24px);
+      --radius: 10px;
+      --shadow: 0 2px 12px rgba(0,0,0,.12);
+      --shadow-lg: 0 6px 30px rgba(0,0,0,.22);
+      --accent: #111;
     }
-    @media (prefers-color-scheme: dark){
-      :root{ --bg:#0e0e10; --fg:#e9e9ee; --muted:rgba(233,233,238,.8);
-             --btn-bg:rgba(255,255,255,.25); --btn-fg:#111; --btn-bg-hover:rgba(255,255,255,.4); }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #0e0e10; --fg: #e9e9ee; --muted: rgba(233,233,238,.75); --accent: #e9e9ee; }
     }
-    html,body{
-      margin:0; background:var(--bg); color:var(--fg);
-      font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Noto Sans,Arial,"Apple Color Emoji","Segoe UI Emoji";
-      text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      margin: 0; background: var(--bg); color: var(--fg);
+      font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Noto Sans, Arial, sans-serif;
+      text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased;
     }
-    header,footer{ max-width:var(--max); margin:0 auto; padding:var(--pad); text-align:center; }
-    header h1{ margin:0 0 .25rem; font-size:clamp(1.25rem,3.6vw,1.9rem); font-weight:700; }
-    header p{ margin:.25rem 0 0; opacity:.85; }
+    header {
+      max-width: var(--max); margin: 0 auto;
+      padding: var(--pad) var(--pad) calc(var(--pad) * .5);
+      text-align: center;
+    }
+    header h1 { margin: 0 0 .2rem; font-size: clamp(1.2rem,3.5vw,1.8rem); font-weight: 700; }
+    header p  { margin: 0; opacity: .8; font-size: clamp(.9rem,2.2vw,.95rem); }
 
-    /* Carousel wrapper (for arrows) */
-    .carousel-wrap{
-      position:relative;
-      max-width:var(--max);
-      margin:0 auto;
-      padding:0 var(--pad);
+    main {
+      max-width: var(--max); margin: 0 auto;
+      padding: calc(var(--pad) * .5) var(--pad) var(--pad);
+      display: flex; flex-direction: column; align-items: center; gap: 1.25rem;
     }
 
-    /* The horizontal carousel */
-    .carousel {
-      display:flex;
-      overflow-x:auto;
-      scroll-snap-type:x mandatory;
-      gap:var(--gap);
-      padding:var(--pad) 0;
-      -webkit-overflow-scrolling:touch;
-      scrollbar-width:none;
+    /* --- Random image --- */
+    .feature-link {
+      display: block; width: 100%;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      transition: transform .15s ease, box-shadow .15s ease;
+      overflow: hidden;
+      cursor: pointer;
     }
-    .carousel::-webkit-scrollbar { display:none; }
-
-    figure {
-      flex:0 0 min(85%, 960px);
-      scroll-snap-align:center;
-      margin:0;
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      transition:transform .15s ease, box-shadow .15s ease;
-      background:transparent;
-    }
-    @media (min-width: 900px){
-      figure{ flex-basis: 80%; }
-    }
-    figure:hover { transform:scale(1.02); box-shadow:var(--shadow-lg); }
-
-    img.banner {
-      width:100%; height:auto; border-radius:var(--radius);
-      display:block;
-    }
-    figcaption{
-      padding:.5rem; font-size:clamp(.92rem,2.5vw,1rem); color:var(--muted);
-      text-align:center;
-    }
-    .title{ display:block; font-weight:600; color:var(--fg); margin-bottom:.15rem; }
-
-    /* Arrow buttons */
-    .arrow{
-      position:absolute; top:50%; transform:translateY(-50%);
-      width:var(--btn-size); height:var(--btn-size); border-radius:999px;
-      display:grid; place-items:center;
-      background:var(--btn-bg); color:var(--btn-fg);
-      border:none; cursor:pointer; user-select:none;
-      transition:background .15s ease, transform .15s ease;
-      outline-offset:4px;
-    }
-    .arrow:hover{ background:var(--btn-bg-hover); }
-    .arrow:active{ transform:translateY(-50%) scale(.98); }
-    .arrow[disabled]{ opacity:.4; cursor:default; }
-    .arrow-left{ left:8px; }
-    .arrow-right{ right:8px; }
-
-    /* Hide arrows on very small screens (still swipeable) */
-    @media (max-width: 640px){
-      .arrow{ display:none; }
+    .feature-link:hover { transform: scale(1.015); box-shadow: var(--shadow-lg); }
+    .feature-link:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+    #feature-img {
+      width: 100%; height: auto; display: block;
+      border-radius: var(--radius);
     }
 
-    footer small{ display:block; margin-top:1rem; opacity:.75; }
+    /* --- Nav area --- */
+    .nav-area {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: center; gap: .75rem;
+      width: 100%;
+    }
 
-    /* Social links */
+    select {
+      flex: 1 1 220px; max-width: 400px;
+      font: inherit; font-size: 1rem;
+      padding: .6rem .9rem;
+      border: 2px solid var(--fg);
+      border-radius: var(--radius);
+      background: var(--bg); color: var(--fg);
+      appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23111' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right .9rem center;
+      padding-right: 2.4rem;
+      cursor: pointer;
+    }
+    @media (prefers-color-scheme: dark) {
+      select {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23e9e9ee' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      }
+    }
+    select:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+    button.go {
+      flex: 0 0 auto;
+      font: inherit; font-size: 1rem; font-weight: 700;
+      padding: .6rem 1.5rem;
+      border: 2px solid var(--fg);
+      border-radius: var(--radius);
+      background: var(--fg); color: var(--bg);
+      cursor: pointer;
+      transition: opacity .15s ease, transform .1s ease;
+      white-space: nowrap;
+    }
+    button.go:hover  { opacity: .8; }
+    button.go:active { transform: scale(.97); }
+    button.go:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+
+    footer {
+      max-width: var(--max); margin: 0 auto;
+      padding: var(--pad);
+      text-align: center;
+    }
     .social {
-      margin-top:1rem;
-      display:flex; justify-content:center; gap:1.5rem; flex-wrap:wrap;
+      display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;
     }
     .social a {
-      color:var(--fg);
-      text-decoration:none;
-      font-weight:600;
-      transition:opacity .2s ease, transform .15s ease;
+      color: var(--fg); text-decoration: none; font-weight: 600;
+      transition: opacity .2s ease, transform .15s ease;
     }
-    .social a:hover { opacity:.8; transform:translateY(-1px); }
+    .social a:hover { opacity: .7; transform: translateY(-1px); }
+    footer small { display: block; margin-top: .75rem; opacity: .65; }
   </style>
 </head>
 <body>
@@ -120,72 +120,22 @@
   </header>
 
   <main>
-    <div class="carousel-wrap">
-      <button class="arrow arrow-left" aria-label="Scroll left" title="Previous">
-        &#x276E;
-      </button>
+    <a class="feature-link" id="feature-link" href="#" aria-label="Go to the featured comic series">
+      <img id="feature-img" src="" alt="A random panel from the ATTACOMIX universe" />
+    </a>
 
-      <div class="carousel" id="carousel" aria-label="Seven sister sites">
-        <!-- 1 -->
-        <figure>
-          <a href="series/fluffy_1/index.html" target="_blank" rel="noopener noreferrer">
-            <img class="banner" src="banner_1.png" alt="Fluffy 1 — banner" loading="lazy" decoding="async">
-          </a>
-          <figcaption><span class="title">The Fluffy Handsome Show</span>All your classic faves!</figcaption>
-        </figure>
-
-        <!-- 2 -->
-        <figure>
-          <a href="series/fluffy_2/index.html" target="_blank" rel="noopener noreferrer">
-            <img class="banner" src="banner_2.png" alt="Fluffy 2 — banner" loading="lazy" decoding="async">
-          </a>
-          <figcaption><span class="title">Fluffy Handsome: Return to the Blank Page</span>The secret of secrets is right here.</figcaption>
-        </figure>
-
-        <!-- 3 -->
-        <figure>
-          <a href="series/MIFC/index.html" target="_blank" rel="noopener noreferrer">
-            <img class="banner" src="banner_3.png" alt="MIFC — banner" loading="lazy" decoding="async">
-          </a>
-          <figcaption><span class="title">Meanwhile, In Fancy City...</span>Explore the fanciest city on earth!</figcaption>
-        </figure>
-
-        <!-- 4 -->
-        <figure>
-          <a href="series/ITM/index.html" target="_blank" rel="noopener noreferrer">
-            <img class="banner" src="banner_4.png" alt="ITM — banner" loading="lazy" decoding="async">
-          </a>
-          <figcaption><span class="title">Inside the Marshmallow</span>For Fluffy Handsome Insiders.</figcaption>
-        </figure>
-
-        <!-- 5 -->
-        <figure>
-          <a href="series/BABR/index.html" target="_blank" rel="noopener noreferrer">
-            <img class="banner" src="banner_5.png" alt="BABR — banner" loading="lazy" decoding="async">
-          </a>
-          <figcaption><span class="title">BadAss BrainRot</span>Everybody poops, but not everbody reads BadAss BrainRot--Join the Elite of Ewww!</figcaption>
-        </figure>
-
-        <!-- 6 -->
-        <figure>
-          <a href="series/EOM/index.html" target="_blank" rel="noopener noreferrer">
-            <img class="banner" src="banner_6.png" alt="EOM — banner" loading="lazy" decoding="async">
-          </a>
-          <figcaption><span class="title">End of Message: Business Comix for the Robust Generation</span>The ONLY comix that tickle you right in the EBITA!</figcaption>
-        </figure>
-
-        <!-- 7 -->
-        <figure>
-          <a href="series/innersanity/index.html" target="_blank" rel="noopener noreferrer">
-            <img class="banner" src="banner_7.png" alt="Inner Sanity — banner" loading="lazy" decoding="async">
-          </a>
-          <figcaption><span class="title">ATTACOMIX INnerSANITIES</span>Freeform comix jazz.</figcaption>
-        </figure>
-      </div>
-
-      <button class="arrow arrow-right" aria-label="Scroll right" title="Next">
-        &#x276F;
-      </button>
+    <div class="nav-area">
+      <select id="series-select" aria-label="Select a comic series">
+        <option value="" disabled selected>— Choose a series —</option>
+        <option value="series/BABR/index.html">BadAss BrainRot</option>
+        <option value="series/EOM/index.html">End of Message</option>
+        <option value="series/fluffy_1/index.html">The Fluffy Handsome Show (Classic)</option>
+        <option value="series/fluffy_2/index.html">Fluffy Handsome: Return to the Blank Page</option>
+        <option value="series/ITM/index.html">Fluffy Handsome: Inside the Marshmallow</option>
+        <option value="series/innersanity/index.html">ATTACOMIX IN(ner)SANITIES</option>
+        <option value="series/MIFC/index.html">Meanwhile in Fancy City...</option>
+      </select>
+      <button class="go" id="go-btn">Let's Go!</button>
     </div>
   </main>
 
@@ -195,110 +145,97 @@
       <a href="https://instagram.com/uncleattaboy" target="_blank" rel="noopener noreferrer">Instagram</a>
       <a href="https://fluffyhandsome.threadless.com" target="_blank" rel="noopener noreferrer">T-Shirts and More!</a>
     </div>
-    <small>© <span id="y">2025</span> — Breathe in. Breathe out. Love.</small>
+    <small>© <span id="y"></span> — Breathe in. Breathe out. Love.</small>
   </footer>
 
   <script>
-    (function(){
-      const wrap = document.querySelector('.carousel-wrap');
-      const scroller = document.getElementById('carousel');
-      const left = wrap.querySelector('.arrow-left');
-      const right = wrap.querySelector('.arrow-right');
+    // ── Image libraries per series ──────────────────────────────────────────
 
-      // Snap to nearest card helper
-      const cards = () => Array.from(scroller.querySelectorAll('figure'));
-      function cardWidth(){ return cards()[0]?.getBoundingClientRect().width || 400; }
-      function scrollByCards(n = 1){
-        const w = cardWidth() + parseFloat(getComputedStyle(scroller).columnGap || 16) || 16;
-        scroller.scrollBy({ left: n * w, behavior: 'smooth' });
+    function seq(prefix, from, to, ext) {
+      const out = [];
+      for (let i = from; i <= to; i++) {
+        out.push(prefix + String(i).padStart(3, '0') + '.' + ext);
       }
-      left.addEventListener('click', () => scrollByCards(-1));
-      right.addEventListener('click', () => scrollByCards(1));
+      return out;
+    }
 
-      // Keyboard support when arrows focused
-      [left, right].forEach(btn=>{
-        btn.addEventListener('keydown', (e)=>{
-          if(e.key === 'ArrowRight') { right.click(); }
-          if(e.key === 'ArrowLeft')  { left.click(); }
-        });
-      });
-
-      // Disable arrows if scrolled to edges (desktop polish)
-      function updateArrows(){
-        const max = scroller.scrollWidth - scroller.clientWidth - 1;
-        left.disabled  = scroller.scrollLeft <= 0;
-        right.disabled = scroller.scrollLeft >= max;
+    const series = {
+      BABR: {
+        href: 'series/BABR/index.html',
+        imgs: seq('series/BABR/img/', 1, 9, 'png')
+      },
+      EOM: {
+        href: 'series/EOM/index.html',
+        imgs: seq('series/EOM/img/', 1, 24, 'png')
+      },
+      ITM: {
+        href: 'series/ITM/index.html',
+        imgs: seq('series/ITM/img/', 1, 43, 'png')
+      },
+      MIFC: {
+        href: 'series/MIFC/index.html',
+        imgs: seq('series/MIFC/img/', 1, 65, 'jpg')
+      },
+      fluffy_1: {
+        href: 'series/fluffy_1/index.html',
+        imgs: seq('series/fluffy_1/img/', 1, 56, 'jpg')
+      },
+      fluffy_2: {
+        href: 'series/fluffy_2/index.html',
+        imgs: [
+          '030','031','049','057','058','059','060','061','062','063','064',
+          '065','066','067','068','069','069_01','069_02','070','071','072',
+          '073','074','075','076','077','078','079','080','081','082','083',
+          '084','085','086','087','088','089','090'
+        ].map(n => 'series/fluffy_2/img/' + n + '.jpg').concat(
+          ['FHS2_01','FHS2_02','FHS2_03','FHS2_04'].map(n => 'series/fluffy_2/img/' + n + '.png')
+        )
+      },
+      innersanity: {
+        href: 'series/innersanity/index.html',
+        imgs: (function() {
+          const out = [];
+          // 001–099 (3-digit)
+          for (let i = 1; i <= 99; i++)  out.push('series/innersanity/img/' + String(i).padStart(3,'0') + '.png');
+          // 0100–0176 (4-digit)
+          for (let i = 100; i <= 176; i++) out.push('series/innersanity/img/0' + i + '.png');
+          return out;
+        })()
       }
-      scroller.addEventListener('scroll', updateArrows, { passive:true });
-      window.addEventListener('resize', updateArrows);
-      updateArrows();
+    };
 
-      // ===== Autoscroll (desktop/tablet) =====
-      // Pauses on: hover, focus-in, user drag; Respects prefers-reduced-motion
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      let isPointerDown = false;
-      let isHover = false;
-      let isFocus = false;
-      let timer = null;
+    // Flatten all images into one pool, each tagged with its series key
+    const pool = [];
+    for (const [key, data] of Object.entries(series)) {
+      data.imgs.forEach(src => pool.push({ src, key }));
+    }
 
-      scroller.addEventListener('pointerdown', ()=>{ isPointerDown = true; stopAuto(); }, { passive:true });
-      window.addEventListener('pointerup',   ()=>{ isPointerDown = false; startAuto(); }, { passive:true });
+    // ── Pick a random image on load ─────────────────────────────────────────
 
-      scroller.addEventListener('mouseenter', ()=>{ isHover = true; stopAuto(); });
-      scroller.addEventListener('mouseleave', ()=>{ isHover = false; startAuto(); });
+    const pick = pool[Math.floor(Math.random() * pool.length)];
 
-      scroller.addEventListener('focusin', ()=>{ isFocus = true; stopAuto(); });
-      scroller.addEventListener('focusout', ()=>{ isFocus = false; startAuto(); });
+    const featureLink = document.getElementById('feature-link');
+    const featureImg  = document.getElementById('feature-img');
 
-      function canAuto(){
-        // Avoid on narrow phones; keep for tablets/desktop
-        const wideEnough = window.innerWidth >= 641; // arrows hidden <= 640
-        return wideEnough && !prefersReduced && !isPointerDown && !isHover && !isFocus;
-      }
+    featureLink.href = series[pick.key].href;
+    featureImg.src   = pick.src;
+    featureImg.alt   = 'A panel from ' + pick.key;
 
-      function startAuto(){
-        if(timer || !canAuto()) return;
-        // Advance every 4 seconds
-        timer = setInterval(()=>{
-          // If at end, wrap to start
-          const atEnd = scroller.scrollLeft + scroller.clientWidth >= scroller.scrollWidth - 2;
-          if(atEnd){
-            scroller.scrollTo({ left: 0, behavior: 'smooth' });
-          } else {
-            scrollByCards(1);
-          }
-        }, 4000);
-      }
-      function stopAuto(){ if(timer){ clearInterval(timer); timer = null; } }
+    // ── Dropdown + button ───────────────────────────────────────────────────
 
-      // Restart auto when viewport changes
-      window.addEventListener('resize', ()=>{ stopAuto(); startAuto(); });
+    const sel   = document.getElementById('series-select');
+    const goBtn = document.getElementById('go-btn');
 
-      // Kick things off
-      startAuto();
-      // Also pause if page not visible
-      document.addEventListener('visibilitychange', ()=>{ document.hidden ? stopAuto() : startAuto(); });
+    goBtn.addEventListener('click', () => {
+      if (sel.value) window.location.href = sel.value;
+    });
 
-      // Improve snap after manual scroll: on settle, gently align to nearest
-      let settle;
-      scroller.addEventListener('scroll', ()=>{
-        clearTimeout(settle);
-        settle = setTimeout(()=>{
-          // Find the card closest to the left edge
-          const viewLeft = scroller.getBoundingClientRect().left;
-          let closest = null; let dist = Infinity;
-          cards().forEach(card=>{
-            const d = Math.abs(card.getBoundingClientRect().left - viewLeft);
-            if(d < dist){ dist = d; closest = card; }
-          });
-          if(closest){
-            scroller.scrollTo({ left: closest.offsetLeft, behavior: 'smooth' });
-          }
-        }, 140);
-      }, { passive:true });
-    })();
+    // Also allow Enter key on the select itself as a shortcut
+    sel.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && sel.value) window.location.href = sel.value;
+    });
 
-    // Year stamp
+    // ── Year stamp ──────────────────────────────────────────────────────────
     document.getElementById('y').textContent = new Date().getFullYear();
   </script>
 </body>

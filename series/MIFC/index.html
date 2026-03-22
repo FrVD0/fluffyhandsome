@@ -4,236 +4,441 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Meanwhile, in Fancy City...</title>
-  <meta name="description" content="One-sentence description of this comic/episode." />
-  <meta name="color-scheme" content="light dark" />
+  <meta name="description" content="Meanwhile, in Fancy City... — by your uncle attaboy" />
   <style>
-    :root{
-      --bg:#ffffff; --fg:#111; --max:1200px; --pad:clamp(12px,3vmin,24px); --gap:clamp(12px,2.5vmin,24px);
+    :root {
+      --bg:          #f4f2ec;
+      --fg:          #111110;
+      --muted:       rgba(17,17,16,.5);
+      --header-bg:   #111110;
+      --header-fg:   #f4f2ec;
+      --accent:      #e8352a;
+      --accent-lt:   rgba(232,53,42,.1);
+      --accent-mid:  rgba(232,53,42,.65);
+      --grid-line:   rgba(17,17,16,.055);
+      --btn-bg:      #f4f2ec;
+      --btn-fg:      #111110;
+      --btn-active-bg: #111110;
+      --btn-active-fg: #f4f2ec;
+      --border:      rgba(17,17,16,.18);
+      --shadow:      rgba(17,17,16,.1);
+      --max:         960px;
+      --pad:         clamp(14px,3vmin,28px);
+      --gap:         clamp(14px,2.5vmin,26px);
+      --radius:      8px;
     }
-    @media (prefers-color-scheme: dark){ :root{ --bg:#0e0e10; --fg:#e9e9ee; } }
-    html,body{ margin:0; background:var(--bg); color:var(--fg);
-      font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Noto Sans,Arial,"Apple Color Emoji","Segoe UI Emoji";}
-    header,footer{ max-width:var(--max); margin:0 auto; padding:var(--pad); }
-    header h1{ margin:0 0 0.25rem; font-size:clamp(1.2rem,3.5vw,1.75rem); font-weight:700; letter-spacing:.01em; }
-    header p{ margin:.25rem 0 0; opacity:.85; }
-    main{ max-width:var(--max); margin:0 auto; padding:0 var(--pad) var(--pad); }
-    .page{ margin:0 0 var(--gap); }
-    .page img{ width:100%; height:auto; display:block; border-radius:8px; }
-    .top-nav{ display:flex; gap:.75rem; align-items:center; margin-bottom:.5rem; }
-    .top-nav a{ color:inherit; opacity:.8; text-decoration:underline; }
-    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    /* City-block grid on the background */
+    html {
+      background-color: var(--bg);
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    body {
+      margin: 0;
+      background: transparent;
+      color: var(--fg);
+      font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ── */
+    .header-band {
+      background: var(--header-bg);
+      box-shadow: 0 2px 0 var(--accent), 0 4px 20px rgba(0,0,0,.4);
+    }
+    .header-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: calc(var(--pad) * 1.1) var(--pad) calc(var(--pad) * .9);
+      display: flex;
+      flex-direction: column;
+      gap: .35rem;
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    /* Startup "company badge" */
+    .co-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      font: 700 .65rem/1 system-ui, sans-serif;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent-mid);
+      border-radius: 99px;
+      padding: .3em .7em;
+    }
+    /* Little pulse dot — "we're live" */
+    .co-badge::before {
+      content: '';
+      display: inline-block;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: .4; transform: scale(.7); }
+    }
+    .home-link {
+      font: 600 .75rem/1 system-ui, sans-serif;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: rgba(244,242,236,.5);
+      text-decoration: none;
+      transition: color .15s;
+    }
+    .home-link:hover { color: var(--header-fg); }
+
+    .header-band h1 {
+      margin: .15rem 0 0;
+      font: 900 clamp(1.6rem,5.5vw,3rem)/1.0 system-ui, sans-serif;
+      letter-spacing: -.025em;
+      color: var(--header-fg);
+    }
+    .header-band h1 em {
+      font-style: normal;
+      color: var(--accent);
+    }
+    .header-byline {
+      margin: 0;
+      font: .8rem/1 system-ui, sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: rgba(244,242,236,.38);
+    }
+
+    /* ── Main ── */
+    main {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: var(--gap) var(--pad) var(--pad);
+    }
+
+    /* ── Controls bar ── */
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: .6rem;
+      margin-bottom: var(--gap);
+      padding: .7rem .9rem;
+      background: rgba(244,242,236,.85);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 1px 0 rgba(255,255,255,.8), 0 2px 8px var(--shadow);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .mode-group {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    /* Segmented control — product-UI style */
+    .btn {
+      padding: .42em 1.05em;
+      border: none;
+      border-right: 1px solid var(--border);
+      background: var(--btn-bg);
+      color: var(--btn-fg);
+      font: 600 .78rem/1 system-ui, sans-serif;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background .12s, color .12s;
+      user-select: none;
+    }
+    .btn:last-child { border-right: none; }
+    .btn:hover:not(.active) { background: rgba(17,17,16,.06); }
+    .btn.active {
+      background: var(--btn-active-bg);
+      color: var(--btn-active-fg);
+    }
+
+    /* Counter badge */
+    .counter {
+      margin-left: auto;
+      font: 700 .75rem/1 system-ui, sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: var(--accent);
+      color: #fff;
+      padding: .38em .85em;
+      border-radius: 99px;
+      min-width: 8ch;
+      text-align: center;
+    }
+
+    /* ── Comic image ── */
+    #viewer img {
+      width: 100%; height: auto; display: block;
+      border-radius: var(--radius);
+      box-shadow:
+        0 1px 2px var(--shadow),
+        0 4px 20px rgba(17,17,16,.12);
+    }
+
+    /* ── Nav row ── */
+    .nav-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .6rem;
+      margin-top: var(--gap);
+      flex-wrap: wrap;
+    }
+
+    /* Clean outlined nav buttons */
+    .nav-btn {
+      padding: .5em 1.15em;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      background: rgba(244,242,236,.9);
+      color: var(--fg);
+      font: 600 .8rem/1 system-ui, sans-serif;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      user-select: none;
+      transition: border-color .12s, background .12s, box-shadow .12s;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    .nav-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: var(--accent-lt);
+      box-shadow: 0 0 0 1px var(--accent-mid);
+    }
+    .nav-btn:active:not(:disabled) {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .nav-btn:disabled { opacity: .28; cursor: default; }
+
+    /* Round dial for Prev/Next — keeping the TV DNA thread */
+    .nav-btn.dial {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      font-size: 1.05rem;
+    }
+
+    /* Nav counter badge */
+    .nav-counter {
+      font: 700 .75rem/1 system-ui, sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      background: var(--fg);
+      color: var(--bg);
+      padding: .42em .9em;
+      border-radius: 99px;
+      min-width: 8ch;
+      text-align: center;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--header-bg);
+      margin-top: calc(var(--pad) * 2);
+      border-top: 2px solid var(--accent);
+    }
+    .footer-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: var(--pad);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .5rem;
+    }
+    footer small {
+      font: .72rem/1.5 system-ui, sans-serif;
+      letter-spacing: .05em;
+      color: rgba(244,242,236,.35);
+    }
+    /* Status pill in footer — "always open" startup energy */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: .4rem;
+      font: 600 .65rem/1 system-ui, sans-serif;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(244,242,236,.4);
+      border: 1px solid rgba(244,242,236,.12);
+      border-radius: 99px;
+      padding: .3em .7em;
+    }
+    .status-pill::before {
+      content: '';
+      display: inline-block;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #4caf50;
+      box-shadow: 0 0 5px #4caf50;
+    }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
   </style>
 </head>
 <body>
-  <header>
- <nav class="top-nav" aria-label="Back">
-    <a href="https://www.fluffyhandsome.com/"><span aria-hidden="true">←</span> Home</a>
-</nav>
-    <h1>Meanwhile, in Fancy City...</h1>
-    <p>by your uncle attaboy</p>
-    <p class="sr-only">A scroll becomes a stroll through the fanciest city on earth!</p>
+
+  <header class="header-band">
+    <div class="header-inner">
+      <div class="header-top">
+        <span class="co-badge">ATTACOMIX</span>
+        <a class="home-link" href="https://www.fluffyhandsome.com/">&#8592; Home</a>
+      </div>
+      <h1>Meanwhile, in <em>Fancy City</em>...</h1>
+      <p class="header-byline">by your uncle attaboy</p>
+    </div>
   </header>
-  <main aria-label="Comic pages">
-    <figure class="page">
-      <img src="img/001.jpg" alt="Page 1: SHORT ALT TEXT" loading="lazy" decoding="async">
+
+  <main aria-label="Comic viewer">
+    <div class="controls">
+      <div class="mode-group" role="group" aria-label="Viewing mode">
+        <button class="btn active" id="btn-order"  onclick="setMode('order')">In Order</button>
+        <button class="btn"        id="btn-random" onclick="setMode('random')">Randomize</button>
+      </div>
+      <span class="counter" id="counter" aria-live="polite"></span>
+    </div>
+
+    <figure id="viewer">
+      <img id="comic-img" src="" alt="" decoding="async">
     </figure>
-    <figure class="page">
-      <img src="img/002.jpg" alt="Page 2: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/003.jpg" alt="Page 3: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-      <figure class="page">
-      <img src="img/004.jpg" alt="Page 4: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-      <figure class="page">
-      <img src="img/005.jpg" alt="Page 5: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-   <figure class="page">
-      <img src="img/006.jpg" alt="Page 6: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/007.jpg" alt="Page 7: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/008.jpg" alt="Page 8: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/009.jpg" alt="Page 9: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/010.jpg" alt="Page 10: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/011.jpg" alt="Page 11: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/012.jpg" alt="Page 12: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/013.jpg" alt="Page 13: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/014.jpg" alt="Page 14: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/015.jpg" alt="Page 15: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/016.jpg" alt="Page 16: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/017.jpg" alt="Page 17: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/018.jpg" alt="Page 18: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/019.jpg" alt="Page 19: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/020.jpg" alt="Page 20: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/021.jpg" alt="Page 21: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/022.jpg" alt="Page 22: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/023.jpg" alt="Page 23: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/024.jpg" alt="Page 24: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/025.jpg" alt="Page 25: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/026.jpg" alt="Page 26: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/027.jpg" alt="Page 27: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/028.jpg" alt="Page 28: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/029.jpg" alt="Page 29: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/030.jpg" alt="Page 30: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/031.jpg" alt="Page 31: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/032.jpg" alt="Page 32: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/033.jpg" alt="Page 33: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/034.jpg" alt="Page 34: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/035.jpg" alt="Page 35: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/036.jpg" alt="Page 36: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/037.jpg" alt="Page 37: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/038.jpg" alt="Page 38: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/039.jpg" alt="Page 39: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/040.jpg" alt="Page 40: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/041.jpg" alt="Page 41: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/042.jpg" alt="Page 42: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/043.jpg" alt="Page 43: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/044.jpg" alt="Page 44: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/045.jpg" alt="Page 45: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/046.jpg" alt="Page 46: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/047.jpg" alt="Page 47: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/048.jpg" alt="Page 48: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/049.jpg" alt="Page 49: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/050.jpg" alt="Page 50: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/051.jpg" alt="Page 51: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/052.jpg" alt="Page 52: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/053.jpg" alt="Page 53: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/054.jpg" alt="Page 54: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/055.jpg" alt="Page 55: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/056.jpg" alt="Page 56: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/057.jpg" alt="Page 57: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/058.jpg" alt="Page 58: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/059.jpg" alt="Page 59: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/060.jpg" alt="Page 60: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/061.jpg" alt="Page 61: SHORT ALT TEXT       " loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/062.jpg" alt="Page 62: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/063.jpg" alt="Page 63: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>
-    <figure class="page">
-      <img src="img/064.jpg" alt="Page 64: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>              
-        <figure class="page">
-      <img src="img/065.jpg" alt="Page 65: SHORT ALT TEXT" loading="lazy" decoding="async">
-    </figure>                 
+
+    <div class="nav-row">
+      <button class="nav-btn"      id="btn-first" onclick="jump('first')" aria-label="First page">&#8676; First</button>
+      <button class="nav-btn dial" id="btn-prev"  onclick="go(-1)"        aria-label="Previous page">&#8592;</button>
+      <span class="nav-counter" id="nav-counter" aria-live="polite"></span>
+      <button class="nav-btn dial" id="btn-next"  onclick="go(1)"         aria-label="Next page">&#8594;</button>
+      <button class="nav-btn"      id="btn-last"  onclick="jump('last')"  aria-label="Last page">Last &#8677;</button>
+    </div>
   </main>
- <footer>
-    <small>
-      © MMXXV your uncle attaboy. I hope you enjoyed your stay in Fancy City. Come back anytime! 
-    </small>
+
+  <footer>
+    <div class="footer-inner">
+      <small>© MMXXV your uncle attaboy. I hope you enjoyed your stay in Fancy City. Come back anytime!</small>
+      <span class="status-pill">Always Open</span>
+    </div>
   </footer>
+
+  <script>
+    // Auto-detects sequential .jpg images in img/ (001.jpg, 002.jpg, …)
+    const MAX_PROBE = 500;
+
+    function filename(i) { return String(i).padStart(3, '0'); }
+
+    function probeOne(n) {
+      return new Promise(resolve => {
+        const img = new Image();
+        img.onload  = () => resolve(n);
+        img.onerror = () => resolve(null);
+        img.src = `img/${filename(n)}.jpg`;
+      });
+    }
+
+    async function detectPages() {
+      const found = [];
+      let i = 1;
+      while (i <= MAX_PROBE) {
+        const batch = [];
+        for (let j = i; j < i + 10 && j <= MAX_PROBE; j++) batch.push(probeOne(j));
+        const results = await Promise.all(batch);
+        for (const r of results) {
+          if (r === null) return found;
+          found.push(r);
+        }
+        i += 10;
+      }
+      return found;
+    }
+
+    let pages = [], mode = 'order', sequence = [], pos = 0;
+
+    function buildSequence() {
+      sequence = pages.map((_, i) => i);
+      if (mode === 'random') {
+        for (let i = sequence.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [sequence[i], sequence[j]] = [sequence[j], sequence[i]];
+        }
+      }
+      pos = 0;
+    }
+
+    function setMode(m) {
+      mode = m;
+      document.getElementById('btn-order').classList.toggle('active',  m === 'order');
+      document.getElementById('btn-random').classList.toggle('active', m === 'random');
+      buildSequence(); render();
+    }
+
+    function go(delta) {
+      pos = Math.max(0, Math.min(sequence.length - 1, pos + delta));
+      render();
+    }
+
+    function jump(where) {
+      pos = where === 'last' ? sequence.length - 1 : 0;
+      render();
+    }
+
+    function render() {
+      const page = pages[sequence[pos]];
+      const img  = document.getElementById('comic-img');
+      img.src = page.src;
+      img.alt = page.alt;
+      const label = `${pos + 1} / ${sequence.length}`;
+      document.getElementById('counter').textContent     = label;
+      document.getElementById('nav-counter').textContent = label;
+      document.getElementById('btn-first').disabled = pos === 0;
+      document.getElementById('btn-prev').disabled  = pos === 0;
+      document.getElementById('btn-next').disabled  = pos === sequence.length - 1;
+      document.getElementById('btn-last').disabled  = pos === sequence.length - 1;
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1);
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(-1);
+      if (e.key === 'Home') jump('first');
+      if (e.key === 'End')  jump('last');
+    });
+
+    document.getElementById('comic-img').alt = 'Loading…';
+    document.getElementById('counter').textContent = 'Loading…';
+
+    detectPages().then(found => {
+      pages = found.map(n => ({ src: `img/${filename(n)}.jpg`, alt: `Page ${n}` }));
+      buildSequence();
+      render();
+    });
+  </script>
 </body>
 </html>

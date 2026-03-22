@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ATTACOMIX INnerSANITIES</title>
+  <meta name="description" content="One-sentence description of this comic/episode." />
+  <meta name="color-scheme" content="light dark" />
+  <style>
+    :root{
+      --bg:#ffffff; --fg:#111; --btn-bg:#eee; --btn-fg:#111;
+      --btn-active-bg:#111; --btn-active-fg:#fff;
+      --max:1200px; --pad:clamp(12px,3vmin,24px); --gap:clamp(12px,2.5vmin,24px);
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0e0e10; --fg:#e9e9ee;
+        --btn-bg:#2a2a2e; --btn-fg:#e9e9ee;
+        --btn-active-bg:#e9e9ee; --btn-active-fg:#0e0e10;
+      }
+    }
+    html,body{
+      margin:0; background:var(--bg); color:var(--fg);
+      font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Noto Sans,Arial,"Apple Color Emoji","Segoe UI Emoji";
+    }
+    header,footer{ max-width:var(--max); margin:0 auto; padding:var(--pad); }
+    header h1{ margin:0 0 0.25rem; font-size:clamp(1.2rem,3.5vw,1.75rem); font-weight:700; letter-spacing:.01em; }
+    header p{ margin:.25rem 0 0; opacity:.85; }
+    main{ max-width:var(--max); margin:0 auto; padding:0 var(--pad) var(--pad); }
+
+    .top-nav{ display:flex; gap:.75rem; align-items:center; margin-bottom:.5rem; }
+    .top-nav a{ color:inherit; opacity:.8; text-decoration:underline; }
+
+    /* Controls bar */
+    .controls{
+      display:flex; flex-wrap:wrap; align-items:center;
+      gap:.5rem; margin-bottom:var(--gap);
+    }
+    .mode-group{ display:flex; gap:.25rem; }
+    .btn{
+      padding:.4em .9em; border:1px solid currentColor; border-radius:6px;
+      background:var(--btn-bg); color:var(--btn-fg);
+      font:inherit; font-size:.9rem; cursor:pointer; transition:background .15s,color .15s;
+    }
+    .btn:hover{ opacity:.8; }
+    .btn.active{
+      background:var(--btn-active-bg); color:var(--btn-active-fg);
+    }
+    .counter{
+      font-size:.9rem; opacity:.75; margin-left:auto;
+    }
+
+    /* Navigation row */
+    .nav-row{
+      display:flex; align-items:center; justify-content:center;
+      gap:.5rem; margin-top:var(--gap); flex-wrap:wrap;
+    }
+    .nav-btn{
+      padding:.5em 1.1em; border:1px solid currentColor; border-radius:8px;
+      background:var(--btn-bg); color:var(--btn-fg);
+      font:inherit; font-size:1rem; cursor:pointer; transition:background .15s,color .15s;
+    }
+    .nav-btn:hover:not(:disabled){ opacity:.8; }
+    .nav-btn:disabled{ opacity:.35; cursor:default; }
+    .nav-counter{ font-size:.95rem; opacity:.7; min-width:7ch; text-align:center; }
+
+    /* Image display */
+    #viewer{ display:block; }
+    #viewer img{
+      width:100%; height:auto; display:block;
+      border-radius:8px;
+    }
+
+    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="top-nav" aria-label="Back">
+      <a href="https://www.fluffyhandsome.com/"><span aria-hidden="true">←</span> Home</a>
+    </nav>
+    <h1>ATTACOMIX INnerSANITIES</h1>
+    <p>by your uncle attaboy</p>
+  </header>
+
+  <main aria-label="Comic viewer">
+    <div class="controls">
+      <div class="mode-group" role="group" aria-label="Viewing mode">
+        <button class="btn active" id="btn-order" onclick="setMode('order')">In Order</button>
+        <button class="btn" id="btn-random" onclick="setMode('random')">Randomize</button>
+      </div>
+      <span class="counter" id="counter" aria-live="polite"></span>
+    </div>
+
+    <figure id="viewer">
+      <img id="comic-img" src="" alt="" decoding="async">
+    </figure>
+
+    <div class="nav-row">
+      <button class="nav-btn" id="btn-first" onclick="jump('first')" aria-label="First image">&#8676; First</button>
+      <button class="nav-btn" id="btn-prev" onclick="go(-1)" aria-label="Previous image">&#8592; Prev</button>
+      <span class="nav-counter" id="nav-counter" aria-live="polite"></span>
+      <button class="nav-btn" id="btn-next" onclick="go(1)" aria-label="Next image">Next &#8594;</button>
+      <button class="nav-btn" id="btn-last" onclick="jump('last')" aria-label="Last image">Last &#8677;</button>
+    </div>
+  </main>
+
+  <footer>
+    <small>
+      &copy; MMXXV your uncle attaboy. Now wasn't that fun? Why yes, yes it was!
+    </small>
+  </footer>
+
+  <script>
+    // ---------------------------------------------------------------------------
+    // Naming convention used in the img/ folder:
+    //   Pages   1–99  →  001.png … 099.png   (3-digit zero-padded)
+    //   Pages 100+    →  0100.png, 0101.png … (leading "0" + number)
+    // As long as new images follow this convention, the viewer auto-detects them.
+    // ---------------------------------------------------------------------------
+
+    // Maximum image number to probe. Raise this if you ever exceed it.
+    const MAX_PROBE = 500;
+
+    function filename(i) {
+      return i < 100 ? String(i).padStart(3, '0') : '0' + i;
+    }
+
+    // Probe images using Image() objects — works on both file:// and http://.
+    // Images are numbered consecutively, so we probe in batches of 10 and stop
+    // at the first gap, keeping total round-trips small.
+    function probeOne(n) {
+      return new Promise(resolve => {
+        const img = new Image();
+        img.onload  = () => resolve(n);
+        img.onerror = () => resolve(null);
+        img.src = `img/${filename(n)}.png`;
+      });
+    }
+
+    async function detectPages() {
+      const found = [];
+      let i = 1;
+      while (i <= MAX_PROBE) {
+        const batch = [];
+        for (let j = i; j < i + 10 && j <= MAX_PROBE; j++) batch.push(probeOne(j));
+        const results = await Promise.all(batch);
+        for (const r of results) {
+          if (r === null) return found;   // first gap = done
+          found.push(r);
+        }
+        i += 10;
+      }
+      return found;
+    }
+
+    // ---- State ----------------------------------------------------------------
+    let pages    = [];   // [{ src, alt }, …]
+    let mode     = 'order';
+    let sequence = [];   // indices into pages[]
+    let pos      = 0;
+
+    // ---- Sequence -------------------------------------------------------------
+    function buildSequence() {
+      sequence = pages.map((_, i) => i);
+      if (mode === 'random') {
+        for (let i = sequence.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [sequence[i], sequence[j]] = [sequence[j], sequence[i]];
+        }
+      }
+      pos = 0;
+    }
+
+    // ---- Controls -------------------------------------------------------------
+    function setMode(m) {
+      mode = m;
+      document.getElementById('btn-order').classList.toggle('active', m === 'order');
+      document.getElementById('btn-random').classList.toggle('active', m === 'random');
+      buildSequence();
+      render();
+    }
+
+    function go(delta) {
+      pos = Math.max(0, Math.min(sequence.length - 1, pos + delta));
+      render();
+    }
+
+    function jump(where) {
+      pos = where === 'last' ? sequence.length - 1 : 0;
+      render();
+    }
+
+    // ---- Render ---------------------------------------------------------------
+    function render() {
+      const page = pages[sequence[pos]];
+      const img  = document.getElementById('comic-img');
+      img.src = page.src;
+      img.alt = page.alt;
+
+      const total    = sequence.length;
+      const humanPos = pos + 1;
+      const label    = `${humanPos} / ${total}`;
+      document.getElementById('counter').textContent     = label;
+      document.getElementById('nav-counter').textContent = label;
+
+      document.getElementById('btn-first').disabled = pos === 0;
+      document.getElementById('btn-prev').disabled  = pos === 0;
+      document.getElementById('btn-next').disabled  = pos === total - 1;
+      document.getElementById('btn-last').disabled  = pos === total - 1;
+    }
+
+    // ---- Keyboard -------------------------------------------------------------
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') go(1);
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   go(-1);
+      if (e.key === 'Home') jump('first');
+      if (e.key === 'End')  jump('last');
+    });
+
+    // ---- Init -----------------------------------------------------------------
+    document.getElementById('comic-img').alt = 'Loading…';
+    document.getElementById('counter').textContent = 'Loading…';
+
+    detectPages().then(found => {
+      pages = found.map(n => ({
+        src: `img/${filename(n)}.png`,
+        alt: `Page ${n}`
+      }));
+      buildSequence();
+      render();
+    });
+  </script>
+</body>
+</html>

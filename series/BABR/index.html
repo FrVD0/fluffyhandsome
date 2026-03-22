@@ -7,48 +7,156 @@
   <meta name="color-scheme" content="light dark" />
   <style>
     :root {
-      --bg: #ffffff;
-      --fg: #111111;
-      --max-w: 1200px;
-      --pad: clamp(12px, 3vmin, 24px);
-      --gap: clamp(12px, 2.5vmin, 24px);
+      --bg: #1a1a1a;
+      --fg: #e9e9ee;
+      --accent: #e0c97a;
+      --nav-size: clamp(40px, 6vw, 64px);
     }
-    @media (prefers-color-scheme: dark) {
-      :root { --bg: #0e0e10; --fg: #e9e9ee; }
-    }
+    *, *::before, *::after { box-sizing: border-box; }
     html, body {
       margin: 0;
+      height: 100%;
       background: var(--bg);
       color: var(--fg);
-      font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Noto Sans, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      font: 15px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Noto Sans, Arial, sans-serif;
+      overflow: hidden;
     }
-    header, footer {
-      max-width: var(--max-w);
-      margin: 0 auto;
-      padding: var(--pad);
-      opacity: .85;
+    body { display: flex; flex-direction: column; }
+
+    /* ── Header ── */
+    header {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 10px 16px;
+      background: #111;
+      border-bottom: 1px solid #333;
     }
+    header a {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: .85rem;
+      white-space: nowrap;
+    }
+    header a:hover { text-decoration: underline; }
     header h1 {
-      font-size: clamp(1.1rem, 3.5vw, 1.75rem);
       margin: 0;
+      font-size: clamp(.75rem, 2vw, .95rem);
       font-weight: 600;
-      letter-spacing: .01em;
+      letter-spacing: .02em;
+      opacity: .9;
+      line-height: 1.3;
     }
-    main {
-      max-width: var(--max-w);
-      margin: 0 auto;
-      padding: 0 var(--pad) var(--pad);
+
+    /* ── Viewer ── */
+    #viewer {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      user-select: none;
     }
-    .page {
-      margin: 0 0 var(--gap);
+
+    /* page display — CSS controls base size; JS overrides when zoomed */
+    #comic-page {
       display: block;
-    }
-    .page img {
-      width: 100%;
+      max-width: min(100%, calc((100vh - 140px) * 0.65));
+      max-height: calc(100vh - 140px);
+      width: auto;
       height: auto;
-      display: block;
-      border-radius: 8px;
+      object-fit: contain;
+      border-radius: 4px;
+      box-shadow: 0 8px 40px rgba(0,0,0,.7);
+      transition: opacity .18s ease;
+      cursor: zoom-in;
+      touch-action: none;
     }
+    #comic-page.fading { opacity: 0; }
+
+    /* nav hit areas */
+    .nav-btn {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 22%;
+      max-width: 120px;
+      display: flex;
+      align-items: center;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      z-index: 10;
+      transition: background .15s, opacity .2s;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,.04); }
+    .nav-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
+    #btn-prev { left: 0; justify-content: flex-start; padding-left: 12px; }
+    #btn-next { right: 0; justify-content: flex-end; padding-right: 12px; }
+    .nav-btn svg {
+      width: var(--nav-size); height: var(--nav-size);
+      opacity: 0; transition: opacity .15s;
+    }
+    .nav-btn:hover svg,
+    .nav-btn:focus-visible svg { opacity: 1; }
+    .nav-btn[disabled] { cursor: default; pointer-events: none; }
+    .nav-btn.hidden { opacity: 0; pointer-events: none; }
+
+    /* ── Footer ── */
+    footer {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 10px 16px;
+      background: #111;
+      border-top: 1px solid #333;
+    }
+    #page-counter {
+      font-size: .85rem;
+      letter-spacing: .08em;
+      opacity: .7;
+      min-width: 80px;
+      text-align: center;
+    }
+    .pill-btn {
+      background: none;
+      border: 1px solid #444;
+      color: var(--fg);
+      border-radius: 99px;
+      padding: 5px 16px;
+      font-size: .8rem;
+      cursor: pointer;
+      transition: border-color .15s, background .15s, opacity .2s;
+    }
+    .pill-btn:hover { border-color: var(--accent); background: rgba(224,201,122,.08); }
+    .pill-btn:disabled { opacity: .3; cursor: default; }
+
+    #btn-zoom-reset {
+      border-color: var(--accent);
+      color: var(--accent);
+      opacity: 0;
+      pointer-events: none;
+    }
+    #btn-zoom-reset.visible { opacity: 1; pointer-events: auto; }
+    #btn-zoom-reset:hover { background: rgba(224,201,122,.12); }
+
+    /* ── Dots ── */
+    #dots { display: flex; gap: 6px; align-items: center; }
+    .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #555;
+      transition: background .15s, transform .15s;
+    }
+    .dot.active { background: var(--accent); transform: scale(1.3); }
+
+    footer small { font-size: .72rem; opacity: .4; display: none; }
+    @media (min-width: 600px) { footer small { display: block; } }
+
     .sr-only {
       position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
       overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
@@ -56,28 +164,324 @@
   </style>
 </head>
 <body>
+
   <header>
-        <nav class="top-nav" aria-label="Back">
     <a href="https://www.fluffyhandsome.com/"><span aria-hidden="true">←</span> Home</a>
-</nav>
-    <h1>BADASS BRAINROT PRESENTS • A Tale of Spiritual Diarrhea by Luke Bauerlein • First in a series!</h1>
-    <p class="sr-only">A spin down the cosmic toilet...</p>
+    <h1>BADASS BRAINROT PRESENTS&ensp;•&ensp;A Tale of Spiritual Diarrhea by Luke Bauerlein&ensp;•&ensp;First in a series!</h1>
   </header>
 
-  <main aria-label="Webcomic pages">
-    <figure class="page"><img src="img/001.png" alt="Page 1" loading="lazy" decoding="async"></figure>
-    <figure class="page"><img src="img/002.png" alt="Page 2" loading="lazy" decoding="async"></figure>
-    <figure class="page"><img src="img/003.png" alt="Page 3" loading="lazy" decoding="async"></figure>
-    <figure class="page"><img src="img/004.png" alt="Page 4" loading="lazy" decoding="async"></figure>
-    <figure class="page"><img src="img/005.png" alt="Page 5" loading="lazy" decoding="async"></figure>
-    <figure class="page"><img src="img/006.png" alt="Page 6" loading="lazy" decoding="async"></figure>
-    <figure class="page"><img src="img/007.png" alt="Page 7" loading="lazy" decoding="async"></figure>
-    <figure class="page"><img src="img/008.png" alt="Page 8" loading="lazy" decoding="async"></figure>
-    <figure class="page"><img src="img/009.png" alt="Page 9" loading="lazy" decoding="async"></figure>
-  </main> 
+  <div id="viewer" role="region" aria-label="Webcomic reader">
+    <button id="btn-prev" class="nav-btn" aria-label="Previous page">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+
+    <img id="comic-page" src="img/001.png" alt="Page 1" decoding="async" />
+
+    <button id="btn-next" class="nav-btn" aria-label="Next page">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+  </div>
 
   <footer>
-    <small>Calm lives at the end of every breath. Take a nice deep breath for me and be well.</small>
+    <button class="pill-btn" id="foot-prev" aria-label="Previous page">&#8592; Prev</button>
+    <div id="dots" aria-hidden="true"></div>
+    <span id="page-counter" aria-live="polite" aria-atomic="true">1 / 9</span>
+    <button class="pill-btn" id="foot-next" aria-label="Next page">Next &#8594;</button>
+    <button class="pill-btn" id="btn-zoom-reset" aria-label="Reset zoom">Reset zoom</button>
+    <small>Click to zoom &nbsp;·&nbsp; scroll or pinch to adjust</small>
   </footer>
+
+  <script>
+    const pages = [
+      { src: 'img/001.png', alt: 'Page 1' },
+      { src: 'img/002.png', alt: 'Page 2' },
+      { src: 'img/003.png', alt: 'Page 3' },
+      { src: 'img/004.png', alt: 'Page 4' },
+      { src: 'img/005.png', alt: 'Page 5' },
+      { src: 'img/006.png', alt: 'Page 6' },
+      { src: 'img/007.png', alt: 'Page 7' },
+      { src: 'img/008.png', alt: 'Page 8' },
+      { src: 'img/009.png', alt: 'Page 9' },
+    ];
+
+    let current = 0;
+    const img       = document.getElementById('comic-page');
+    const viewer    = document.getElementById('viewer');
+    const counter   = document.getElementById('page-counter');
+    const btnPrev   = document.getElementById('btn-prev');
+    const btnNext   = document.getElementById('btn-next');
+    const footPrev  = document.getElementById('foot-prev');
+    const footNext  = document.getElementById('foot-next');
+    const dotsEl    = document.getElementById('dots');
+    const zoomReset = document.getElementById('btn-zoom-reset');
+
+    // ── Dots ──
+    pages.forEach((_, i) => {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      dotsEl.appendChild(d);
+    });
+    const dots = dotsEl.querySelectorAll('.dot');
+
+    // ── Preload ──
+    const cache = {};
+    function preload(i) {
+      if (i >= 0 && i < pages.length && !cache[i]) {
+        const im = new Image(); im.src = pages[i].src; cache[i] = im;
+      }
+    }
+
+    // ── Page navigation ──
+    function goTo(n, { instant = false } = {}) {
+      if (n < 0 || n >= pages.length || n === current) return;
+      resetZoom(true);
+
+      const go = () => {
+        current = n;
+        img.src = pages[current].src;
+        img.alt = pages[current].alt;
+        counter.textContent = `${current + 1} / ${pages.length}`;
+        btnPrev.disabled = current === 0;
+        footPrev.disabled = current === 0;
+        btnNext.disabled  = current === pages.length - 1;
+        footNext.disabled = current === pages.length - 1;
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+        preload(current + 1);
+        preload(current - 1);
+      };
+
+      if (instant) { go(); return; }
+      img.classList.add('fading');
+      setTimeout(() => { go(); img.classList.remove('fading'); }, 180);
+    }
+
+    btnPrev.addEventListener('click',  () => goTo(current - 1));
+    btnNext.addEventListener('click',  () => goTo(current + 1));
+    footPrev.addEventListener('click', () => goTo(current - 1));
+    footNext.addEventListener('click', () => goTo(current + 1));
+
+    // ────────────────────────────────────────────────
+    // ── Zoom & Pan
+    //
+    // Key idea: instead of transform:scale (which blows up
+    // already-downsampled pixels), we set the image's actual
+    // CSS width/height so the browser re-rasterizes from the
+    // full source file. translate() is used only for panning.
+    // ────────────────────────────────────────────────
+    const MIN_SCALE = 1, MAX_SCALE = 6;
+    let scale = 1, panX = 0, panY = 0;
+    let fitW = 0, fitH = 0; // base viewport-fit dimensions, captured before first zoom
+
+    function captureFitSize() {
+      // Read the CSS-constrained layout size (valid only at scale=1)
+      fitW = img.offsetWidth;
+      fitH = img.offsetHeight;
+    }
+
+    function clampPan() {
+      const vr = viewer.getBoundingClientRect();
+      const maxX = Math.max(0, (fitW * scale - vr.width)  / 2);
+      const maxY = Math.max(0, (fitH * scale - vr.height) / 2);
+      panX = Math.max(-maxX, Math.min(maxX, panX));
+      panY = Math.max(-maxY, Math.min(maxY, panY));
+    }
+
+    function applyZoom() {
+      // Set the actual rendered size — browser draws from full source resolution
+      img.style.width    = fitW * scale + 'px';
+      img.style.height   = fitH * scale + 'px';
+      img.style.maxWidth  = 'none';
+      img.style.maxHeight = 'none';
+      clampPan();
+      img.style.transform = `translate(${panX}px, ${panY}px)`;
+      img.style.cursor = 'grab';
+      btnPrev.classList.add('hidden');
+      btnNext.classList.add('hidden');
+      zoomReset.classList.add('visible');
+    }
+
+    function resetZoom(instant = false) {
+      scale = 1; panX = 0; panY = 0;
+      img.style.width = img.style.height = '';
+      img.style.maxWidth = img.style.maxHeight = '';
+      img.style.transform = '';
+      img.style.cursor = 'zoom-in';
+      btnPrev.classList.remove('hidden');
+      btnNext.classList.remove('hidden');
+      zoomReset.classList.remove('visible');
+    }
+
+    // Zoom toward a viewport point, preserving what's under the cursor
+    function zoomToward(clientX, clientY, newScale) {
+      newScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, newScale));
+      if (newScale === scale) return;
+
+      if (scale <= 1.01) captureFitSize(); // capture before first zoom
+
+      const vr  = viewer.getBoundingClientRect();
+      const vcx = vr.left + vr.width  / 2;
+      const vcy = vr.top  + vr.height / 2;
+      // offset from image center (which sits at viewer-center + pan) to cursor
+      const ox = clientX - vcx - panX;
+      const oy = clientY - vcy - panY;
+      // after scale change, keep that image point under the cursor
+      panX = clientX - vcx - ox * (newScale / scale);
+      panY = clientY - vcy - oy * (newScale / scale);
+      scale = newScale;
+
+      if (scale <= 1.01) resetZoom();
+      else applyZoom();
+    }
+
+    zoomReset.addEventListener('click', () => resetZoom());
+
+    // ── Mouse: click-to-toggle & drag-to-pan ──
+    let mouseDown = false, didDrag = false;
+    let dragStartX, dragStartY, panAtDragX, panAtDragY;
+
+    img.addEventListener('mousedown', e => {
+      e.preventDefault();
+      mouseDown = true; didDrag = false;
+      dragStartX = e.clientX; dragStartY = e.clientY;
+      panAtDragX = panX;      panAtDragY = panY;
+      if (scale > 1.01) img.style.cursor = 'grabbing';
+    });
+
+    document.addEventListener('mousemove', e => {
+      if (!mouseDown) return;
+      const dx = e.clientX - dragStartX;
+      const dy = e.clientY - dragStartY;
+      if (Math.abs(dx) > 3 || Math.abs(dy) > 3) didDrag = true;
+      if (scale > 1.01) {
+        panX = panAtDragX + dx;
+        panY = panAtDragY + dy;
+        applyZoom();
+        img.style.cursor = 'grabbing';
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      mouseDown = false;
+      if (scale > 1.01) img.style.cursor = 'grab';
+    });
+
+    img.addEventListener('click', e => {
+      if (didDrag) { didDrag = false; return; }
+      if (scale > 1.01) {
+        resetZoom();
+      } else {
+        captureFitSize();
+        zoomToward(e.clientX, e.clientY, 2.5);
+      }
+    });
+
+    // ── Scroll-wheel zoom ──
+    viewer.addEventListener('wheel', e => {
+      e.preventDefault();
+      const delta = e.deltaMode === 1 ? e.deltaY * 40 : e.deltaY; // normalize line vs px
+      zoomToward(e.clientX, e.clientY, scale * Math.exp(-delta * 0.004));
+    }, { passive: false });
+
+    // ── Touch: pinch, drag-pan, swipe-navigate, double-tap ──
+    let activetouches = {};
+    let lastPinchDist = null;
+    let touchAnchor   = null; // {x,y,t,panX,panY} for drag/swipe/tap
+    let lastTapTime   = 0;
+
+    function dist2(a, b) { return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY); }
+    function mid2(a, b)  { return { x: (a.clientX+b.clientX)/2, y: (a.clientY+b.clientY)/2 }; }
+
+    img.addEventListener('touchstart', e => {
+      e.preventDefault();
+      Array.from(e.changedTouches).forEach(t => { activetouches[t.identifier] = t; });
+      const ids = Object.keys(activetouches);
+
+      if (ids.length === 1) {
+        const t = e.changedTouches[0];
+        touchAnchor = { x: t.clientX, y: t.clientY, t: Date.now(), panX, panY };
+        lastPinchDist = null;
+
+        // double-tap
+        const now = Date.now();
+        if (now - lastTapTime < 300) {
+          lastTapTime = 0;
+          if (scale > 1.01) resetZoom();
+          else { captureFitSize(); zoomToward(t.clientX, t.clientY, 2.5); }
+        } else {
+          lastTapTime = now;
+        }
+      } else if (ids.length === 2) {
+        const [a, b] = Object.values(activetouches);
+        lastPinchDist = dist2(a, b);
+        touchAnchor = null;
+      }
+    }, { passive: false });
+
+    img.addEventListener('touchmove', e => {
+      e.preventDefault();
+      Array.from(e.changedTouches).forEach(t => { activetouches[t.identifier] = t; });
+      const ids = Object.keys(activetouches);
+
+      if (ids.length === 2) {
+        const [a, b] = Object.values(activetouches);
+        const d = dist2(a, b);
+        const m = mid2(a, b);
+        if (lastPinchDist !== null) {
+          if (scale <= 1.01) captureFitSize();
+          zoomToward(m.x, m.y, scale * (d / lastPinchDist));
+        }
+        lastPinchDist = d;
+        touchAnchor = null;
+      } else if (ids.length === 1 && touchAnchor && scale > 1.01) {
+        const t  = Object.values(activetouches)[0];
+        panX = touchAnchor.panX + (t.clientX - touchAnchor.x);
+        panY = touchAnchor.panY + (t.clientY - touchAnchor.y);
+        applyZoom();
+      }
+    }, { passive: false });
+
+    function onTouchEnd(e) {
+      Array.from(e.changedTouches).forEach(t => { delete activetouches[t.identifier]; });
+      lastPinchDist = null;
+
+      if (Object.keys(activetouches).length === 0 && touchAnchor) {
+        const t  = e.changedTouches[0];
+        const dx = t.clientX - touchAnchor.x;
+        const dt = Date.now() - touchAnchor.t;
+        if (scale <= 1.01 && Math.abs(dx) > 40 && dt < 400) {
+          goTo(dx < 0 ? current + 1 : current - 1);
+        }
+        touchAnchor = null;
+      }
+    }
+    img.addEventListener('touchend',    onTouchEnd, { passive: false });
+    img.addEventListener('touchcancel', onTouchEnd, { passive: false });
+
+    // ── Keyboard ──
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(current - 1);
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
+      if (e.key === '=' || e.key === '+') {
+        const vr = viewer.getBoundingClientRect();
+        zoomToward(vr.left + vr.width/2, vr.top + vr.height/2, scale * 1.3);
+      }
+      if (e.key === '-' || e.key === '_') {
+        const vr = viewer.getBoundingClientRect();
+        zoomToward(vr.left + vr.width/2, vr.top + vr.height/2, scale / 1.3);
+      }
+      if (e.key === '0') resetZoom();
+    });
+
+    // re-clamp pan if window resizes while zoomed
+    window.addEventListener('resize', () => { if (scale > 1.01) applyZoom(); });
+
+    // ── Init ──
+    goTo(0, { instant: true });
+    preload(1);
+  </script>
 </body>
 </html>
