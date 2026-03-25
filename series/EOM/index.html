@@ -293,7 +293,7 @@
         const img = new Image();
         img.onload  = () => resolve(n);
         img.onerror = () => resolve(null);
-        img.src = `img/${filename(n)}.png`;
+        img.src = `img/${filename(n)}.jpg`;
       });
     }
 
@@ -374,15 +374,15 @@
     });
 
     // ── Init ────────────────────────────────────────────────────────────────
-    document.getElementById('comic-img').alt          = 'Loading…';
-    document.getElementById('counter').textContent    = 'Loading…';
+    pages = [{ src: `img/${filename(1)}.jpg`, alt: 'Page 1' }];
+    buildSequence();
+    render();
 
     detectPages().then(found => {
-      pages = found.map(n => ({
-        src: `img/${filename(n)}.png`,
-        alt: `Page ${n}`
-      }));
+      const savedPos = pos;
+      pages = found.map(n => ({ src: `img/${filename(n)}.jpg`, alt: `Page ${n}` }));
       buildSequence();
+      pos = Math.min(savedPos, sequence.length - 1);
       render();
     });
   </script>

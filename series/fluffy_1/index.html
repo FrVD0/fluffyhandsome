@@ -459,12 +459,15 @@
       if (e.key === 'End')  jump('last');
     });
 
-    document.getElementById('comic-img').alt = 'Loading…';
-    document.getElementById('counter').textContent = 'Loading…';
+    pages = [{ src: `img/${filename(1)}.jpg`, alt: 'Page 1' }];
+    buildSequence();
+    render();
 
     detectPages().then(found => {
+      const savedPos = pos;
       pages = found.map(n => ({ src: `img/${filename(n)}.jpg`, alt: `Page ${n}` }));
       buildSequence();
+      pos = Math.min(savedPos, sequence.length - 1);
       render();
     });
   </script>

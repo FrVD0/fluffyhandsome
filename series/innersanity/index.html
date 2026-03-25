@@ -457,15 +457,15 @@
     });
 
     // ---- Init -----------------------------------------------------------------
-    img.alt = 'Loading…';
-    document.getElementById('counter').textContent = 'Loading…';
+    pages = [{ src: `img/${filename(1)}.png`, alt: 'Page 1' }];
+    buildSequence();
+    render();
 
     detectPages().then(found => {
-      pages = found.map(n => ({
-        src: `img/${filename(n)}.png`,
-        alt: `Page ${n}`
-      }));
+      const savedPos = pos;
+      pages = found.map(n => ({ src: `img/${filename(n)}.png`, alt: `Page ${n}` }));
       buildSequence();
+      pos = Math.min(savedPos, sequence.length - 1);
       render();
     });
   </script>
