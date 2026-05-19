@@ -460,14 +460,30 @@
     pages = [{ src: `img/${filename(1)}.png`, alt: 'Page 1' }];
     buildSequence();
     render();
+    document.getElementById('counter').textContent     = '1 / ?';
+    document.getElementById('nav-counter').textContent = '1 / ?';
 
-    detectPages().then(found => {
-      const savedPos = pos;
-      pages = found.map(n => ({ src: `img/${filename(n)}.png`, alt: `Page ${n}` }));
-      buildSequence();
-      pos = Math.min(savedPos, sequence.length - 1);
-      render();
-    });
+    fetch('img/pages.json')
+      .then(r => r.ok ? r.json() : Promise.reject())
+      .then(({ count }) => {
+        const savedPos = pos;
+        pages = Array.from({ length: count }, (_, i) => ({
+          src: `img/${filename(i + 1)}.png`,
+          alt: `Page ${i + 1}`
+        }));
+        buildSequence();
+        pos = Math.min(savedPos, sequence.length - 1);
+        render();
+      })
+      .catch(() => {
+        detectPages().then(found => {
+          const savedPos = pos;
+          pages = found.map(n => ({ src: `img/${filename(n)}.png`, alt: `Page ${n}` }));
+          buildSequence();
+          pos = Math.min(savedPos, sequence.length - 1);
+          render();
+        });
+      });
   </script>
 </body>
 </html>
