@@ -111,9 +111,59 @@
     }
     .social a:hover { opacity: .7; transform: translateY(-1px); }
     footer small { display: block; margin-top: .75rem; opacity: .65; }
+
+    /* --- Book promo banner --- */
+    .promo-banner {
+      background: #1a0a2e;
+      color: #f2e8d5;
+      text-align: center;
+      padding: 1.25rem var(--pad);
+    }
+    .promo-banner a {
+      display: inline-flex; flex-direction: column; align-items: center;
+      gap: .35rem; text-decoration: none; color: inherit;
+    }
+    .promo-eyebrow {
+      font: 700 .7rem/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+      letter-spacing: .22em; text-transform: uppercase;
+      color: #c9aa7c; margin: 0;
+    }
+    .promo-title {
+      font: 700 clamp(1.3rem,4vw,2rem)/1.1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+      letter-spacing: .08em; margin: 0;
+      color: #f2e8d5;
+    }
+    .promo-sub {
+      font: 400 clamp(.8rem,2vw,.9rem)/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
+      text-transform: uppercase; letter-spacing: .06em;
+      color: #c9aa7c; margin: 0;
+    }
+    .promo-cta {
+      display: inline-block;
+      margin-top: .5rem;
+      padding: .45em 1.4em;
+      background: #c9aa7c;
+      color: #1a0a2e;
+      font: 700 .8rem/1 "Arial Narrow", Arial, sans-serif;
+      letter-spacing: .12em; text-transform: uppercase;
+      border-radius: 3px;
+      transition: background .15s, color .15s;
+    }
+    .promo-banner a:hover .promo-cta {
+      background: #f2e8d5;
+    }
   </style>
 </head>
 <body>
+  <div class="promo-banner">
+    <a href="https://www.lulu.com/shop/uncle-attaboy/selected-innersanities/paperback/product-2md842z.html?page=1&pageSize=4" target="_blank" rel="noopener noreferrer">
+      <p class="promo-eyebrow">Now available in print</p>
+      <p class="promo-title">Selected IN(ner)SANITIES</p>
+      <p class="promo-sub">Like no other book of comic strips you've ever encountered.</p>
+      <span class="promo-cta">Order the Book →</span>
+    </a>
+  </div>
+
   <header>
     <h1>The Comix of Your Uncle Attaboy</h1>
     <p>Exploring multiple dimensions of comix expression.</p>
