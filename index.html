@@ -8,15 +8,22 @@
   <meta name="color-scheme" content="light dark" />
   <style>
     :root {
-      --bg: #ffffff; --fg: #111; --muted: rgba(17,17,17,.7);
-      --max: 960px; --pad: clamp(12px,3vmin,24px);
+      --bg: #ffffff; --fg: #111; --muted: rgba(17,17,17,.65);
+      --line: rgba(17,17,17,.1);
+      --max: 640px; --pad: clamp(16px,4vmin,32px);
       --radius: 10px;
-      --shadow: 0 2px 12px rgba(0,0,0,.12);
-      --shadow-lg: 0 6px 30px rgba(0,0,0,.22);
+      --shadow: 0 2px 16px rgba(0,0,0,.1);
       --accent: #111;
+      --btn-secondary-border: rgba(17,17,17,.35);
     }
     @media (prefers-color-scheme: dark) {
-      :root { --bg: #0e0e10; --fg: #e9e9ee; --muted: rgba(233,233,238,.75); --accent: #e9e9ee; }
+      :root {
+        --bg: #0e0e10; --fg: #e9e9ee; --muted: rgba(233,233,238,.65);
+        --line: rgba(233,233,238,.12);
+        --shadow: 0 2px 20px rgba(0,0,0,.5);
+        --accent: #e9e9ee;
+        --btn-secondary-border: rgba(233,233,238,.35);
+      }
     }
     *, *::before, *::after { box-sizing: border-box; }
     html, body {
@@ -24,271 +31,160 @@
       font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Noto Sans, Arial, sans-serif;
       text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased;
     }
-    header {
+
+    header.site-header {
       max-width: var(--max); margin: 0 auto;
-      padding: var(--pad) var(--pad) calc(var(--pad) * .5);
+      padding: calc(var(--pad) * 1.5) var(--pad) var(--pad);
       text-align: center;
     }
-    header h1 { margin: 0 0 .2rem; font-size: clamp(1.2rem,3.5vw,1.8rem); font-weight: 700; }
-    header p  { margin: 0; opacity: .8; font-size: clamp(.9rem,2.2vw,.95rem); }
+    header.site-header h1 {
+      margin: 0 0 .35rem; font-size: clamp(1.15rem,3.2vw,1.5rem); font-weight: 700;
+      letter-spacing: .01em;
+    }
+    header.site-header p { margin: 0; color: var(--muted); font-size: .9rem; }
 
-    main {
+    section.title {
       max-width: var(--max); margin: 0 auto;
-      padding: calc(var(--pad) * .5) var(--pad) var(--pad);
-      display: flex; flex-direction: column; align-items: center; gap: 1.25rem;
+      padding: calc(var(--pad) * 2) var(--pad);
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center;
+      border-top: 1px solid var(--line);
+    }
+    section.title:first-of-type { border-top: none; }
+
+    .title-name {
+      margin: 0 0 1.25rem;
+      font-size: clamp(1.3rem,4vw,1.9rem);
+      font-weight: 800;
+      letter-spacing: -.01em;
     }
 
-    /* --- Random image --- */
-    .feature-link {
-      display: block; width: 100%;
+    .comic-frame {
+      width: 100%;
+      max-width: 480px;
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      transition: transform .15s ease, box-shadow .15s ease;
       overflow: hidden;
-      cursor: pointer;
+      background: var(--line);
+      min-height: 120px;
     }
-    .feature-link:hover { transform: scale(1.015); box-shadow: var(--shadow-lg); }
-    .feature-link:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
-    #feature-img {
+    .comic-frame img {
       width: 100%; height: auto; display: block;
-      border-radius: var(--radius);
     }
 
-    /* --- Nav area --- */
-    .nav-area {
-      display: flex; flex-wrap: wrap; align-items: center;
-      justify-content: center; gap: .75rem;
-      width: 100%;
+    .blurb {
+      margin: 1.25rem 0 1.5rem;
+      color: var(--muted);
+      font-size: 1.02rem;
+      font-style: italic;
+      max-width: 40ch;
     }
 
-    select {
-      flex: 1 1 220px; max-width: 400px;
-      font: inherit; font-size: 1rem;
-      padding: .6rem .9rem;
-      border: 2px solid var(--fg);
-      border-radius: var(--radius);
-      background: var(--bg); color: var(--fg);
-      appearance: none; -webkit-appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23111' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right .9rem center;
-      padding-right: 2.4rem;
-      cursor: pointer;
+    .cta-row {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: .75rem;
     }
-    @media (prefers-color-scheme: dark) {
-      select {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23e9e9ee' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-      }
-    }
-    select:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 
-    button.go {
-      flex: 0 0 auto;
-      font: inherit; font-size: 1rem; font-weight: 700;
-      padding: .6rem 1.5rem;
-      border: 2px solid var(--fg);
-      border-radius: var(--radius);
+    .btn {
+      display: inline-block;
+      font: inherit; font-weight: 700; font-size: .92rem;
+      padding: .75em 1.75em;
+      border-radius: 999px;
+      text-decoration: none;
+      letter-spacing: .01em;
+      transition: opacity .15s ease, transform .1s ease, background .15s ease;
+      border: 2px solid transparent;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn-primary {
       background: var(--fg); color: var(--bg);
-      cursor: pointer;
-      transition: opacity .15s ease, transform .1s ease;
-      white-space: nowrap;
+      border-color: var(--fg);
     }
-    button.go:hover  { opacity: .8; }
-    button.go:active { transform: scale(.97); }
-    button.go:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+    .btn-primary:hover { opacity: .85; }
+    .btn-secondary {
+      background: transparent; color: var(--fg);
+      border-color: var(--btn-secondary-border);
+    }
+    .btn-secondary:hover { border-color: var(--fg); }
 
     footer {
       max-width: var(--max); margin: 0 auto;
-      padding: var(--pad);
+      padding: var(--pad); border-top: 1px solid var(--line);
       text-align: center;
     }
     .social {
-      display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;
+      display: flex; justify-content: center; gap: 1.25rem; flex-wrap: wrap;
+      margin-bottom: .75rem;
     }
     .social a {
-      color: var(--fg); text-decoration: none; font-weight: 600;
-      transition: opacity .2s ease, transform .15s ease;
+      color: var(--muted); text-decoration: none; font-size: .85rem; font-weight: 600;
+      transition: color .2s ease;
     }
-    .social a:hover { opacity: .7; transform: translateY(-1px); }
-    footer small { display: block; margin-top: .75rem; opacity: .65; }
-
-    /* --- Book promo banner --- */
-    .promo-banner {
-      background: #1a0a2e;
-      color: #f2e8d5;
-      text-align: center;
-      padding: 1.25rem var(--pad);
-    }
-    .promo-banner a {
-      display: inline-flex; flex-direction: column; align-items: center;
-      gap: .35rem; text-decoration: none; color: inherit;
-    }
-    .promo-eyebrow {
-      font: 700 .7rem/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
-      letter-spacing: .22em; text-transform: uppercase;
-      color: #c9aa7c; margin: 0;
-    }
-    .promo-title {
-      font: 700 clamp(1.3rem,4vw,2rem)/1.1 "Helvetica Neue", Helvetica, Arial, sans-serif;
-      letter-spacing: .08em; margin: 0;
-      color: #f2e8d5;
-    }
-    .promo-sub {
-      font: 400 clamp(.8rem,2vw,.9rem)/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif;
-      text-transform: uppercase; letter-spacing: .06em;
-      color: #c9aa7c; margin: 0;
-    }
-    .promo-cta {
-      display: inline-block;
-      margin-top: .5rem;
-      padding: .45em 1.4em;
-      background: #c9aa7c;
-      color: #1a0a2e;
-      font: 700 .8rem/1 "Arial Narrow", Arial, sans-serif;
-      letter-spacing: .12em; text-transform: uppercase;
-      border-radius: 3px;
-      transition: background .15s, color .15s;
-    }
-    .promo-banner a:hover .promo-cta {
-      background: #f2e8d5;
-    }
+    .social a:hover { color: var(--fg); }
+    footer small { display: block; color: var(--muted); font-size: .78rem; }
   </style>
 </head>
 <body>
-  <div class="promo-banner">
-    <a href="https://www.lulu.com/shop/uncle-attaboy/selected-innersanities/paperback/product-2md842z.html?page=1&pageSize=4" target="_blank" rel="noopener noreferrer">
-      <p class="promo-eyebrow">Now available in print</p>
-      <p class="promo-title">Selected IN(ner)SANITIES</p>
-      <p class="promo-sub">Like no other book of comic strips you've ever encountered.</p>
-      <span class="promo-cta">Order the Book →</span>
-    </a>
-  </div>
 
-  <header>
-    <h1>The Comix of Your Uncle Attaboy</h1>
+  <header class="site-header">
+    <h1>ATTACOMIX: The Comix of Your Uncle Attaboy</h1>
     <p>Exploring multiple dimensions of comix expression.</p>
   </header>
 
-  <main>
-    <a class="feature-link" id="feature-link" href="#" aria-label="Go to the featured comic series">
-      <img id="feature-img" src="" alt="A random panel from the ATTACOMIX universe" />
-    </a>
-
-    <div class="nav-area">
-      <select id="series-select" aria-label="Select a comic series">
-        <option value="" disabled selected>— Choose a series —</option>
-        <option value="series/BABR/index.html">BadAss BrainRot</option>
-        <option value="series/EOM/index.html">End of Message</option>
-        <option value="series/fluffy_1/index.html">The Fluffy Handsome Show (Classic)</option>
-        <option value="series/fluffy_2/index.html">Fluffy Handsome: Return to the Blank Page</option>
-        <option value="series/ITM/index.html">Fluffy Handsome: Inside the Marshmallow</option>
-        <option value="series/innersanity/index.html">ATTACOMIX IN(ner)SANITIES</option>
-        <option value="series/MIFC/index.html">Meanwhile in Fancy City...</option>
-      </select>
-      <button class="go" id="go-btn">Let's Go!</button>
+  <section class="title" id="section-fluffy_1" aria-label="The Fluffy Handsome Show">
+    <h2 class="title-name">The Fluffy Handsome Show</h2>
+    <div class="comic-frame">
+      <img id="img-fluffy_1" alt="A panel from The Fluffy Handsome Show" />
     </div>
-  </main>
+    <p class="blurb">He has a valentine for a nose, which is also his organ of speech. Breathtaking artistic vision!</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://patreon.com/fluffyhandsome" target="_blank" rel="noopener noreferrer">More on Patreon!</a>
+    </div>
+  </section>
+
+  <section class="title" id="section-MIFC" aria-label="Meanwhile, in Fancy City...">
+    <h2 class="title-name">Meanwhile, in Fancy City...</h2>
+    <div class="comic-frame">
+      <img id="img-MIFC" alt="A panel from Meanwhile, in Fancy City..." />
+    </div>
+    <p class="blurb">Explore the fanciest city on earth!</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://patreon.com/fluffyhandsome" target="_blank" rel="noopener noreferrer">More on Patreon!</a>
+    </div>
+  </section>
+
+  <section class="title" id="section-innersanity" aria-label="ATTACOMIX IN(ner)SANITIES">
+    <h2 class="title-name">ATTACOMIX IN(ner)SANITIES</h2>
+    <div class="comic-frame">
+      <img id="img-innersanity" alt="A panel from ATTACOMIX IN(ner)SANITIES" />
+    </div>
+    <p class="blurb">Doodly Delirius!</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="https://www.lulu.com/shop/uncle-attaboy/selected-innersanities/paperback/product-2md842z.html?page=1&pageSize=4" target="_blank" rel="noopener noreferrer">Buy the Book</a>
+      <a class="btn btn-secondary" href="https://www.youtube.com/@UncleAttaboy" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>
+    </div>
+  </section>
 
   <footer>
     <div class="social">
-      <a href="https://patreon.com/fluffyhandsome" target="_blank" rel="noopener noreferrer">Patreon</a>
       <a href="https://instagram.com/uncleattaboy" target="_blank" rel="noopener noreferrer">Instagram</a>
       <a href="https://fluffyhandsome.threadless.com" target="_blank" rel="noopener noreferrer">T-Shirts and More!</a>
     </div>
-    <small>© <span id="y"></span> — Breathe in. Breathe out. Love.</small>
+    <small>&copy; <span id="y"></span> &mdash; Breathe in. Breathe out. Love.</small>
   </footer>
 
   <script>
-    // ── Image libraries per series ──────────────────────────────────────────
+    fetch('manifest.json')
+      .then(r => r.json())
+      .then(manifest => {
+        for (const [key, data] of Object.entries(manifest)) {
+          const img = document.getElementById('img-' + key);
+          if (!img) continue;
+          const pick = data.images[Math.floor(Math.random() * data.images.length)];
+          img.src = data.dir + pick;
+        }
+      });
 
-    function seq(prefix, from, to, ext) {
-      const out = [];
-      for (let i = from; i <= to; i++) {
-        out.push(prefix + String(i).padStart(3, '0') + '.' + ext);
-      }
-      return out;
-    }
-
-    const series = {
-      BABR: {
-        href: 'series/BABR/index.html',
-        imgs: [
-          ...seq('series/BABR/img/', 1, 3, 'jpg'),
-          ...seq('series/BABR/img/', 4, 9, 'png')
-        ]
-      },
-      EOM: {
-        href: 'series/EOM/index.html',
-        imgs: seq('series/EOM/img/', 1, 24, 'jpg')
-      },
-      ITM: {
-        href: 'series/ITM/index.html',
-        imgs: seq('series/ITM/img/', 1, 43, 'png')
-      },
-      MIFC: {
-        href: 'series/MIFC/index.html',
-        imgs: seq('series/MIFC/img/', 1, 65, 'jpg')
-      },
-      fluffy_1: {
-        href: 'series/fluffy_1/index.html',
-        imgs: seq('series/fluffy_1/img/', 1, 56, 'jpg')
-      },
-      fluffy_2: {
-        href: 'series/fluffy_2/index.html',
-        imgs: [
-          '030','031','049','057','058','059','060','061','062','063','064',
-          '065','066','067','068','069','069_01','069_02','070','071','072',
-          '073','074','075','076','077','078','079','080','081','082','083',
-          '084','085','086','087','088','089','090'
-        ].map(n => 'series/fluffy_2/img/' + n + '.jpg').concat(
-          ['FHS2_01','FHS2_02','FHS2_03','FHS2_04'].map(n => 'series/fluffy_2/img/' + n + '.png')
-        )
-      },
-      innersanity: {
-        href: 'series/innersanity/index.html',
-        imgs: (function() {
-          const out = [];
-          // 001–099 (3-digit)
-          for (let i = 1; i <= 99; i++)  out.push('series/innersanity/img/' + String(i).padStart(3,'0') + '.png');
-          // 0100–0176 (4-digit)
-          for (let i = 100; i <= 176; i++) out.push('series/innersanity/img/0' + i + '.png');
-          return out;
-        })()
-      }
-    };
-
-    // Flatten all images into one pool, each tagged with its series key
-    const pool = [];
-    for (const [key, data] of Object.entries(series)) {
-      data.imgs.forEach(src => pool.push({ src, key }));
-    }
-
-    // ── Pick a random image on load ─────────────────────────────────────────
-
-    const pick = pool[Math.floor(Math.random() * pool.length)];
-
-    const featureLink = document.getElementById('feature-link');
-    const featureImg  = document.getElementById('feature-img');
-
-    featureLink.href = series[pick.key].href;
-    featureImg.src   = pick.src;
-    featureImg.alt   = 'A panel from ' + pick.key;
-
-    // ── Dropdown + button ───────────────────────────────────────────────────
-
-    const sel   = document.getElementById('series-select');
-    const goBtn = document.getElementById('go-btn');
-
-    goBtn.addEventListener('click', () => {
-      if (sel.value) window.location.href = sel.value;
-    });
-
-    // Also allow Enter key on the select itself as a shortcut
-    sel.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && sel.value) window.location.href = sel.value;
-    });
-
-    // ── Year stamp ──────────────────────────────────────────────────────────
     document.getElementById('y').textContent = new Date().getFullYear();
   </script>
 </body>
