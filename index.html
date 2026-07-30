@@ -180,6 +180,17 @@
       transition: transform .15s ease;
     }
     .yt-play:hover svg { transform: scale(1.08); }
+    .yt-escape {
+      position: absolute; right: 8px; bottom: 52px; /* clears the player's control bar */
+      padding: .35em .8em;
+      border-radius: 999px;
+      background: rgba(20,20,20,.78); color: #fff;
+      font-size: .78rem; font-weight: 600;
+      text-decoration: none;
+      opacity: .85;
+      transition: opacity .15s ease;
+    }
+    .yt-escape:hover, .yt-escape:focus-visible { opacity: 1; }
 
     /* --- lightbox --- */
     #lightbox {
@@ -374,13 +385,26 @@
       btn.setAttribute('aria-label', 'Play video: ' + v.title);
       btn.innerHTML = '<svg viewBox="0 0 74 52" aria-hidden="true"><rect width="74" height="52" rx="12" fill="rgba(20,20,20,.85)"/><path d="M29 15 L51 26 L29 37 Z" fill="#fff"/></svg>';
       btn.addEventListener('click', () => {
+        // www.youtube.com (not youtube-nocookie): signed-in viewers' cookies
+        // apply, which greatly reduces YouTube's "sign in to confirm you're
+        // not a bot" wall (common on VPNs / carrier networks). Nothing loads
+        // from YouTube until this click, so the privacy cost stays minimal.
         const iframe = document.createElement('iframe');
-        iframe.src = 'https://www.youtube-nocookie.com/embed/' + v.id +
+        iframe.src = 'https://www.youtube.com/embed/' + v.id +
           '?list=' + YT_LIST + '&autoplay=1&playsinline=1&rel=0';
         iframe.title = v.title;
         iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
         iframe.allowFullscreen = true;
-        host.replaceChildren(iframe);
+        // Escape hatch: if YouTube's bot wall appears anyway (its sign-in
+        // flow refuses to run inside an iframe), one tap opens the video
+        // in the YouTube app/site where the viewer is already signed in.
+        const esc = document.createElement('a');
+        esc.className = 'yt-escape';
+        esc.href = 'https://www.youtube.com/watch?v=' + v.id + '&list=' + YT_LIST;
+        esc.target = '_blank';
+        esc.rel = 'noopener noreferrer';
+        esc.textContent = 'Watch on YouTube ↗';
+        host.replaceChildren(iframe, esc);
       });
 
       host.replaceChildren(thumb, btn);
@@ -512,6 +536,9 @@
     let pinchStart = null, panStart = null, tapCandidate = null, lastTap = { t: 0, x: 0, y: 0 };
 
     lb.addEventListener('pointerdown', e => {
+      // Let the close button receive its own click: pointer capture retargets
+      // the click event to the capturing element, which would swallow it.
+      if (e.target.closest('.lb-close')) return;
       lb.setPointerCapture(e.pointerId);
       pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
       if (pointers.size === 2) {
