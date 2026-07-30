@@ -32,6 +32,7 @@
       font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Noto Sans, Arial, sans-serif;
       text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased;
     }
+    body { touch-action: pan-y; }
 
     .spacer { height: 100vh; height: 100svh; scroll-snap-align: start; }
 
@@ -48,7 +49,8 @@
     .panel-inner {
       display: flex; flex-direction: column; align-items: center;
       text-align: center; gap: 1.15rem;
-      max-width: min(88vw, var(--frame-max));
+      height: 100%; width: 100%;
+      max-width: min(94vw, var(--frame-max));
       will-change: transform;
     }
 
@@ -58,19 +60,22 @@
       font-weight: 800; letter-spacing: .04em;
     }
 
+    /* The frame grows to claim whatever vertical space the text leaves over;
+       the image fills it, letterboxed to its own aspect. */
     .comic-frame {
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      background: var(--line);
-      min-height: 80px; min-width: 120px;
+      flex: 1 1 auto; min-height: 0; min-width: 0;
+      align-self: stretch;
+      display: flex; align-items: center; justify-content: center;
     }
     .comic-frame img {
       display: block;
-      max-width: min(88vw, var(--frame-max));
-      max-height: 56vh;
-      max-height: 56svh;
+      max-width: 100%; max-height: 100%;
       width: auto; height: auto;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      background: var(--line);
+      cursor: zoom-in;
+      -webkit-user-drag: none; user-select: none;
     }
 
     .prose {
@@ -140,6 +145,77 @@
       .dot-nav button { width: 11px; height: 11px; }
     }
 
+    /* --- YouTube facade --- */
+    .video-frame {
+      flex: 0 1 auto; min-height: 0;
+      width: min(100%, max(280px, calc((100svh - 21rem) * 16 / 9)));
+      aspect-ratio: 16 / 9;
+      position: relative;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      background: #000;
+    }
+    .video-frame img.yt-thumb {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: cover;
+      display: block;
+    }
+    .video-frame iframe {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; border: 0;
+    }
+    .yt-play {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,.12);
+      border: none; cursor: pointer; padding: 0;
+      transition: background .2s ease;
+    }
+    .yt-play:hover, .yt-play:focus-visible { background: rgba(0,0,0,.28); }
+    .yt-play svg {
+      width: 74px; height: 52px;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,.5));
+      transition: transform .15s ease;
+    }
+    .yt-play:hover svg { transform: scale(1.08); }
+
+    /* --- lightbox --- */
+    #lightbox {
+      position: fixed; inset: 0; z-index: 20;
+      background: #0a0a0b;
+      display: none;
+      align-items: center; justify-content: center;
+      touch-action: none; overflow: hidden;
+    }
+    #lightbox.open { display: flex; }
+    #lightbox img {
+      max-width: 100%; max-height: 100%;
+      width: auto; height: auto;
+      will-change: transform;
+      user-select: none; -webkit-user-drag: none;
+      touch-action: none; /* not inherited from #lightbox — without this, touch drags scroll the page behind */
+      cursor: grab;
+    }
+    #lightbox img.smooth { transition: transform .18s ease-out; }
+    .lb-close {
+      position: absolute; top: max(10px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right));
+      z-index: 21;
+      width: 44px; height: 44px;
+      border: none; border-radius: 50%; cursor: pointer;
+      background: rgba(255,255,255,.14); color: #fff;
+      font-size: 1.5rem; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .lb-close:hover, .lb-close:focus-visible { background: rgba(255,255,255,.3); }
+    .lb-hint {
+      position: absolute; bottom: max(12px, env(safe-area-inset-bottom)); left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255,255,255,.55); font-size: .78rem;
+      pointer-events: none; user-select: none;
+    }
+
     footer {
       position: relative; z-index: 3;
       background: var(--bg);
@@ -162,6 +238,7 @@
     @media (prefers-reduced-motion: reduce) {
       .scroll-cue { animation: none; }
       .panel-inner { will-change: auto; }
+      #lightbox img.smooth { transition: none; }
     }
   </style>
 </head>
@@ -211,7 +288,7 @@
 
     <section class="panel" aria-label="YouTube">
       <div class="panel-inner">
-        <div class="comic-frame"><img data-pool="innersanity" alt="A panel from ATTACOMIX IN(ner)SANITIES" /></div>
+        <div class="video-frame" id="yt-facade"></div>
         <p class="prose">To see me in action, check out my YouTube channel. Currently, the focus there is silent process videos focused on my series ATTACOMIX IN(ner)SANITIES. Future iterations will carry sounds: music, voiceover, and who knows what else. And perhaps other ATTACOMIX series will find their way there.</p>
         <div class="cta-row">
           <a class="btn btn-primary" href="https://www.youtube.com/@UncleAttaboy" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>
@@ -240,6 +317,12 @@
 
   <ol class="dot-nav" aria-label="Sections"></ol>
 
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged comic panel">
+    <img alt="" />
+    <button class="lb-close" aria-label="Close enlarged view">&#215;</button>
+    <div class="lb-hint" aria-hidden="true">pinch, scroll, or double-tap to zoom &middot; Esc to close</div>
+  </div>
+
   <div class="spacer"></div>
   <div class="spacer"></div>
   <div class="spacer"></div>
@@ -262,34 +345,235 @@
     const spacers = [...document.querySelectorAll('.spacer')];
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
-    // --- random images ---
+    // --- YouTube panel -------------------------------------------------------
+    // Video list baked from the "IN(ner)SANITIES (silent)" playlist.
+    // To refresh after adding videos, run:  node scripts/refresh-playlist.mjs
+    const YT_LIST = 'PLs0L9o62y0BsjLP65gNBLXvpsEjmuKfM8';
+    const YT_VIDEOS = /* YT_VIDEOS_START */[
+      {"id":"IwD6AWM-gYM","title":"Colors world the page with life that enlivens the world the colors worlded… simple, really."},
+      {"id":"Z6Y37G3-BZ0","title":"Something like a tree, something like you, something like me…"},
+      {"id":"dPjvxiVHp6o","title":"Glowing up the Blank Page with wraiths of smoke and falling ash"},
+      {"id":"LdW11li7t_4","title":"A friendly pointer on the Blank Page"},
+      {"id":"OLIIMk0Txz0","title":"Whirling from the vast potentialities of the blank page, on fearsome wings…"},
+      {"id":"YaNgNjlTgiE","title":"Another night exploring the limitless space of the blank page…"},
+      {"id":"bGl6F_uJgMQ","title":"Something frilly this way comes…"}
+    ]/* YT_VIDEOS_END */;
+
+    (function buildFacade() {
+      const host = document.getElementById('yt-facade');
+      const v = YT_VIDEOS[Math.floor(Math.random() * YT_VIDEOS.length)];
+
+      const thumb = document.createElement('img');
+      thumb.className = 'yt-thumb';
+      thumb.alt = '';
+      thumb.src = 'https://i.ytimg.com/vi/' + v.id + '/maxresdefault.jpg';
+      thumb.onerror = () => { thumb.onerror = null; thumb.src = 'https://i.ytimg.com/vi/' + v.id + '/hqdefault.jpg'; };
+
+      const btn = document.createElement('button');
+      btn.className = 'yt-play';
+      btn.setAttribute('aria-label', 'Play video: ' + v.title);
+      btn.innerHTML = '<svg viewBox="0 0 74 52" aria-hidden="true"><rect width="74" height="52" rx="12" fill="rgba(20,20,20,.85)"/><path d="M29 15 L51 26 L29 37 Z" fill="#fff"/></svg>';
+      btn.addEventListener('click', () => {
+        const iframe = document.createElement('iframe');
+        iframe.src = 'https://www.youtube-nocookie.com/embed/' + v.id +
+          '?list=' + YT_LIST + '&autoplay=1&playsinline=1&rel=0';
+        iframe.title = v.title;
+        iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
+        iframe.allowFullscreen = true;
+        host.replaceChildren(iframe);
+      });
+
+      host.replaceChildren(thumb, btn);
+    })();
+
+    // --- random images -------------------------------------------------------
+    // manifest.json entries: { web, full, fullExt, images:[basenames] }
+    // Panels show the small "web" teaser; the lightbox upgrades to "full".
     fetch('manifest.json')
       .then(r => r.json())
       .then(manifest => {
         const pools = {};
         const seriesKeys = Object.keys(manifest);
         for (const [key, data] of Object.entries(manifest)) {
-          pools[key] = data.images.map(f => data.dir + f);
+          pools[key] = data.images.map(name => ({
+            web: data.web + name + '.jpg',
+            full: data.full + name + data.fullExt
+          }));
         }
         const used = new Set();
         const pick = arr => {
           for (let t = 0; t < 50; t++) {
             const c = arr[Math.floor(Math.random() * arr.length)];
-            if (!used.has(c)) { used.add(c); return c; }
+            if (!used.has(c.web)) { used.add(c.web); return c; }
           }
           return arr[Math.floor(Math.random() * arr.length)];
         };
         panels.forEach(p => {
-          const img = p.querySelector('img');
+          const img = p.querySelector('.comic-frame img');
+          if (!img) return;
           // "all" picks a series uniformly first so smaller series aren't drowned out
           const key = pools[img.dataset.pool]
             ? img.dataset.pool
             : seriesKeys[Math.floor(Math.random() * seriesKeys.length)];
-          img.src = pick(pools[key]);
+          const choice = pick(pools[key]);
+          img.src = choice.web;
+          img.dataset.full = choice.full;
+          img.decoding = 'async';
         });
       });
 
-    // --- scroll-linked crossfade ---
+    // --- lightbox ------------------------------------------------------------
+    const lb = document.getElementById('lightbox');
+    const lbImg = lb.querySelector('img');
+    const lbClose = lb.querySelector('.lb-close');
+    let lbScale = 1, lbTx = 0, lbTy = 0, lastFocus = null;
+    const MAX_SCALE = 8;
+
+    function lbApply() {
+      lbImg.style.transform = 'translate(' + lbTx + 'px,' + lbTy + 'px) scale(' + lbScale + ')';
+      lbImg.style.cursor = lbScale > 1 ? 'grab' : 'zoom-in';
+    }
+    function lbClampPan() {
+      const sw = lbImg.clientWidth * lbScale, sh = lbImg.clientHeight * lbScale;
+      const maxX = Math.max(0, (sw - lb.clientWidth) / 2 + 40);
+      const maxY = Math.max(0, (sh - lb.clientHeight) / 2 + 40);
+      lbTx = Math.min(maxX, Math.max(-maxX, lbTx));
+      lbTy = Math.min(maxY, Math.max(-maxY, lbTy));
+      if (lbScale <= 1.02) { lbScale = 1; lbTx = 0; lbTy = 0; }
+    }
+    // Zoom keeping the viewport point (px,py) fixed on the same image point.
+    function lbZoomAt(px, py, newScale, smooth) {
+      newScale = Math.min(MAX_SCALE, Math.max(1, newScale));
+      const cx = lb.clientWidth / 2, cy = lb.clientHeight / 2;
+      const f = newScale / lbScale;
+      lbTx = (px - cx) - f * ((px - cx) - lbTx);
+      lbTy = (py - cy) - f * ((py - cy) - lbTy);
+      lbScale = newScale;
+      lbClampPan();
+      if (smooth && !reducedMotion.matches) {
+        lbImg.classList.add('smooth');
+        setTimeout(() => lbImg.classList.remove('smooth'), 200);
+      }
+      lbApply();
+    }
+
+    // NOTE: scrolling is deliberately NOT locked via overflow:hidden — toggling
+    // overflow on the scroll-snap container makes Chrome re-evaluate mandatory
+    // snap points and phantom-scroll between panels. Instead the lightbox
+    // swallows all scroll input itself and the crossfade freezes while open.
+    function lbOpen(img) {
+      lastFocus = document.activeElement;
+      lbScale = 1; lbTx = 0; lbTy = 0;
+      lbImg.src = img.src;                     // teaser: instant (already cached)
+      lbImg.alt = img.alt;
+      lbApply();
+      lb.classList.add('open');
+      lbClose.focus();
+      const full = img.dataset.full;
+      if (full) {                              // then upgrade to lossless full-res
+        const hi = new Image();
+        hi.onload = () => { if (lb.classList.contains('open')) lbImg.src = full; };
+        hi.src = full;
+      }
+    }
+    function lbHide() {
+      lb.classList.remove('open');
+      lbImg.src = '';
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+      update();
+    }
+    // Swallow scroll input while the lightbox is open.
+    lb.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+    document.addEventListener('keydown', e => {
+      if (!lb.classList.contains('open')) return;
+      if ([' ', 'PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) {
+        e.preventDefault();
+      }
+    });
+
+    document.querySelector('.stage').addEventListener('click', e => {
+      const img = e.target.closest('.comic-frame img');
+      if (img && img.src) lbOpen(img);
+    });
+    lbClose.addEventListener('click', lbHide);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && lb.classList.contains('open')) lbHide();
+    });
+
+    // Wheel zoom
+    lb.addEventListener('wheel', e => {
+      e.preventDefault();
+      const factor = Math.exp(-e.deltaY * 0.0018);
+      lbZoomAt(e.clientX, e.clientY, lbScale * factor, false);
+    }, { passive: false });
+
+    // Pointer gestures: pinch (2 pointers), pan (1 pointer while zoomed)
+    const pointers = new Map();
+    let pinchStart = null, panStart = null, tapCandidate = null, lastTap = { t: 0, x: 0, y: 0 };
+
+    lb.addEventListener('pointerdown', e => {
+      lb.setPointerCapture(e.pointerId);
+      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pointers.size === 2) {
+        const [a, b] = [...pointers.values()];
+        pinchStart = {
+          dist: Math.hypot(a.x - b.x, a.y - b.y),
+          scale: lbScale,
+          cx: (a.x + b.x) / 2, cy: (a.y + b.y) / 2
+        };
+        panStart = null; tapCandidate = null;
+      } else if (pointers.size === 1) {
+        panStart = { x: e.clientX, y: e.clientY, tx: lbTx, ty: lbTy };
+        tapCandidate = { x: e.clientX, y: e.clientY, t: Date.now(), target: e.target };
+        if (lbScale > 1) lbImg.style.cursor = 'grabbing';
+      }
+    });
+    lb.addEventListener('pointermove', e => {
+      if (!pointers.has(e.pointerId)) return;
+      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pointers.size === 2 && pinchStart) {
+        const [a, b] = [...pointers.values()];
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        lbZoomAt(pinchStart.cx, pinchStart.cy, pinchStart.scale * (d / pinchStart.dist), false);
+      } else if (pointers.size === 1 && panStart && lbScale > 1) {
+        lbTx = panStart.tx + (e.clientX - panStart.x);
+        lbTy = panStart.ty + (e.clientY - panStart.y);
+        lbClampPan(); lbApply();
+      }
+      if (tapCandidate && Math.hypot(e.clientX - tapCandidate.x, e.clientY - tapCandidate.y) > 8) {
+        tapCandidate = null;
+      }
+    });
+    function lbPointerEnd(e) {
+      pointers.delete(e.pointerId);
+      if (pointers.size < 2) pinchStart = null;
+      if (pointers.size === 0) {
+        panStart = null;
+        lbImg.style.cursor = lbScale > 1 ? 'grab' : 'zoom-in';
+        if (tapCandidate && Date.now() - tapCandidate.t < 350) {
+          const now = Date.now();
+          const isDouble = now - lastTap.t < 320 &&
+            Math.hypot(tapCandidate.x - lastTap.x, tapCandidate.y - lastTap.y) < 40;
+          if (isDouble) {                       // double-tap: toggle zoom
+            lbZoomAt(tapCandidate.x, tapCandidate.y, lbScale > 1 ? 1 : 2.5, true);
+            lastTap = { t: 0, x: 0, y: 0 };
+          } else {
+            if (tapCandidate.target === lb) lbHide();   // tap backdrop: close
+            lastTap = { t: now, x: tapCandidate.x, y: tapCandidate.y };
+          }
+        }
+        tapCandidate = null;
+      }
+    }
+    lb.addEventListener('pointerup', lbPointerEnd);
+    lb.addEventListener('pointercancel', lbPointerEnd);
+    // (no dblclick listener: the pointerup double-tap detection above already
+    // covers mouse double-clicks; a second handler would toggle zoom twice)
+
+    // Suppress page-level pinch zoom (iOS Safari) — the lightbox handles zoom.
+    document.addEventListener('gesturestart', e => e.preventDefault());
+
+    // --- scroll-linked crossfade --------------------------------------------
     let panelH = 1;
     function measure() { panelH = spacers[0].getBoundingClientRect().height || 1; }
 
@@ -306,6 +590,11 @@
     const dots = [...dotNav.querySelectorAll('button')];
 
     function update() {
+      // Never crossfade in response to pinch/zoom of the visual viewport —
+      // only real page scrolls at 1:1 scale drive the panel transition.
+      if (window.visualViewport && window.visualViewport.scale > 1.01) return;
+      // Freeze the crossfade while the lightbox is up.
+      if (lb.classList.contains('open')) return;
       const pos = Math.min(panels.length - 1, Math.max(0, window.scrollY / panelH));
       panels.forEach((p, i) => {
         const d = Math.abs(pos - i);
