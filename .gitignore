@@ -3,3 +3,9 @@
 
 # Local tooling
 .claude/
+
+# Original artwork for reader series stays on this Mac; the site uses web/ and full/ copies
+series/*/*.png
+series/*/*.PNG
+series/*/*.jpg
+series/*/*.jpeg

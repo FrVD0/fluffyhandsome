@@ -1,0 +1,153 @@
+/* ==========================================================================
+   Reader: one page at a time, paper or gallery ground, built-in zoom.
+   Loaded after fancy.css on /read/ pages.
+   ========================================================================== */
+
+body.reading { height: 100vh; height: 100dvh; overflow: hidden; }
+
+.reader {
+  --r-bg: var(--paper);
+  --r-fg: var(--ink);
+  --r-dim: var(--mute);
+  --r-line: var(--rule);
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  background: var(--r-bg);
+  color: var(--r-fg);
+}
+.reader[data-ground="gallery"] {
+  --r-bg: var(--gallery);
+  --r-fg: #f3f3f5;
+  --r-dim: #9a9ca3;
+  --r-line: #2c2d31;
+}
+body.reading:has(.reader[data-ground="gallery"]) { background: var(--gallery); }
+
+/* --- bars ----------------------------------------------------------------- */
+.r-bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px 16px;
+  flex-wrap: wrap;
+  padding-block: 10px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  font-size: 14px; font-weight: 700;
+  transition: opacity .35s ease;
+}
+.r-foot { display: grid; justify-content: stretch; gap: 8px; padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
+.r-title { font-size: inherit; font-weight: 800; letter-spacing: 0; line-height: 1.2; display: flex; gap: 10px; align-items: center; min-width: 0; }
+.r-title span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.r-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.seg { display: inline-flex; box-shadow: inset 0 0 0 1.5px var(--r-fg); }
+.seg button, .r-order {
+  font: inherit; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  padding: 6px 10px; border: 0; border-radius: 0; background: transparent; color: var(--r-fg); cursor: pointer;
+}
+.seg button[aria-pressed="true"] { background: var(--r-fg); color: var(--r-bg); }
+.r-order { box-shadow: inset 0 0 0 1.5px var(--r-fg); display: inline-flex; gap: 6px; align-items: center; }
+
+.r-count { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--r-dim); }
+.r-count b { color: var(--r-fg); }
+.r-progress { height: 4px; background: var(--r-line); }
+.r-progress i { display: block; height: 100%; width: 0; background: var(--red); transition: width .25s ease; }
+
+/* --- stage ---------------------------------------------------------------- */
+.r-stage {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  padding: 8px max(56px, env(safe-area-inset-right, 0px)) 8px max(56px, env(safe-area-inset-left, 0px));
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  outline: none;
+}
+.r-img {
+  grid-area: 1 / 1;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto; height: auto;
+  min-width: 0; min-height: 0;
+  object-fit: contain;
+  box-shadow: 0 10px 30px -14px rgb(0 0 0 / .5);
+  transform-origin: center center;
+  will-change: transform;
+  -webkit-user-drag: none;
+  cursor: zoom-in;
+  background: var(--r-line);
+}
+.r-img.zoomed { cursor: grab; }
+.r-img.smooth { transition: transform .18s ease-out; }
+.r-stage.dragging .r-img { cursor: grabbing; }
+
+.r-arrow {
+  position: absolute; top: 50%; translate: 0 -50%;
+  width: 40px; height: 40px;
+  display: grid; place-items: center;
+  border: 0; border-radius: 0;
+  background: var(--r-fg); color: var(--r-bg);
+  font: inherit; font-size: 18px; font-weight: 800;
+  cursor: pointer;
+  transition: opacity .35s ease;
+  z-index: 2;
+}
+.r-arrow.prev { left: max(8px, env(safe-area-inset-left, 0px)); }
+.r-arrow.next { right: max(8px, env(safe-area-inset-right, 0px)); }
+.r-arrow:disabled { opacity: .25; cursor: default; }
+
+/* "N new pages" notice */
+.r-new {
+  position: absolute; top: 10px; left: 50%; translate: -50% 0; z-index: 3;
+  display: flex; align-items: center; gap: 4px;
+  max-width: calc(100% - 32px);
+  background: var(--red); color: #fff;
+  font-size: 13px; font-weight: 800;
+}
+.r-new span { padding: 8px 4px 8px 12px; }
+.r-new button { font: inherit; border: 0; background: transparent; color: inherit; cursor: pointer; padding: 8px 10px; }
+.r-new .jump { text-decoration: underline; text-underline-offset: 3px; }
+.r-new .dismiss { font-size: 16px; line-height: 1; }
+
+/* end card (after the last page) */
+.r-end {
+  grid-area: 1 / 1;
+  align-self: center;
+  width: min(100%, 640px);
+  background: var(--ink); color: var(--paper);
+  padding: 44px 36px;
+  display: grid; gap: 22px; justify-items: start;
+}
+.reader[data-ground="gallery"] .r-end { box-shadow: inset 0 0 0 1px #2c2d31; }
+.r-end .stripe { height: 10px; width: 100%; background: linear-gradient(90deg, var(--red) 0 50%, var(--blue) 50% 100%); }
+.r-end h2 { font-size: clamp(32px, 5vw, 52px); font-weight: 900; font-style: italic; }
+.r-end p { font-size: 19px; max-width: 34ch; }
+.r-end .btn .arr { background: var(--paper); color: var(--red); }
+.r-end small { font-size: 15px; color: var(--on-ink-mute); }
+.r-end small a { color: var(--paper); text-underline-offset: 4px; }
+.r-end .again { font: inherit; font-size: 14px; font-weight: 700; color: var(--on-ink-mute); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 4px; }
+
+.r-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.r-loading { grid-area: 1 / 1; font-size: 14px; font-weight: 700; color: var(--r-dim); }
+
+/* controls fade while reading; any movement or tap brings them back */
+.reader.idle .r-bar,
+.reader.idle .r-arrow { opacity: 0; }
+.reader.idle .r-bar:focus-within { opacity: 1; }
+
+@media (max-width: 760px) {
+  .r-stage { padding: 6px max(10px, env(safe-area-inset-right, 0px)) 6px max(10px, env(safe-area-inset-left, 0px)); }
+  .r-arrow { width: 34px; height: 34px; font-size: 16px; opacity: .85; }
+  .r-end { padding: 32px 22px; }
+  .r-bar { padding-block: 8px; }
+}
+@media (hover: none) {
+  /* on phones the arrows sit over the page edges; keep them quiet */
+  .r-arrow { opacity: .55; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .r-img.smooth, .r-bar, .r-arrow, .r-progress i { transition: none; }
+}

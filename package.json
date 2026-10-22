@@ -1,0 +1,8 @@
+{
+  "name": "fluffyhandsome",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "add-pages": "node scripts/add-pages.mjs"
+  }
+}

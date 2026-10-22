@@ -9,9 +9,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,400..900;1,400..900&display=swap">
   <link rel="stylesheet" href="/assets/css/fancy.css">
+  <link rel="stylesheet" href="/assets/css/reader.css">
+  <link rel="preload" href="/series/fluffyhand/pages.json" as="fetch" crossorigin>
 </head>
-<body>
-  <a class="skip" href="#main">Skip to content</a>
+<body class="reading">
+  <a class="skip" href="#reader-stage">Skip to the comic</a>
   <header class="sign">
     <div class="wrap">
       <a class="wordmark" href="/">ATTACOMIX</a>
@@ -24,30 +26,50 @@
     </div>
   </header>
 
-  <main id="main">
-    <section class="page-title">
-      <div class="wrap">
-        <div class="line"><span class="bullet red lg" aria-hidden="true">F</span><span class="label">Now reading</span></div>
-        <h1>The Fluffy Handsome Show</h1>
-        <p class="ph">The reader arrives in Phase 2.</p>
+  <!-- One reader per series: copy this page into /read/<series>/ and change data-series. -->
+  <main id="main" class="reader" data-series="fluffyhand" data-ground="paper">
+    <div class="r-bar r-top">
+      <h1 class="r-title"><span class="bullet red" aria-hidden="true">F</span><span>The Fluffy Handsome Show</span></h1>
+      <div class="r-controls">
+        <div class="seg" role="group" aria-label="Background">
+          <button type="button" id="ground-paper" data-ground="paper" aria-pressed="true">Paper</button>
+          <button type="button" id="ground-gallery" data-ground="gallery" aria-pressed="false">Gallery</button>
+        </div>
+        <button type="button" id="order" class="r-order" aria-label="Reading order: oldest first. Switch to newest first.">Oldest first <span aria-hidden="true">&#8644;</span></button>
       </div>
-    </section>
+    </div>
+
+    <div class="r-stage" id="reader-stage" tabindex="0" aria-label="Comic page. Use the arrow keys to turn pages, plus and minus to zoom.">
+      <p class="r-loading">Loading pages&hellip;</p>
+      <img class="r-img" alt="" hidden draggable="false">
+
+      <section class="r-end" hidden aria-labelledby="end-h">
+        <div class="stripe" aria-hidden="true"></div>
+        <h2 id="end-h">You&rsquo;re caught up.</h2>
+        <p>The story continues in Fancy City. Insiders read it first.</p>
+        <a class="btn red" href="https://www.patreon.com/fluffyhandsome" target="_blank" rel="noopener noreferrer">Become a Fancy City Insider <span class="arr" aria-hidden="true">&rarr;</span></a>
+        <small>Or start from the beginning in print: <a class="book-link" href="/books/#fluffy"><i>The Fluffy Handsome Show</i> &rarr;</a></small>
+        <button type="button" class="again">Back to page 1</button>
+      </section>
+
+      <div class="r-new" hidden role="status">
+        <span class="msg"></span>
+        <button type="button" class="jump">Jump to newest &rarr;</button>
+        <button type="button" class="dismiss" aria-label="Dismiss">&times;</button>
+      </div>
+
+      <button type="button" class="r-arrow prev" aria-label="Previous page">&larr;</button>
+      <button type="button" class="r-arrow next" aria-label="Next page">&rarr;</button>
+    </div>
+
+    <div class="r-bar r-foot">
+      <div class="r-count"><span class="where"></span><span class="hint">Double-tap to zoom</span></div>
+      <div class="r-progress" aria-hidden="true"><i></i></div>
+    </div>
+
+    <p class="r-status" aria-live="polite"></p>
   </main>
 
-  <footer class="site-foot">
-    <div class="wrap">
-      <div>
-        <p>If you&rsquo;ve made it this far, I can&rsquo;t tell you how grateful I am that you have taken interest in this silly and sincere labor of love. Whoever you are, at whatever point I have found you in the trajectory of your time on earth: thank you for sharing this consciousness with me.</p>
-        <p class="sig">Your Uncle Attaboy</p>
-      </div>
-      <ul>
-        <li><a href="/read/">Read</a></li>
-        <li><a href="/books/">Books</a></li>
-        <li><a href="/about/">About</a></li>
-        <li><a href="https://www.patreon.com/fluffyhandsome" target="_blank" rel="noopener noreferrer">Patreon &#8599;</a></li>
-        <li><a href="https://www.youtube.com/@UncleAttaboy" target="_blank" rel="noopener noreferrer">YouTube &#8599;</a></li>
-      </ul>
-    </div>
-  </footer>
+  <script src="/assets/js/reader.js" defer></script>
 </body>
 </html>
