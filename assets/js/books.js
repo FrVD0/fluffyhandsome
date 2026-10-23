@@ -102,6 +102,44 @@
     if (luluLoaded) return;
     luluLoaded = true;
     document.head.append(el('script', { src: 'https://js.lulu.com/lulu-buy.js', defer: '' }));
+    customElements.whenDefined('lulu-buy-button').then(() => {
+      document.querySelectorAll('lulu-buy-button').forEach(styleLulu);
+    });
+  }
+
+  // Lulu's button lives in its own shadow DOM and takes its look from the
+  // Lulu dashboard. Restyle it to match the site's square signage buttons.
+  // (Custom properties like --blue and --sans inherit into the shadow DOM.)
+  const LULU_CSS = `
+    .lulu-buy-button { padding: 0 !important; background: transparent !important; border: 0 !important; }
+    .cta-button {
+      border-radius: 0 !important;
+      background: var(--blue) !important;
+      color: var(--paper) !important;
+      font-family: var(--sans) !important;
+      font-size: 16px !important;
+      font-weight: 800 !important;
+      line-height: 1.5 !important;
+      padding: 14px 18px !important;
+      max-width: none !important;
+    }
+    .cta-button:hover { filter: brightness(1.12); }
+    .cta-button:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+  `;
+  let luluSheet = null;
+  function styleLulu(btn, tries = 0) {
+    const root = btn.shadowRoot;
+    if (!root) {
+      if (tries < 20) setTimeout(() => styleLulu(btn, tries + 1), 100);
+      return;
+    }
+    if (!luluSheet) {
+      luluSheet = new CSSStyleSheet();
+      luluSheet.replaceSync(LULU_CSS);
+    }
+    if (!root.adoptedStyleSheets.includes(luluSheet)) {
+      root.adoptedStyleSheets = [...root.adoptedStyleSheets, luluSheet];
+    }
   }
 
   function teaserItem(b) {
