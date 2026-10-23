@@ -35,4 +35,4 @@ example after changing the quality settings in `scripts/add-pages.mjs`, run
 - `assets/css/fancy.css` is the shared design system (colors, type, buttons, header, footer).
 - `assets/css/reader.css` and `assets/js/reader.js` are the reader.
 - `series/<name>/series.json` marks a folder as a reader series; `pages.json` is generated.
-- `scripts/refresh-playlist.mjs` refreshes the YouTube list.
+- `scripts/refresh-playlist.mjs` refreshes the YouTube video list on the About page (`assets/js/youtube.js`).

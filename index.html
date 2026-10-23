@@ -1,654 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ATTACOMIX</title>
-  <meta name="description" content="ATTACOMIX: Comix for the Cosmos! The hand-made comix universe of Your Uncle Attaboy." />
-  <meta name="color-scheme" content="light dark" />
-  <style>
-    :root {
-      --bg: #ffffff; --fg: #111; --muted: rgba(17,17,17,.65);
-      --line: rgba(17,17,17,.1);
-      --max: 640px; --frame-max: 1100px; --pad: clamp(16px,4vmin,32px);
-      --radius: 10px;
-      --shadow: 0 2px 16px rgba(0,0,0,.1);
-      --accent: #111;
-      --btn-secondary-border: rgba(17,17,17,.35);
-    }
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #0e0e10; --fg: #e9e9ee; --muted: rgba(233,233,238,.65);
-        --line: rgba(233,233,238,.12);
-        --shadow: 0 2px 20px rgba(0,0,0,.5);
-        --accent: #e9e9ee;
-        --btn-secondary-border: rgba(233,233,238,.35);
-      }
-    }
-    *, *::before, *::after { box-sizing: border-box; }
-    html { scroll-snap-type: y mandatory; }
-    html, body {
-      margin: 0; background: var(--bg); color: var(--fg);
-      font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Noto Sans, Arial, sans-serif;
-      text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased;
-    }
-    body { touch-action: pan-y; }
-
-    .spacer { height: 100vh; height: 100svh; scroll-snap-align: start; }
-
-    .stage { position: fixed; inset: 0; z-index: 1; }
-
-    .panel {
-      position: absolute; inset: 0;
-      display: flex; align-items: center; justify-content: center;
-      padding: var(--pad);
-      opacity: 0; visibility: hidden; pointer-events: none;
-    }
-    .panel:first-child { opacity: 1; visibility: visible; pointer-events: auto; }
-
-    .panel-inner {
-      display: flex; flex-direction: column; align-items: center;
-      text-align: center; gap: 1.15rem;
-      height: 100%; width: 100%;
-      max-width: min(94vw, var(--frame-max));
-      will-change: transform;
-    }
-
-    .wordmark {
-      margin: 0;
-      font-size: clamp(1.6rem, 5.5vw, 2.6rem);
-      font-weight: 800; letter-spacing: .04em;
-    }
-
-    /* The frame grows to claim whatever vertical space the text leaves over;
-       the image fills it, letterboxed to its own aspect. */
-    .comic-frame {
-      flex: 1 1 auto; min-height: 0; min-width: 0;
-      align-self: stretch;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .comic-frame img {
-      display: block;
-      max-width: 100%; max-height: 100%;
-      width: auto; height: auto;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      background: var(--line);
-      cursor: zoom-in;
-      -webkit-user-drag: none; user-select: none;
-    }
-
-    .prose {
-      margin: 0;
-      font-size: clamp(.98rem, 2.2vw, 1.12rem);
-      line-height: 1.6;
-      max-width: 52ch;
-    }
-    .prose .sig { display: block; margin-top: .5em; font-style: italic; color: var(--muted); }
-
-    .cta-row {
-      display: flex; flex-wrap: wrap; justify-content: center;
-      gap: .75rem;
-    }
-
-    .btn {
-      display: inline-block;
-      font: inherit; font-weight: 700; font-size: .92rem;
-      padding: .75em 1.75em;
-      border-radius: 999px;
-      text-decoration: none;
-      letter-spacing: .01em;
-      transition: opacity .15s ease, transform .1s ease, background .15s ease;
-      border: 2px solid transparent;
-    }
-    .btn:active { transform: scale(.97); }
-    .btn-primary {
-      background: var(--fg); color: var(--bg);
-      border-color: var(--fg);
-    }
-    .btn-primary:hover { opacity: .85; }
-    .btn-secondary {
-      background: transparent; color: var(--fg);
-      border-color: var(--btn-secondary-border);
-    }
-    .btn-secondary:hover { border-color: var(--fg); }
-
-    .scroll-cue {
-      position: absolute; bottom: calc(var(--pad) * .75); left: 50%;
-      transform: translateX(-50%);
-      color: var(--muted); font-size: 1.4rem; line-height: 1;
-      animation: cue-bob 2.2s ease-in-out infinite;
-      user-select: none;
-    }
-    @keyframes cue-bob {
-      0%, 100% { transform: translateX(-50%) translateY(0); }
-      50% { transform: translateX(-50%) translateY(7px); }
-    }
-
-    .dot-nav {
-      position: fixed; right: clamp(8px, 2vw, 20px); top: 50%;
-      transform: translateY(-50%);
-      z-index: 4;
-      display: flex; flex-direction: column; gap: .65rem;
-      margin: 0; padding: 0; list-style: none;
-    }
-    .dot-nav button {
-      width: 9px; height: 9px; padding: 0;
-      border-radius: 50%; border: none; cursor: pointer;
-      background: var(--muted); opacity: .4;
-      transition: opacity .25s ease, transform .25s ease;
-    }
-    .dot-nav button.active { opacity: 1; transform: scale(1.35); background: var(--fg); }
-    .dot-nav button:hover { opacity: .8; }
-    @media (pointer: coarse) {
-      .dot-nav { gap: .85rem; }
-      .dot-nav button { width: 11px; height: 11px; }
-    }
-
-    /* --- YouTube facade --- */
-    .video-frame {
-      flex: 0 1 auto; min-height: 0;
-      width: min(100%, max(280px, calc((100svh - 21rem) * 16 / 9)));
-      aspect-ratio: 16 / 9;
-      position: relative;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      background: #000;
-    }
-    .video-frame img.yt-thumb {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%; object-fit: cover;
-      display: block;
-    }
-    .video-frame iframe {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%; border: 0;
-    }
-    .yt-play {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
-      display: flex; align-items: center; justify-content: center;
-      background: rgba(0,0,0,.12);
-      border: none; cursor: pointer; padding: 0;
-      transition: background .2s ease;
-    }
-    .yt-play:hover, .yt-play:focus-visible { background: rgba(0,0,0,.28); }
-    .yt-play svg {
-      width: 74px; height: 52px;
-      filter: drop-shadow(0 2px 8px rgba(0,0,0,.5));
-      transition: transform .15s ease;
-    }
-    .yt-play:hover svg { transform: scale(1.08); }
-    .yt-escape {
-      position: absolute; right: 8px; bottom: 52px; /* clears the player's control bar */
-      padding: .35em .8em;
-      border-radius: 999px;
-      background: rgba(20,20,20,.78); color: #fff;
-      font-size: .78rem; font-weight: 600;
-      text-decoration: none;
-      opacity: .85;
-      transition: opacity .15s ease;
-    }
-    .yt-escape:hover, .yt-escape:focus-visible { opacity: 1; }
-
-    /* --- lightbox --- */
-    #lightbox {
-      position: fixed; inset: 0; z-index: 20;
-      background: #0a0a0b;
-      display: none;
-      align-items: center; justify-content: center;
-      touch-action: none; overflow: hidden;
-    }
-    #lightbox.open { display: flex; }
-    #lightbox img {
-      max-width: 100%; max-height: 100%;
-      width: auto; height: auto;
-      will-change: transform;
-      user-select: none; -webkit-user-drag: none;
-      touch-action: none; /* not inherited from #lightbox — without this, touch drags scroll the page behind */
-      cursor: grab;
-    }
-    #lightbox img.smooth { transition: transform .18s ease-out; }
-    .lb-close {
-      position: absolute; top: max(10px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right));
-      z-index: 21;
-      width: 44px; height: 44px;
-      border: none; border-radius: 50%; cursor: pointer;
-      background: rgba(255,255,255,.14); color: #fff;
-      font-size: 1.5rem; line-height: 1;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .lb-close:hover, .lb-close:focus-visible { background: rgba(255,255,255,.3); }
-    .lb-hint {
-      position: absolute; bottom: max(12px, env(safe-area-inset-bottom)); left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.55); font-size: .78rem;
-      pointer-events: none; user-select: none;
-    }
-
-    footer {
-      position: relative; z-index: 3;
-      background: var(--bg);
-      max-width: none; border-top: 1px solid var(--line);
-      padding: var(--pad);
-      text-align: center;
-      scroll-snap-align: end;
-    }
-    .social {
-      display: flex; justify-content: center; gap: 1.25rem; flex-wrap: wrap;
-      margin-bottom: .75rem;
-    }
-    .social a {
-      color: var(--muted); text-decoration: none; font-size: .85rem; font-weight: 600;
-      transition: color .2s ease;
-    }
-    .social a:hover { color: var(--fg); }
-    footer small { display: block; color: var(--muted); font-size: .78rem; }
-
-    @media (prefers-reduced-motion: reduce) {
-      .scroll-cue { animation: none; }
-      .panel-inner { will-change: auto; }
-      #lightbox img.smooth { transition: none; }
-    }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ATTACOMIX · Comix for the Cosmos</title>
+  <meta name="description" content="ATTACOMIX: Comix for the Cosmos! The hand-made comix of Your Uncle Attaboy. Read the latest pages of The Fluffy Handsome Show.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,400..900;1,400..900&display=swap">
+  <link rel="stylesheet" href="/assets/css/fancy.css">
+  <link rel="preload" href="/series/fluffyhand/web/006.jpg" as="image">
 </head>
 <body>
-
-  <div class="stage" aria-live="off">
-
-    <section class="panel" aria-label="Welcome">
-      <div class="panel-inner">
-        <h1 class="wordmark">ATTACOMIX</h1>
-        <div class="comic-frame"><img data-pool="all" alt="A random panel from the ATTACOMIX universe" /></div>
-        <p class="prose">Welcome to the home of ATTACOMIX: &ldquo;Comix for the Cosmos!&rdquo; Being, as it were, a banner for the peculiar madness of the artist known as Your Uncle Attaboy and any friends as he may make along the way.</p>
-      </div>
-      <div class="scroll-cue" aria-hidden="true">&#x25BC;</div>
-    </section>
-
-    <section class="panel" aria-label="What you'll find here">
-      <div class="panel-inner">
-        <div class="comic-frame"><img data-pool="all" alt="A random panel from the ATTACOMIX universe" /></div>
-        <p class="prose">Here you&rsquo;ll find some random selections from my work along with links that will take you places where you can see more. Engage more.</p>
-      </div>
-    </section>
-
-    <section class="panel" aria-label="How the work is made">
-      <div class="panel-inner">
-        <div class="comic-frame"><img data-pool="all" alt="A random panel from the ATTACOMIX universe" /></div>
-        <p class="prose">All of my comix work is hand-made. I work primarily in pen and ink. Currently my favorite pen is a Koh-I-Noor Rapidiograph, .50. I also like messing around with brushes. Most of my work is in black and white, but I am planning to introduce much more color.</p>
-      </div>
-    </section>
-
-    <section class="panel" aria-label="A note on AI">
-      <div class="panel-inner">
-        <div class="comic-frame"><img data-pool="all" alt="A random panel from the ATTACOMIX universe" /></div>
-        <p class="prose">While I make art with my bare hands, I turn to agentic AI tools (built on LLMs like Claude) for this site &mdash; I describe what I want, and it plans, writes, tests, and verifies the actual code. If you&rsquo;re a purist, and my AI-use is a dealbreaker, I thank you for your time and I understand if you don&rsquo;t care to follow my work.</p>
-      </div>
-    </section>
-
-    <section class="panel" aria-label="Patreon">
-      <div class="panel-inner">
-        <div class="comic-frame"><img data-pool="all" alt="A random panel from the ATTACOMIX universe" /></div>
-        <p class="prose">Still with me? Yay! I hope you enjoy the samples here. For regular updates, please check out my Patreon. The weekly comic/newsletter is free!</p>
-        <div class="cta-row">
-          <a class="btn btn-primary" href="https://patreon.com/fluffyhandsome" target="_blank" rel="noopener noreferrer">Visit my Patreon</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="panel" aria-label="YouTube">
-      <div class="panel-inner">
-        <div class="video-frame" id="yt-facade"></div>
-        <p class="prose">To see me in action, check out my YouTube channel. Currently, the focus there is silent process videos focused on my series ATTACOMIX IN(ner)SANITIES. Future iterations will carry sounds: music, voiceover, and who knows what else. And perhaps other ATTACOMIX series will find their way there.</p>
-        <div class="cta-row">
-          <a class="btn btn-primary" href="https://www.youtube.com/@UncleAttaboy" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="panel" aria-label="Buy the book">
-      <div class="panel-inner">
-        <div class="comic-frame"><img data-pool="innersanity" alt="A panel from ATTACOMIX IN(ner)SANITIES" /></div>
-        <p class="prose">And if you truly dig those IN(ner)SANITIES, then consider buying the first collection! More collections are on the way!</p>
-        <div class="cta-row">
-          <a class="btn btn-primary" href="https://www.lulu.com/shop/uncle-attaboy/selected-innersanities/paperback/product-2md842z.html?page=1&amp;pageSize=4" target="_blank" rel="noopener noreferrer">Buy the Book</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="panel" aria-label="Thank you">
-      <div class="panel-inner">
-        <div class="comic-frame"><img data-pool="all" alt="A random panel from the ATTACOMIX universe" /></div>
-        <p class="prose">If you&rsquo;ve made it this far, I can&rsquo;t tell you how grateful I am that you have taken interest in this silly and sincere labor of love. Whoever you are, at whatever point I have found you in the trajectory of your time on earth: thank you for sharing this consciousness with me,<span class="sig">Your Uncle Attaboy</span></p>
-      </div>
-    </section>
-
-  </div>
-
-  <ol class="dot-nav" aria-label="Sections"></ol>
-
-  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged comic panel">
-    <img alt="" />
-    <button class="lb-close" aria-label="Close enlarged view">&#215;</button>
-    <div class="lb-hint" aria-hidden="true">pinch, scroll, or double-tap to zoom &middot; Esc to close</div>
-  </div>
-
-  <div class="spacer"></div>
-  <div class="spacer"></div>
-  <div class="spacer"></div>
-  <div class="spacer"></div>
-  <div class="spacer"></div>
-  <div class="spacer"></div>
-  <div class="spacer"></div>
-  <div class="spacer"></div>
-
-  <footer>
-    <div class="social">
-      <a href="https://instagram.com/uncleattaboy" target="_blank" rel="noopener noreferrer">Instagram</a>
-      <a href="https://fluffyhandsome.threadless.com" target="_blank" rel="noopener noreferrer">T-Shirts and More!</a>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="sign">
+    <div class="wrap">
+      <a class="wordmark" href="/" aria-current="page">ATTACOMIX</a>
+      <nav class="nav" aria-label="Main">
+        <a href="/read/"><span class="bullet red" aria-hidden="true">R</span>Read</a>
+        <a href="/books/"><span class="bullet blue" aria-hidden="true">B</span>Books</a>
+        <a href="https://www.patreon.com/fluffyhandsome" target="_blank" rel="noopener noreferrer"><span class="bullet ring" aria-hidden="true">P</span>Patreon</a>
+        <a href="/about/">About</a>
+      </nav>
     </div>
-    <small>&copy; <span id="y"></span> &mdash; Breathe in. Breathe out. Love.</small>
+  </header>
+
+  <main id="main">
+    <section class="wrap hero" aria-labelledby="hero-h">
+      <a class="hero-art" href="/read/#6" aria-label="Open page 6 in the reader">
+        <img src="/series/fluffyhand/web/006.jpg" width="1200" height="1929" alt="The Fluffy Hand Some Vision #6: a radiating star of hearts, spirals and triangles in red, blue and yellow, signed Your Uncle Attaboy.">
+      </a>
+      <div class="hero-copy">
+        <div class="line"><span class="bullet red lg" aria-hidden="true">F</span><span class="label" id="hero-count">Now reading</span></div>
+        <h1 id="hero-h">The Fluffy Handsome Show</h1>
+        <p>New pages from Fancy City, hand-drawn by Your Uncle Attaboy.</p>
+        <div class="btns">
+          <a class="btn red" id="read-latest" href="/read/#end">Read the latest <span class="arr" aria-hidden="true">&rarr;</span></a>
+          <a class="btn outline" href="/read/#1">From the beginning <span class="arr" aria-hidden="true">&rarr;</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-label="Welcome" style="border-top: 1px solid var(--rule)">
+      <div class="wrap">
+        <p class="welcome">Welcome to the home of ATTACOMIX: &ldquo;Comix for the Cosmos!&rdquo; Being, as it were, a banner for the peculiar madness of the artist known as Your Uncle Attaboy and any friends as he may make along the way.</p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="shelf-h">
+      <div class="wrap">
+        <div class="sec-head">
+          <h2 id="shelf-h">From the shelf</h2>
+          <a href="/books/">All books &rarr;</a>
+        </div>
+        <div class="teaser" id="shelf-teaser"></div>
+      </div>
+    </section>
+
+    <section class="insider" aria-labelledby="insider-h">
+      <div class="wrap">
+        <div>
+          <h2 id="insider-h">Become a Fancy City Insider.</h2>
+          <p>Insiders read new pages before they reach this site. Membership is free.</p>
+        </div>
+        <a class="btn" href="https://www.patreon.com/fluffyhandsome" target="_blank" rel="noopener noreferrer">Join on Patreon <span class="arr" aria-hidden="true">&rarr;</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <div class="wrap">
+      <div>
+        <p>If you&rsquo;ve made it this far, I can&rsquo;t tell you how grateful I am that you have taken interest in this silly and sincere labor of love. Whoever you are, at whatever point I have found you in the trajectory of your time on earth: thank you for sharing this consciousness with me.</p>
+        <p class="sig">Your Uncle Attaboy</p>
+        <p class="small">&copy; Your Uncle Attaboy &middot; Breathe in. Breathe out. Love.</p>
+      </div>
+      <ul>
+        <li><a href="/read/">Read</a></li>
+        <li><a href="/books/">Books</a></li>
+        <li><a href="/about/">About</a></li>
+        <li><a href="https://www.patreon.com/fluffyhandsome" target="_blank" rel="noopener noreferrer">Patreon &#8599;</a></li>
+        <li><a href="https://www.youtube.com/@UncleAttaboy" target="_blank" rel="noopener noreferrer">YouTube &#8599;</a></li>
+        <li><a href="https://instagram.com/uncleattaboy" target="_blank" rel="noopener noreferrer">Instagram &#8599;</a></li>
+        <li><a href="https://fluffyhandsome.threadless.com" target="_blank" rel="noopener noreferrer">T-shirts and more &#8599;</a></li>
+      </ul>
+    </div>
   </footer>
 
+  <script src="/assets/js/books.js" defer></script>
   <script>
-    const panels = [...document.querySelectorAll('.panel')];
-    const spacers = [...document.querySelectorAll('.spacer')];
-    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-
-    // --- YouTube panel -------------------------------------------------------
-    // Video list baked from the "IN(ner)SANITIES (silent)" playlist.
-    // To refresh after adding videos, run:  node scripts/refresh-playlist.mjs
-    const YT_LIST = 'PLs0L9o62y0BsjLP65gNBLXvpsEjmuKfM8';
-    const YT_VIDEOS = /* YT_VIDEOS_START */[
-      {"id":"IwD6AWM-gYM","title":"Colors world the page with life that enlivens the world the colors worlded… simple, really."},
-      {"id":"Z6Y37G3-BZ0","title":"Something like a tree, something like you, something like me…"},
-      {"id":"dPjvxiVHp6o","title":"Glowing up the Blank Page with wraiths of smoke and falling ash"},
-      {"id":"LdW11li7t_4","title":"A friendly pointer on the Blank Page"},
-      {"id":"OLIIMk0Txz0","title":"Whirling from the vast potentialities of the blank page, on fearsome wings…"},
-      {"id":"YaNgNjlTgiE","title":"Another night exploring the limitless space of the blank page…"},
-      {"id":"bGl6F_uJgMQ","title":"Something frilly this way comes…"}
-    ]/* YT_VIDEOS_END */;
-
-    (function buildFacade() {
-      const host = document.getElementById('yt-facade');
-      const v = YT_VIDEOS[Math.floor(Math.random() * YT_VIDEOS.length)];
-
-      const thumb = document.createElement('img');
-      thumb.className = 'yt-thumb';
-      thumb.alt = '';
-      thumb.src = 'https://i.ytimg.com/vi/' + v.id + '/maxresdefault.jpg';
-      thumb.onerror = () => { thumb.onerror = null; thumb.src = 'https://i.ytimg.com/vi/' + v.id + '/hqdefault.jpg'; };
-
-      const btn = document.createElement('button');
-      btn.className = 'yt-play';
-      btn.setAttribute('aria-label', 'Play video: ' + v.title);
-      btn.innerHTML = '<svg viewBox="0 0 74 52" aria-hidden="true"><rect width="74" height="52" rx="12" fill="rgba(20,20,20,.85)"/><path d="M29 15 L51 26 L29 37 Z" fill="#fff"/></svg>';
-      btn.addEventListener('click', () => {
-        // www.youtube.com (not youtube-nocookie): signed-in viewers' cookies
-        // apply, which greatly reduces YouTube's "sign in to confirm you're
-        // not a bot" wall (common on VPNs / carrier networks). Nothing loads
-        // from YouTube until this click, so the privacy cost stays minimal.
-        const iframe = document.createElement('iframe');
-        iframe.src = 'https://www.youtube.com/embed/' + v.id +
-          '?list=' + YT_LIST + '&autoplay=1&playsinline=1&rel=0';
-        iframe.title = v.title;
-        iframe.allow = 'autoplay; encrypted-media; picture-in-picture';
-        iframe.allowFullscreen = true;
-        // Escape hatch: if YouTube's bot wall appears anyway (its sign-in
-        // flow refuses to run inside an iframe), one tap opens the video
-        // in the YouTube app/site where the viewer is already signed in.
-        const esc = document.createElement('a');
-        esc.className = 'yt-escape';
-        esc.href = 'https://www.youtube.com/watch?v=' + v.id + '&list=' + YT_LIST;
-        esc.target = '_blank';
-        esc.rel = 'noopener noreferrer';
-        esc.textContent = 'Watch on YouTube ↗';
-        host.replaceChildren(iframe, esc);
-      });
-
-      host.replaceChildren(thumb, btn);
-    })();
-
-    // --- random images -------------------------------------------------------
-    // manifest.json entries: { web, full, fullExt, images:[basenames] }
-    // Panels show the small "web" teaser; the lightbox upgrades to "full".
-    fetch('manifest.json')
+    // Point "Read the latest" at the newest page and show the page count.
+    fetch('/series/fluffyhand/pages.json', { cache: 'no-cache' })
       .then(r => r.json())
-      .then(manifest => {
-        const pools = {};
-        const seriesKeys = Object.keys(manifest);
-        for (const [key, data] of Object.entries(manifest)) {
-          pools[key] = data.images.map(name => ({
-            web: data.web + name + '.jpg',
-            full: data.full + name + data.fullExt
-          }));
-        }
-        const used = new Set();
-        const pick = arr => {
-          for (let t = 0; t < 50; t++) {
-            const c = arr[Math.floor(Math.random() * arr.length)];
-            if (!used.has(c.web)) { used.add(c.web); return c; }
-          }
-          return arr[Math.floor(Math.random() * arr.length)];
-        };
-        panels.forEach(p => {
-          const img = p.querySelector('.comic-frame img');
-          if (!img) return;
-          // "all" picks a series uniformly first so smaller series aren't drowned out
-          const key = pools[img.dataset.pool]
-            ? img.dataset.pool
-            : seriesKeys[Math.floor(Math.random() * seriesKeys.length)];
-          const choice = pick(pools[key]);
-          img.src = choice.web;
-          img.dataset.full = choice.full;
-          img.decoding = 'async';
-        });
-      });
-
-    // --- lightbox ------------------------------------------------------------
-    const lb = document.getElementById('lightbox');
-    const lbImg = lb.querySelector('img');
-    const lbClose = lb.querySelector('.lb-close');
-    let lbScale = 1, lbTx = 0, lbTy = 0, lastFocus = null;
-    const MAX_SCALE = 8;
-
-    function lbApply() {
-      lbImg.style.transform = 'translate(' + lbTx + 'px,' + lbTy + 'px) scale(' + lbScale + ')';
-      lbImg.style.cursor = lbScale > 1 ? 'grab' : 'zoom-in';
-    }
-    function lbClampPan() {
-      const sw = lbImg.clientWidth * lbScale, sh = lbImg.clientHeight * lbScale;
-      const maxX = Math.max(0, (sw - lb.clientWidth) / 2 + 40);
-      const maxY = Math.max(0, (sh - lb.clientHeight) / 2 + 40);
-      lbTx = Math.min(maxX, Math.max(-maxX, lbTx));
-      lbTy = Math.min(maxY, Math.max(-maxY, lbTy));
-      if (lbScale <= 1.02) { lbScale = 1; lbTx = 0; lbTy = 0; }
-    }
-    // Zoom keeping the viewport point (px,py) fixed on the same image point.
-    function lbZoomAt(px, py, newScale, smooth) {
-      newScale = Math.min(MAX_SCALE, Math.max(1, newScale));
-      const cx = lb.clientWidth / 2, cy = lb.clientHeight / 2;
-      const f = newScale / lbScale;
-      lbTx = (px - cx) - f * ((px - cx) - lbTx);
-      lbTy = (py - cy) - f * ((py - cy) - lbTy);
-      lbScale = newScale;
-      lbClampPan();
-      if (smooth && !reducedMotion.matches) {
-        lbImg.classList.add('smooth');
-        setTimeout(() => lbImg.classList.remove('smooth'), 200);
-      }
-      lbApply();
-    }
-
-    // NOTE: scrolling is deliberately NOT locked via overflow:hidden — toggling
-    // overflow on the scroll-snap container makes Chrome re-evaluate mandatory
-    // snap points and phantom-scroll between panels. Instead the lightbox
-    // swallows all scroll input itself and the crossfade freezes while open.
-    function lbOpen(img) {
-      lastFocus = document.activeElement;
-      lbScale = 1; lbTx = 0; lbTy = 0;
-      lbImg.src = img.src;                     // teaser: instant (already cached)
-      lbImg.alt = img.alt;
-      lbApply();
-      lb.classList.add('open');
-      lbClose.focus();
-      const full = img.dataset.full;
-      if (full) {                              // then upgrade to lossless full-res
-        const hi = new Image();
-        hi.onload = () => { if (lb.classList.contains('open')) lbImg.src = full; };
-        hi.src = full;
-      }
-    }
-    function lbHide() {
-      lb.classList.remove('open');
-      lbImg.src = '';
-      if (lastFocus && lastFocus.focus) lastFocus.focus();
-      update();
-    }
-    // Swallow scroll input while the lightbox is open.
-    lb.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
-    document.addEventListener('keydown', e => {
-      if (!lb.classList.contains('open')) return;
-      if ([' ', 'PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) {
-        e.preventDefault();
-      }
-    });
-
-    document.querySelector('.stage').addEventListener('click', e => {
-      const img = e.target.closest('.comic-frame img');
-      if (img && img.src) lbOpen(img);
-    });
-    lbClose.addEventListener('click', lbHide);
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && lb.classList.contains('open')) lbHide();
-    });
-
-    // Wheel zoom
-    lb.addEventListener('wheel', e => {
-      e.preventDefault();
-      const factor = Math.exp(-e.deltaY * 0.0018);
-      lbZoomAt(e.clientX, e.clientY, lbScale * factor, false);
-    }, { passive: false });
-
-    // Pointer gestures: pinch (2 pointers), pan (1 pointer while zoomed)
-    const pointers = new Map();
-    let pinchStart = null, panStart = null, tapCandidate = null, lastTap = { t: 0, x: 0, y: 0 };
-
-    lb.addEventListener('pointerdown', e => {
-      // Let the close button receive its own click: pointer capture retargets
-      // the click event to the capturing element, which would swallow it.
-      if (e.target.closest('.lb-close')) return;
-      lb.setPointerCapture(e.pointerId);
-      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-      if (pointers.size === 2) {
-        const [a, b] = [...pointers.values()];
-        pinchStart = {
-          dist: Math.hypot(a.x - b.x, a.y - b.y),
-          scale: lbScale,
-          cx: (a.x + b.x) / 2, cy: (a.y + b.y) / 2
-        };
-        panStart = null; tapCandidate = null;
-      } else if (pointers.size === 1) {
-        panStart = { x: e.clientX, y: e.clientY, tx: lbTx, ty: lbTy };
-        tapCandidate = { x: e.clientX, y: e.clientY, t: Date.now(), target: e.target };
-        if (lbScale > 1) lbImg.style.cursor = 'grabbing';
-      }
-    });
-    lb.addEventListener('pointermove', e => {
-      if (!pointers.has(e.pointerId)) return;
-      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-      if (pointers.size === 2 && pinchStart) {
-        const [a, b] = [...pointers.values()];
-        const d = Math.hypot(a.x - b.x, a.y - b.y);
-        lbZoomAt(pinchStart.cx, pinchStart.cy, pinchStart.scale * (d / pinchStart.dist), false);
-      } else if (pointers.size === 1 && panStart && lbScale > 1) {
-        lbTx = panStart.tx + (e.clientX - panStart.x);
-        lbTy = panStart.ty + (e.clientY - panStart.y);
-        lbClampPan(); lbApply();
-      }
-      if (tapCandidate && Math.hypot(e.clientX - tapCandidate.x, e.clientY - tapCandidate.y) > 8) {
-        tapCandidate = null;
-      }
-    });
-    function lbPointerEnd(e) {
-      pointers.delete(e.pointerId);
-      if (pointers.size < 2) pinchStart = null;
-      if (pointers.size === 0) {
-        panStart = null;
-        lbImg.style.cursor = lbScale > 1 ? 'grab' : 'zoom-in';
-        if (tapCandidate && Date.now() - tapCandidate.t < 350) {
-          const now = Date.now();
-          const isDouble = now - lastTap.t < 320 &&
-            Math.hypot(tapCandidate.x - lastTap.x, tapCandidate.y - lastTap.y) < 40;
-          if (isDouble) {                       // double-tap: toggle zoom
-            lbZoomAt(tapCandidate.x, tapCandidate.y, lbScale > 1 ? 1 : 2.5, true);
-            lastTap = { t: 0, x: 0, y: 0 };
-          } else {
-            if (tapCandidate.target === lb) lbHide();   // tap backdrop: close
-            lastTap = { t: now, x: tapCandidate.x, y: tapCandidate.y };
-          }
-        }
-        tapCandidate = null;
-      }
-    }
-    lb.addEventListener('pointerup', lbPointerEnd);
-    lb.addEventListener('pointercancel', lbPointerEnd);
-    // (no dblclick listener: the pointerup double-tap detection above already
-    // covers mouse double-clicks; a second handler would toggle zoom twice)
-
-    // Suppress page-level pinch zoom (iOS Safari) — the lightbox handles zoom.
-    document.addEventListener('gesturestart', e => e.preventDefault());
-
-    // --- scroll-linked crossfade --------------------------------------------
-    let panelH = 1;
-    function measure() { panelH = spacers[0].getBoundingClientRect().height || 1; }
-
-    const dotNav = document.querySelector('.dot-nav');
-    panels.forEach((p, i) => {
-      const li = document.createElement('li');
-      const b = document.createElement('button');
-      b.setAttribute('aria-label', 'Go to section ' + (i + 1) + ': ' + p.getAttribute('aria-label'));
-      b.addEventListener('click', () => {
-        spacers[i].scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth' });
-      });
-      li.appendChild(b); dotNav.appendChild(li);
-    });
-    const dots = [...dotNav.querySelectorAll('button')];
-
-    function update() {
-      // Never crossfade in response to pinch/zoom of the visual viewport —
-      // only real page scrolls at 1:1 scale drive the panel transition.
-      if (window.visualViewport && window.visualViewport.scale > 1.01) return;
-      // Freeze the crossfade while the lightbox is up.
-      if (lb.classList.contains('open')) return;
-      const pos = Math.min(panels.length - 1, Math.max(0, window.scrollY / panelH));
-      panels.forEach((p, i) => {
-        const d = Math.abs(pos - i);
-        const o = reducedMotion.matches ? (d < .5 ? 1 : 0) : Math.max(0, 1 - d);
-        p.style.opacity = o;
-        p.style.visibility = o <= 0 ? 'hidden' : 'visible';
-        p.style.pointerEvents = d < .5 ? 'auto' : 'none';
-        if (!reducedMotion.matches) {
-          p.querySelector('.panel-inner').style.transform =
-            'translateY(' + ((i - pos) * 24).toFixed(1) + 'px)';
-        }
-      });
-      const active = Math.round(pos);
-      dots.forEach((b, i) => b.classList.toggle('active', i === active));
-    }
-
-    let ticking = false;
-    addEventListener('scroll', () => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(() => { update(); ticking = false; });
-      }
-    }, { passive: true });
-    addEventListener('resize', () => { measure(); update(); });
-    measure(); update();
-
-    document.getElementById('y').textContent = new Date().getFullYear();
+      .then(({ pages }) => {
+        if (!pages.length) return;
+        const newest = Math.max(...pages.map(p => p.n));
+        document.getElementById('read-latest').href = '/read/#' + newest;
+        document.getElementById('hero-count').textContent = 'Now reading \u00b7 ' + pages.length + ' pages';
+      })
+      .catch(() => {});
   </script>
 </body>
 </html>

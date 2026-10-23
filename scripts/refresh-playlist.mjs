@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Refreshes the baked YouTube video list in index.html from the playlist.
+// Refreshes the baked YouTube video list in assets/js/youtube.js from the playlist.
 // Run from the repo root after adding videos to the playlist:
 //   node scripts/refresh-playlist.mjs
 // It rewrites the array between /* YT_VIDEOS_START */ and /* YT_VIDEOS_END */.
@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const PLAYLIST_ID = 'PLs0L9o62y0BsjLP65gNBLXvpsEjmuKfM8';
-const INDEX = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'index.html');
+const INDEX = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'js', 'youtube.js');
 
 const res = await fetch(`https://www.youtube.com/playlist?list=${PLAYLIST_ID}&hl=en`, {
   headers: {
@@ -68,9 +68,9 @@ const updated = idx.replace(
   `/* YT_VIDEOS_START */${block}/* YT_VIDEOS_END */`
 );
 if (updated === idx) {
-  console.log(`index.html already up to date (${videos.length} videos).`);
+  console.log(`youtube.js already up to date (${videos.length} videos).`);
 } else {
   writeFileSync(INDEX, updated);
-  console.log(`Updated index.html with ${videos.length} videos:`);
+  console.log(`Updated youtube.js with ${videos.length} videos:`);
   for (const v of videos) console.log(`  ${v.id}  ${v.title}`);
 }
