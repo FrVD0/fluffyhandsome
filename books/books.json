@@ -1,5 +1,5 @@
 {
-  "_howto": "Edit the words here and the Books page updates. Leave a field as \"\" to show a yellow placeholder. 'cover' is an image path (e.g. /books/covers/fluffy.jpg); leave it \"\" for the placeholder cover. 'shape' is square, landscape or portrait. 'status' is available or coming-soon.",
+  "_howto": "Edit the words here and the Books page updates. Leave a field as \"\" to show a yellow placeholder. 'cover' is an image path (e.g. /books/covers/fluffy.jpg); leave it \"\" for the placeholder cover. 'shape' is square, landscape or portrait. 'status' is available or coming-soon. 'luluButton' is the buy-button-id from Lulu's embed code; when set, it shows Lulu's Add to Cart button (checkout happens through Lulu without leaving the site) instead of the 'lulu' link.",
   "books": [
     {
       "id": "fluffy",
@@ -15,6 +15,7 @@
       "specs": "Paperback",
       "status": "available",
       "lulu": "",
+      "luluButton": "81197945-87d1-45c3-b3dd-e73ef5d19c49",
       "cover": "",
       "shape": "square",
       "samples": []
@@ -33,13 +34,26 @@
       "specs": "Paperback",
       "status": "available",
       "lulu": "https://www.lulu.com/shop/uncle-attaboy/selected-innersanities/paperback/product-2md842z.html",
+      "luluButton": "",
       "cover": "",
       "shape": "landscape",
       "samples": [
-        { "thumb": "/series/innersanity/web/001.jpg", "full": "/series/innersanity/img/001.png" },
-        { "thumb": "/series/innersanity/web/002.jpg", "full": "/series/innersanity/img/002.png" },
-        { "thumb": "/series/innersanity/web/003.jpg", "full": "/series/innersanity/img/003.png" },
-        { "thumb": "/series/innersanity/web/004.jpg", "full": "/series/innersanity/img/004.png" }
+        {
+          "thumb": "/series/innersanity/web/001.jpg",
+          "full": "/series/innersanity/img/001.png"
+        },
+        {
+          "thumb": "/series/innersanity/web/002.jpg",
+          "full": "/series/innersanity/img/002.png"
+        },
+        {
+          "thumb": "/series/innersanity/web/003.jpg",
+          "full": "/series/innersanity/img/003.png"
+        },
+        {
+          "thumb": "/series/innersanity/web/004.jpg",
+          "full": "/series/innersanity/img/004.png"
+        }
       ]
     },
     {
@@ -56,6 +70,7 @@
       "specs": "",
       "status": "coming-soon",
       "lulu": "",
+      "luluButton": "",
       "cover": "",
       "shape": "square",
       "samples": []

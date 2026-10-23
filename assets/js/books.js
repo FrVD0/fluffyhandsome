@@ -76,6 +76,10 @@
     if (soon) {
       btns.append(el('a', { class: 'btn outline', href: PATREON, target: '_blank', rel: 'noopener noreferrer' },
         'Get notified on Patreon ', arrow('→')));
+    } else if (b.luluButton) {
+      // Lulu's own Add to Cart button; checkout opens over this page.
+      btns.append(el('lulu-buy-button', { 'buy-button-id': b.luluButton, variant: 'button-only' }));
+      loadLulu();
     } else if (b.lulu) {
       btns.append(el('a', { class: 'btn blue', href: b.lulu, target: '_blank', rel: 'noopener noreferrer' },
         'Buy on Lulu ', arrow('↗')));
@@ -85,6 +89,13 @@
     text.append(btns);
 
     return el('article', { class: 'book', id: b.id, 'aria-labelledby': `${b.id}-h` }, cover(b), text);
+  }
+
+  let luluLoaded = false;
+  function loadLulu() {
+    if (luluLoaded) return;
+    luluLoaded = true;
+    document.head.append(el('script', { src: 'https://js.lulu.com/lulu-buy.js', defer: '' }));
   }
 
   function teaserItem(b) {
