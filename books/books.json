@@ -1,5 +1,5 @@
 {
-  "_howto": "Edit the words here and the Books page updates. Leave a field as \"\" to show a yellow placeholder. 'cover' is an image path (e.g. /books/covers/fluffy.jpg); leave it \"\" for the placeholder cover. 'shape' is square, landscape or portrait. 'status' is available or coming-soon. 'luluButton' is the buy-button-id from Lulu's embed code; when set, it shows Lulu's Add to Cart button (checkout happens through Lulu without leaving the site) instead of the 'lulu' link.",
+  "_howto": "Edit the words here and the Books page updates. Leave a field as \"\" to show a yellow placeholder. In 'blurb', a blank line (\\n\\n) starts a new paragraph. 'cover' is an image path with 'coverSize' [width, height]; leave 'cover' \"\" for a placeholder cover in the book's 'shape' (square, landscape or portrait). 'status' is available or coming-soon. 'luluButton' is the buy-button-id from Lulu's embed code: it shows Lulu's Add to Cart button (checkout happens through Lulu without leaving the site); 'lulu' is a plain link used only when there is no luluButton.",
   "books": [
     {
       "id": "fluffy",
@@ -9,14 +9,18 @@
       "color": "red",
       "kicker": "Book one",
       "subtitle": "",
-      "blurb": "",
+      "blurb": "The Fluffy Handsome Show started as a silly little doodle, remains a silly little doodle, and will always be a silly little doodle made with love. This book collects the first series of The Fluffy Handsome Show, along with its sister series Meanwhile, In Fancy City.... It contains comics first published online between 2021 and 2023, with some sketches dating back to 2020.",
       "quote": "",
       "quoteBy": "",
-      "specs": "Paperback",
+      "specs": "Paperback · 8.5 × 8.5 in · Black and white",
       "status": "available",
       "lulu": "",
       "luluButton": "81197945-87d1-45c3-b3dd-e73ef5d19c49",
-      "cover": "",
+      "cover": "/books/covers/fluffy.jpg",
+      "coverSize": [
+        800,
+        847
+      ],
       "shape": "square",
       "samples": []
     },
@@ -28,14 +32,18 @@
       "color": "blue",
       "kicker": "Collection",
       "subtitle": "",
-      "blurb": "",
+      "blurb": "64 pages of in(ner)sanity! Selected IN(ner)SANITIES collects fifteen never-before-seen comix-compo-situations in bold black and white, followed by a mess-merizing assortment of classic twists of inky imagination. Your Uncle Attaboy, as the artist prefers to be known, puts his best foot forward, and then his worst, and then his best again, in this generous anthology of improvised, genre-bending, dimension-hopping, pieces of comix art.\n\n\"As little thought as possible was involved in the creation of these little monsters,\" someone once heard Attaboy say, unprovoked, in a crowded subway car. In another moment, Attaboy is said to have said, \"It's like casting a net and seeing what you can gather from the rippling recesses of Mind.\" Ahem. This is a book of comic strips. If none of the foregoing blurb sounded like any book of comic strips you've ever encountered, it may be because this is like no other book of comic strips you've ever encountered.",
       "quote": "",
       "quoteBy": "",
-      "specs": "Paperback",
+      "specs": "Paperback · 64 pages · 11 × 8.5 in · Black and white",
       "status": "available",
       "lulu": "https://www.lulu.com/shop/uncle-attaboy/selected-innersanities/paperback/product-2md842z.html",
-      "luluButton": "",
-      "cover": "",
+      "luluButton": "7ed6d8ea-c790-4671-b7d5-d845fc17fa29",
+      "cover": "/books/covers/innersanities.jpg",
+      "coverSize": [
+        900,
+        861
+      ],
       "shape": "landscape",
       "samples": [
         {
@@ -71,8 +79,12 @@
       "status": "coming-soon",
       "lulu": "",
       "luluButton": "",
-      "cover": "",
-      "shape": "square",
+      "cover": "/books/covers/brainrot.jpg",
+      "coverSize": [
+        700,
+        1132
+      ],
+      "shape": "portrait",
       "samples": []
     }
   ]

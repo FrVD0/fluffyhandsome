@@ -28,11 +28,13 @@
   const bullet = b => el('span', { class: `bullet ${b.color}`, 'aria-hidden': 'true', text: b.bullet });
 
   function cover(b) {
-    const box = el('div', { class: `cover ${b.shape || 'square'}` });
     if (b.cover) {
-      box.append(el('img', { src: b.cover, alt: `Cover of ${b.title}`, loading: 'lazy', decoding: 'async' }));
-      return box;
+      // A real cover keeps its own proportions.
+      const [w, h] = b.coverSize || [];
+      return el('div', { class: 'cover has-img' },
+        el('img', { src: b.cover, alt: `Cover of ${b.title}`, width: w, height: h, loading: 'lazy', decoding: 'async' }));
     }
+    const box = el('div', { class: `cover ${b.shape || 'square'}` });
     const p = el('div', { class: `cover-ph ${b.id}`, 'aria-hidden': 'true' });
     if (b.id === 'innersanities') {
       p.append(el('b', { text: 'YOUR UNCLE ATTABOY' }), el('div', { class: 'sq' }), el('h3', { text: b.title }));
@@ -53,7 +55,11 @@
     text.append(line, el('h2', { text: b.title }));
 
     if (b.subtitle) text.append(el('p', { class: 'sub', text: b.subtitle }));
-    text.append(el('p', { class: 'blurb' }, b.blurb || ph('Blurb placeholder. Two or three sentences about the book.')));
+    if (b.blurb) {
+      text.append(el('div', { class: 'blurb prose' }, ...b.blurb.split(/\n\s*\n/).map(t => el('p', { text: t }))));
+    } else {
+      text.append(el('p', { class: 'blurb' }, ph('Blurb placeholder. Two or three sentences about the book.')));
+    }
     if (b.quote) {
       text.append(el('blockquote', {}, `“${b.quote}”`, b.quoteBy ? el('cite', { text: b.quoteBy }) : null));
     }
