@@ -134,6 +134,8 @@ p { margin: 0; }
 .book-text .blurb { max-width: var(--measure); }
 .book-text blockquote { margin: 0; padding-left: 16px; border-left: 4px solid var(--ink); font-size: 18px; font-weight: 600; max-width: var(--measure); }
 .book-text blockquote cite { display: block; margin-top: 6px; font-style: normal; font-size: 13px; color: var(--mute); font-weight: 500; }
+.price { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.price span { font-size: 15px; font-weight: 600; color: var(--mute); }
 .specs { font-size: 13px; color: var(--mute); font-variant-numeric: tabular-nums; }
 
 /* covers: a real image when there is one, a placeholder in the book's own shape otherwise */

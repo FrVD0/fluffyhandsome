@@ -78,6 +78,10 @@
     const specs = [b.specs, b.samples && b.samples.length ? 'Tap a sample to zoom' : ''].filter(Boolean).join(' · ');
     if (specs) text.append(el('p', { class: 'specs', text: specs }));
 
+    if (b.price && !soon) {
+      text.append(el('p', { class: 'price' }, b.price, el('span', { text: ' + shipping' })));
+    }
+
     const btns = el('div', { class: 'btns' });
     if (soon) {
       btns.append(el('a', { class: 'btn outline', href: PATREON, target: '_blank', rel: 'noopener noreferrer' },
