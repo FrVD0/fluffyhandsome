@@ -210,6 +210,7 @@ function buildReaders(names) {
         bullet: info.bullet,
         color: info.color,
         kind: info.kind,
+        unit: info.unit || 'page',
         credits: info.credits || '',
         advisory: info.advisory || '',
         description: info.description || '',

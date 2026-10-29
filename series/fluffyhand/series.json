@@ -1,5 +1,5 @@
 {
-  "_howto": "Edit this, then run `npm run add-pages` to rebuild the reader page at /read/<slug>/. 'kind' is ongoing (new pages keep coming: shows the reading-order button and the 'N new pages' notice), archive (finished, read oldest first) or sample (a preview, read in order). 'order' sets the line's place on the /read/ menu. 'transfer' is another series folder offered on the end card once that series has pages. 'credits' and 'advisory' are shown only when filled in.",
+  "_howto": "Edit this, then run `npm run add-pages` to rebuild the reader page at /read/<slug>/. 'kind' is ongoing (new pages keep coming: shows the reading-order button and the 'N new pages' notice), archive (finished, read oldest first) or sample (a preview, read in order). 'order' sets the line's place on the /read/ menu. 'transfer' is another series folder offered on the end card once that series has pages. 'credits' and 'advisory' are shown only when filled in. 'unit' is what one page is called on the /read/ map (page, or strip); page if left out.",
   "slug": "fluffy",
   "order": 1,
   "title": "The Fluffy Handsome Show",

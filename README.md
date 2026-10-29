@@ -6,7 +6,7 @@ GitHub Pages; there is no build step.
 | Address   | What it is                                  |
 |-----------|---------------------------------------------|
 | `/`       | Homepage                                    |
-| `/read/`  | The menu of lines (titles)                  |
+| `/read/`  | Fancy City Transit: the map of all titles   |
 | `/read/fluffy/` | The Fluffy Handsome Show reader       |
 | `/books/` | The shelf (Lulu links)                      |
 | `/about/` | How the work and the site are made          |
@@ -41,5 +41,8 @@ example after changing the quality settings in `scripts/add-pages.mjs`, run
   Files named `front-cover` and `back-cover` become the first and last pages.
 - `/read/<slug>/index.html` and `/read/lines.json` are generated from
   `scripts/reader-template.html`; edit the template or `series.json`, not them.
-- `/read/index.html` and `assets/js/lines.js` are the menu of lines.
+- `/read/index.html`, `assets/js/lines.js` and `assets/css/transit.css` are the
+  map of lines. Each title is a line and each page a stop (titles with more than
+  24 pages show every 20th); a reader's saved place shows as "You are here."
+  `unit` in `series.json` names a page on the map (`page` or `strip`).
 - `scripts/refresh-playlist.mjs` refreshes the YouTube video list on the About page (`assets/js/youtube.js`).

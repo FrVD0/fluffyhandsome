@@ -6,6 +6,7 @@
   "bullet": "I",
   "color": "blue",
   "kind": "archive",
+  "unit": "strip",
   "credits": "",
   "advisory": "",
   "description": "Read every IN(ner)SANITIES strip by Your Uncle Attaboy, from the first to the latest.",
