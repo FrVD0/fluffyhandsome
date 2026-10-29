@@ -6,7 +6,8 @@ GitHub Pages; there is no build step.
 | Address   | What it is                                  |
 |-----------|---------------------------------------------|
 | `/`       | Homepage                                    |
-| `/read/`  | The Fluffy Handsome Show reader             |
+| `/read/`  | The menu of lines (titles)                  |
+| `/read/fluffy/` | The Fluffy Handsome Show reader       |
 | `/books/` | The shelf (Lulu links)                      |
 | `/about/` | How the work and the site are made          |
 
@@ -21,7 +22,8 @@ GitHub Pages; there is no build step.
    ```
 
    This makes a reading copy (`web/`) and a zoom copy (`full/`) of each new
-   page and updates `pages.json`, the list the reader shows.
+   page, updates `pages.json` (the list the reader shows), and rebuilds the
+   reader pages and the `/read/` menu.
 3. Commit and push. The reader picks up the new pages within a few minutes,
    and returning readers see "N new pages since your last visit."
 
@@ -34,5 +36,10 @@ example after changing the quality settings in `scripts/add-pages.mjs`, run
 
 - `assets/css/fancy.css` is the shared design system (colors, type, buttons, header, footer).
 - `assets/css/reader.css` and `assets/js/reader.js` are the reader.
-- `series/<name>/series.json` marks a folder as a reader series; `pages.json` is generated.
+- `series/<name>/series.json` marks a folder as a reader series and holds its
+  title, line color, web address and end-card wording; `pages.json` is generated.
+  Files named `front-cover` and `back-cover` become the first and last pages.
+- `/read/<slug>/index.html` and `/read/lines.json` are generated from
+  `scripts/reader-template.html`; edit the template or `series.json`, not them.
+- `/read/index.html` and `assets/js/lines.js` are the menu of lines.
 - `scripts/refresh-playlist.mjs` refreshes the YouTube video list on the About page (`assets/js/youtube.js`).

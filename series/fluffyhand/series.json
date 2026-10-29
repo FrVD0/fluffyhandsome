@@ -1,9 +1,22 @@
 {
+  "_howto": "Edit this, then run `npm run add-pages` to rebuild the reader page at /read/<slug>/. 'kind' is ongoing (new pages keep coming: shows the reading-order button and the 'N new pages' notice), archive (finished, read oldest first) or sample (a preview, read in order). 'order' sets the line's place on the /read/ menu. 'transfer' is another series folder offered on the end card once that series has pages. 'credits' and 'advisory' are shown only when filled in.",
+  "slug": "fluffy",
+  "order": 1,
   "title": "The Fluffy Handsome Show",
   "bullet": "F",
   "color": "red",
-  "book": {
-    "title": "The Fluffy Handsome Show",
-    "href": "/books/#fluffy"
+  "kind": "ongoing",
+  "credits": "",
+  "advisory": "",
+  "description": "Read the latest pages of The Fluffy Handsome Show by Your Uncle Attaboy.",
+  "transfer": "innersanity",
+  "end": {
+    "title": "You’re caught up.",
+    "text": "The story continues in Fancy City. Insiders read it first.",
+    "button": "Become a Fancy City Insider",
+    "buttonHref": "https://www.patreon.com/fluffyhandsome",
+    "bookText": "Or start from the beginning in print:",
+    "bookTitle": "The Fluffy Handsome Show",
+    "bookHref": "/books/#fluffy"
   }
 }

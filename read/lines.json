@@ -1,0 +1,63 @@
+{
+  "lines": [
+    {
+      "series": "fluffyhand",
+      "slug": "fluffy",
+      "order": 1,
+      "title": "The Fluffy Handsome Show",
+      "bullet": "F",
+      "color": "red",
+      "kind": "ongoing",
+      "credits": "",
+      "description": "Read the latest pages of The Fluffy Handsome Show by Your Uncle Attaboy.",
+      "count": 11,
+      "newest": "2026-10-22",
+      "stops": [
+        {
+          "key": 1,
+          "web": "/series/fluffyhand/web/001.jpg"
+        },
+        {
+          "key": 2,
+          "web": "/series/fluffyhand/web/002.jpg"
+        },
+        {
+          "key": 3,
+          "web": "/series/fluffyhand/web/003.jpg"
+        },
+        {
+          "key": 4,
+          "web": "/series/fluffyhand/web/004.jpg"
+        },
+        {
+          "key": 5,
+          "web": "/series/fluffyhand/web/005.jpg"
+        },
+        {
+          "key": 6,
+          "web": "/series/fluffyhand/web/006.jpg"
+        },
+        {
+          "key": 7,
+          "web": "/series/fluffyhand/web/007.jpg"
+        },
+        {
+          "key": 8,
+          "web": "/series/fluffyhand/web/008.jpg"
+        },
+        {
+          "key": 9,
+          "web": "/series/fluffyhand/web/009.jpg"
+        },
+        {
+          "key": 10,
+          "web": "/series/fluffyhand/web/010.jpg"
+        },
+        {
+          "key": 11,
+          "web": "/series/fluffyhand/web/011.jpg"
+        }
+      ]
+    }
+  ]
+}

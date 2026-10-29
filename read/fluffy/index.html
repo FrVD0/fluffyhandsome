@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- Made by `npm run add-pages` from scripts/reader-template.html and series/fluffyhand/series.json. Edit those, not this file. -->
+  <title>Read · The Fluffy Handsome Show · ATTACOMIX</title>
+  <meta name="description" content="Read the latest pages of The Fluffy Handsome Show by Your Uncle Attaboy.">
+  <link rel="icon" href="/favicon.ico" sizes="48x48">
+  <link rel="icon" href="/assets/img/favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <meta name="theme-color" content="#0e0e10">
+  <link rel="canonical" href="https://www.fluffyhandsome.com/read/fluffy/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ATTACOMIX">
+  <meta property="og:title" content="Read · The Fluffy Handsome Show · ATTACOMIX">
+  <meta property="og:description" content="Read the latest pages of The Fluffy Handsome Show by Your Uncle Attaboy.">
+  <meta property="og:url" content="https://www.fluffyhandsome.com/read/fluffy/">
+  <meta property="og:image" content="https://www.fluffyhandsome.com/assets/img/share.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Detail of The Fluffy Hand Some Vision #6: a radiating star of hearts and spirals with a tiny Fluffy at its center.">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,400..900;1,400..900&display=swap">
+  <link rel="stylesheet" href="/assets/css/fancy.css">
+  <link rel="stylesheet" href="/assets/css/reader.css">
+  <link rel="preload" href="/series/fluffyhand/pages.json" as="fetch" crossorigin>
+</head>
+<body class="reading">
+  <a class="skip" href="#reader-stage">Skip to the comic</a>
+  <header class="sign">
+    <div class="wrap">
+      <a class="wordmark" href="/">ATTACOMIX</a>
+      <nav class="nav" aria-label="Main">
+        <a href="/read/" aria-current="page"><span class="bullet red" aria-hidden="true">R</span>Read</a>
+        <a href="/books/"><span class="bullet blue" aria-hidden="true">B</span>Books</a>
+        <a href="https://www.patreon.com/fluffyhandsome" target="_blank" rel="noopener noreferrer"><span class="bullet ring" aria-hidden="true">P</span>Patreon</a>
+        <a href="/about/">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="reader" data-series="fluffyhand" data-kind="ongoing" data-ground="paper">
+    <div class="r-bar r-top">
+      <div class="r-head">
+        <a class="r-lines" href="/read/"><span aria-hidden="true">&larr;</span> All lines</a>
+        <h1 class="r-title"><span class="bullet red" aria-hidden="true">F</span><span>The Fluffy Handsome Show</span></h1>
+      </div>
+      <div class="r-controls">
+        <div class="seg" role="group" aria-label="Background">
+          <button type="button" id="ground-paper" data-ground="paper" aria-pressed="true">Paper</button>
+          <button type="button" id="ground-gallery" data-ground="gallery" aria-pressed="false">Gallery</button>
+        </div>
+        <button type="button" id="order" class="r-order" aria-label="Reading order: oldest first. Switch to newest first.">Oldest first <span aria-hidden="true">&#8644;</span></button>
+      </div>
+    </div>
+
+    <div class="r-stage" id="reader-stage" tabindex="0" aria-label="Comic page. Use the arrow keys to turn pages, plus and minus to zoom.">
+      <p class="r-loading">Loading pages&hellip;</p>
+      <img class="r-img" alt="" hidden draggable="false">
+
+      <section class="r-end" hidden aria-labelledby="end-h">
+        <div class="stripe" aria-hidden="true"></div>
+        <h2 id="end-h">You’re caught up.</h2>
+        <p>The story continues in Fancy City. Insiders read it first.</p>
+        <a class="btn red" href="https://www.patreon.com/fluffyhandsome" target="_blank" rel="noopener noreferrer">Become a Fancy City Insider <span class="arr" aria-hidden="true">&rarr;</span></a>
+        <small>Or start from the beginning in print: <a class="book-link" href="/books/#fluffy"><i>The Fluffy Handsome Show</i> &rarr;</a></small>
+        <button type="button" class="again">Back to the start</button>
+      </section>
+
+      <div class="r-new" hidden role="status">
+        <span class="msg"></span>
+        <button type="button" class="jump">Jump to newest &rarr;</button>
+        <button type="button" class="dismiss" aria-label="Dismiss">&times;</button>
+      </div>
+
+      <button type="button" class="r-arrow prev" aria-label="Previous page">&larr;</button>
+      <button type="button" class="r-arrow next" aria-label="Next page">&rarr;</button>
+    </div>
+
+    <div class="r-bar r-foot">
+      <div class="r-count"><span class="where"></span><span class="hint">Double-tap to zoom</span></div>
+      <div class="r-progress" aria-hidden="true"><i></i></div>
+    </div>
+
+    <p class="r-status" aria-live="polite"></p>
+  </main>
+
+  <script src="/assets/js/reader.js" defer></script>
+</body>
+</html>

@@ -10,6 +10,7 @@
 
   const root = document.querySelector('.reader');
   const series = root.dataset.series;
+  const kind = root.dataset.kind || 'ongoing';   // ongoing | archive | sample (see series.json)
   const base = `/series/${series}/`;
 
   const stage = root.querySelector('.r-stage');
@@ -28,6 +29,7 @@
   const status = root.querySelector('.r-status');
   const notice = root.querySelector('.r-new');
   const title = root.querySelector('.r-title span:last-child').textContent.trim();
+  const caughtUp = endTitle.textContent;
 
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const coarse = matchMedia('(hover: none)');
@@ -38,13 +40,20 @@
   const load = key => { try { return JSON.parse(localStorage.getItem(key)) || {}; } catch { return {}; } };
   const save = (key, val) => { try { localStorage.setItem(key, JSON.stringify(val)); } catch {} };
   const prefs = Object.assign({ ground: 'paper', order: 'asc' }, load(PREFS_KEY));
-  const memory = load(SERIES_KEY);   // { last: pageNumber | 'end', known: pageCount }
+  const memory = load(SERIES_KEY);   // { last: pageKey | 'end', known: pageCount }
 
   let pages = [];
-  let order = prefs.order === 'desc' ? 'desc' : 'asc';
+  let numbered = 0;                 // pages with a number (covers don't count)
+  // Only ongoing series can be read newest first; the rest always start at the start.
+  let order = orderBtn && prefs.order === 'desc' ? 'desc' : 'asc';
   let pos = 0;                      // index into seq(); seq().length means the end card
   const seq = () => (order === 'asc' ? pages : [...pages].reverse());
   const atEnd = () => pos >= pages.length;
+  // A page is known by its number, or by its id for covers ("cover", "back").
+  const keyOf = p => p.id ?? p.n;
+  const nameOf = p => p.label ?? `page ${p.n}`;
+  const HASH = /^#(\d+|cover|back|end)$/;
+  const parseKey = k => (/^\d+$/.test(k) ? Number(k) : k);
 
   // --- ground (paper / gallery) -------------------------------------------
   function setGround(g) {
@@ -57,21 +66,22 @@
 
   // --- reading order ------------------------------------------------------
   function renderOrder() {
+    if (!orderBtn) return;
     const label = order === 'asc' ? 'Oldest first' : 'Newest first';
     const other = order === 'asc' ? 'newest first' : 'oldest first';
     orderBtn.firstChild.textContent = label + ' ';
     orderBtn.setAttribute('aria-label', `Reading order: ${label.toLowerCase()}. Switch to ${other}.`);
-    endTitle.textContent = order === 'asc' ? 'You’re caught up.' : 'You’ve reached page 1.';
+    endTitle.textContent = order === 'asc' ? caughtUp : 'You’ve reached page 1.';
     againBtn.textContent = order === 'asc' ? 'Back to page 1' : 'Back to the newest page';
   }
-  orderBtn.addEventListener('click', () => {
-    const current = atEnd() ? null : seq()[pos].n;
+  orderBtn?.addEventListener('click', () => {
+    const current = atEnd() ? null : keyOf(seq()[pos]);
     order = order === 'asc' ? 'desc' : 'asc';
     prefs.order = order; save(PREFS_KEY, prefs);
     renderOrder();
     go(current == null ? pages.length : indexOf(current), { quiet: true });
   });
-  const indexOf = n => Math.max(0, seq().findIndex(p => p.n === n));
+  const indexOf = k => Math.max(0, seq().findIndex(p => keyOf(p) === k));
 
   // --- zoom engine --------------------------------------------------------
   const MAX_SCALE = 8;
@@ -118,10 +128,10 @@
   // The full-resolution copy loads only once someone zooms in.
   function loadFull() {
     const page = seq()[pos];
-    if (!page || fullFor === page.n) return;
-    fullFor = page.n;
+    if (!page || fullFor === keyOf(page)) return;
+    fullFor = keyOf(page);
     const hi = new Image();
-    hi.onload = () => { if (!atEnd() && seq()[pos].n === page.n) img.src = hi.src; };
+    hi.onload = () => { if (!atEnd() && seq()[pos] === page) img.src = hi.src; };
     hi.src = base + page.full;
   }
 
@@ -141,7 +151,7 @@
     if (atEnd()) {
       img.hidden = true;
       endCard.hidden = false;
-      where.innerHTML = `<b>End</b> &middot; ${pages.length} pages`;
+      where.innerHTML = `<b>End</b> &middot; ${numbered} pages`;
       memory.last = 'end';
       history.replaceState(null, '', '#end');
       wake(true);
@@ -151,11 +161,11 @@
       img.hidden = false;
       img.width = page.w;
       img.height = page.h;
-      img.alt = `${title}, page ${page.n}`;
+      img.alt = `${title}, ${nameOf(page)}`;
       img.src = base + page.web;
-      where.innerHTML = `<b>${page.n}</b> / ${pages.length}`;
-      memory.last = page.n;
-      history.replaceState(null, '', '#' + page.n);
+      where.innerHTML = page.label ? `<b>${page.label}</b>` : `<b>${page.n}</b> / ${numbered}`;
+      memory.last = keyOf(page);
+      history.replaceState(null, '', '#' + keyOf(page));
       // warm up the neighbours so the next turn is instant
       [s[pos + 1], s[pos - 1]].forEach(p => { if (p) new Image().src = base + p.web; });
     }
@@ -164,7 +174,8 @@
     nextBtn.disabled = atEnd();
     bar.style.width = (Math.min(pos + 1, s.length) / s.length * 100) + '%';
     renderHint();
-    if (!quiet) status.textContent = atEnd() ? endTitle.textContent : `Page ${s[pos].n} of ${pages.length}`;
+    if (!quiet) status.textContent = atEnd() ? endTitle.textContent
+      : s[pos].label ?? `Page ${s[pos].n} of ${numbered}`;
   }
   const next = () => { if (!atEnd()) go(pos + 1); };
   const prev = () => { if (pos > 0) go(pos - 1); };
@@ -329,16 +340,16 @@
 
   // --- start --------------------------------------------------------------
   function startPos() {
-    const m = location.hash.match(/^#(\d+|end)$/);
-    if (m) return m[1] === 'end' ? pages.length : indexOf(Number(m[1]));
+    const m = location.hash.match(HASH);
+    if (m) return m[1] === 'end' ? pages.length : indexOf(parseKey(m[1]));
     if (memory.last === 'end') return pages.length;
-    if (typeof memory.last === 'number' && pages.some(p => p.n === memory.last)) return indexOf(memory.last);
-    return 0;  // first visit: page 1 (or the newest page, if they chose newest first)
+    if (memory.last != null && pages.some(p => keyOf(p) === memory.last)) return indexOf(memory.last);
+    return 0;  // first visit: the first page (or the newest page, if they chose newest first)
   }
 
   addEventListener('hashchange', () => {
-    const m = location.hash.match(/^#(\d+|end)$/);
-    if (m) go(m[1] === 'end' ? pages.length : indexOf(Number(m[1])));
+    const m = location.hash.match(HASH);
+    if (m) go(m[1] === 'end' ? pages.length : indexOf(parseKey(m[1])));
   });
 
   renderOrder();
@@ -346,16 +357,18 @@
   fetch(base + 'pages.json', { cache: 'no-cache' })
     .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(data => {
-      pages = data.pages.slice().sort((a, b) => a.n - b.n);
+      // pages.json is already in reading order: front cover, numbered pages, back cover.
+      pages = data.pages.slice();
+      numbered = pages.filter(p => p.n != null).length;
       if (!pages.length) throw new Error('no pages');
       loading.remove();
 
       const known = memory.known;
-      const fresh = typeof known === 'number' ? pages.length - known : 0;
+      const fresh = kind === 'ongoing' && typeof known === 'number' ? pages.length - known : 0;
       memory.known = pages.length;
       go(startPos(), { quiet: true });
       if (fresh > 0) {
-        const firstNew = pages[Math.min(known, pages.length - 1)].n;
+        const firstNew = keyOf(pages[Math.min(known, pages.length - 1)]);
         showNotice(fresh, firstNew);
       }
       wake();

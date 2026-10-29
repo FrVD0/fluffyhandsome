@@ -42,7 +42,7 @@
 
   <main id="main">
     <section class="wrap hero" aria-labelledby="hero-h">
-      <a class="hero-art" href="/read/#6" aria-label="Open page 6 in the reader">
+      <a class="hero-art" href="/read/fluffy/#6" aria-label="Open page 6 in the reader">
         <img src="/assets/img/hero-006-800.jpg" srcset="/assets/img/hero-006-800.jpg 800w, /series/fluffyhand/web/006.jpg 1200w" sizes="(max-width: 760px) 230px, 45vw" width="800" height="1286" fetchpriority="high" alt="The Fluffy Hand Some Vision #6: a radiating star of hearts, spirals and triangles in red, blue and yellow, signed Your Uncle Attaboy.">
       </a>
       <div class="hero-copy">
@@ -50,8 +50,8 @@
         <h1 id="hero-h">The Fluffy Handsome Show</h1>
         <p>New pages from Fancy City, hand-drawn by Your Uncle Attaboy.</p>
         <div class="btns">
-          <a class="btn red" id="read-latest" href="/read/#end">Read the latest <span class="arr" aria-hidden="true">&rarr;</span></a>
-          <a class="btn outline" href="/read/#1">From the beginning <span class="arr" aria-hidden="true">&rarr;</span></a>
+          <a class="btn red" id="read-latest" href="/read/fluffy/#end">Read the latest <span class="arr" aria-hidden="true">&rarr;</span></a>
+          <a class="btn outline" href="/read/fluffy/#1">From the beginning <span class="arr" aria-hidden="true">&rarr;</span></a>
         </div>
       </div>
     </section>
@@ -110,7 +110,7 @@
       .then(({ pages }) => {
         if (!pages.length) return;
         const newest = Math.max(...pages.map(p => p.n));
-        document.getElementById('read-latest').href = '/read/#' + newest;
+        document.getElementById('read-latest').href = '/read/fluffy/#' + newest;
         document.getElementById('hero-count').textContent = 'Now reading \u00b7 ' + pages.length + ' pages';
       })
       .catch(() => {});

@@ -3,8 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Read · The Fluffy Handsome Show · ATTACOMIX</title>
-  <meta name="description" content="Read the latest pages of The Fluffy Handsome Show by Your Uncle Attaboy.">
+  <script>
+    // Old reader links (/read/#7, /read/#end) were all Fluffy: send them on.
+    if (/^#(\d+|end)$/.test(location.hash)) location.replace('/read/fluffy/' + location.hash);
+  </script>
+  <title>Read · ATTACOMIX</title>
+  <meta name="description" content="Read comix by Your Uncle Attaboy: The Fluffy Handsome Show and more.">
   <link rel="icon" href="/favicon.ico" sizes="48x48">
   <link rel="icon" href="/assets/img/favicon-32.png" type="image/png" sizes="32x32">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -12,8 +16,8 @@
   <link rel="canonical" href="https://www.fluffyhandsome.com/read/">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="ATTACOMIX">
-  <meta property="og:title" content="Read · The Fluffy Handsome Show · ATTACOMIX">
-  <meta property="og:description" content="Read the latest pages of The Fluffy Handsome Show by Your Uncle Attaboy.">
+  <meta property="og:title" content="Read · ATTACOMIX">
+  <meta property="og:description" content="Read comix by Your Uncle Attaboy: The Fluffy Handsome Show and more.">
   <meta property="og:url" content="https://www.fluffyhandsome.com/read/">
   <meta property="og:image" content="https://www.fluffyhandsome.com/assets/img/share.jpg">
   <meta property="og:image:width" content="1200">
@@ -24,11 +28,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,400..900;1,400..900&display=swap">
   <link rel="stylesheet" href="/assets/css/fancy.css">
-  <link rel="stylesheet" href="/assets/css/reader.css">
-  <link rel="preload" href="/series/fluffyhand/pages.json" as="fetch" crossorigin>
+  <link rel="preload" href="/read/lines.json" as="fetch" crossorigin>
 </head>
-<body class="reading">
-  <a class="skip" href="#reader-stage">Skip to the comic</a>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
   <header class="sign">
     <div class="wrap">
       <a class="wordmark" href="/">ATTACOMIX</a>
@@ -41,50 +44,54 @@
     </div>
   </header>
 
-  <!-- One reader per series: copy this page into /read/<series>/ and change data-series. -->
-  <main id="main" class="reader" data-series="fluffyhand" data-ground="paper">
-    <div class="r-bar r-top">
-      <h1 class="r-title"><span class="bullet red" aria-hidden="true">F</span><span>The Fluffy Handsome Show</span></h1>
-      <div class="r-controls">
-        <div class="seg" role="group" aria-label="Background">
-          <button type="button" id="ground-paper" data-ground="paper" aria-pressed="true">Paper</button>
-          <button type="button" id="ground-gallery" data-ground="gallery" aria-pressed="false">Gallery</button>
+  <main id="main">
+    <section class="page-title">
+      <div class="wrap">
+        <div class="line"><span class="bullet red lg" aria-hidden="true">R</span><span class="label">Fancy City Transit</span></div>
+        <h1>Read</h1>
+        <p>Pick a line. Your place is saved on each one.</p>
+      </div>
+    </section>
+
+    <!-- Filled from /read/lines.json, which `npm run add-pages` writes. -->
+    <ul id="lines" class="wrap lines">
+      <li class="line-row">
+        <span class="bullet red lg" aria-hidden="true">F</span>
+        <div class="line-text">
+          <h2><a href="/read/fluffy/">The Fluffy Handsome Show</a></h2>
         </div>
-        <button type="button" id="order" class="r-order" aria-label="Reading order: oldest first. Switch to newest first.">Oldest first <span aria-hidden="true">&#8644;</span></button>
+      </li>
+    </ul>
+
+    <section class="insider" aria-labelledby="insider-h">
+      <div class="wrap">
+        <div>
+          <h2 id="insider-h">Become a Fancy City Insider.</h2>
+          <p>Insiders read new pages before they reach this site. Membership is free.</p>
+        </div>
+        <a class="btn" href="https://www.patreon.com/fluffyhandsome" target="_blank" rel="noopener noreferrer">Join on Patreon <span class="arr" aria-hidden="true">&rarr;</span></a>
       </div>
-    </div>
-
-    <div class="r-stage" id="reader-stage" tabindex="0" aria-label="Comic page. Use the arrow keys to turn pages, plus and minus to zoom.">
-      <p class="r-loading">Loading pages&hellip;</p>
-      <img class="r-img" alt="" hidden draggable="false">
-
-      <section class="r-end" hidden aria-labelledby="end-h">
-        <div class="stripe" aria-hidden="true"></div>
-        <h2 id="end-h">You&rsquo;re caught up.</h2>
-        <p>The story continues in Fancy City. Insiders read it first.</p>
-        <a class="btn red" href="https://www.patreon.com/fluffyhandsome" target="_blank" rel="noopener noreferrer">Become a Fancy City Insider <span class="arr" aria-hidden="true">&rarr;</span></a>
-        <small>Or start from the beginning in print: <a class="book-link" href="/books/#fluffy"><i>The Fluffy Handsome Show</i> &rarr;</a></small>
-        <button type="button" class="again">Back to page 1</button>
-      </section>
-
-      <div class="r-new" hidden role="status">
-        <span class="msg"></span>
-        <button type="button" class="jump">Jump to newest &rarr;</button>
-        <button type="button" class="dismiss" aria-label="Dismiss">&times;</button>
-      </div>
-
-      <button type="button" class="r-arrow prev" aria-label="Previous page">&larr;</button>
-      <button type="button" class="r-arrow next" aria-label="Next page">&rarr;</button>
-    </div>
-
-    <div class="r-bar r-foot">
-      <div class="r-count"><span class="where"></span><span class="hint">Double-tap to zoom</span></div>
-      <div class="r-progress" aria-hidden="true"><i></i></div>
-    </div>
-
-    <p class="r-status" aria-live="polite"></p>
+    </section>
   </main>
 
-  <script src="/assets/js/reader.js" defer></script>
+  <footer class="site-foot">
+    <div class="wrap">
+      <div>
+        <p>If you&rsquo;ve made it this far, I can&rsquo;t tell you how grateful I am that you have taken interest in this silly and sincere labor of love. Whoever you are, at whatever point I have found you in the trajectory of your time on earth: thank you for sharing this consciousness with me.</p>
+        <p class="sig">Your Uncle Attaboy</p>
+        <p class="small">&copy; Your Uncle Attaboy &middot; Breathe in. Breathe out. Love.</p>
+      </div>
+      <ul>
+        <li><a href="/read/">Read</a></li>
+        <li><a href="/books/">Books</a></li>
+        <li><a href="/about/">About</a></li>
+        <li><a href="https://www.patreon.com/fluffyhandsome" target="_blank" rel="noopener noreferrer">Patreon &#8599;</a></li>
+        <li><a href="https://www.youtube.com/@UncleAttaboy" target="_blank" rel="noopener noreferrer">YouTube &#8599;</a></li>
+        <li><a href="https://instagram.com/uncleattaboy" target="_blank" rel="noopener noreferrer">Instagram &#8599;</a></li>
+        <li><a href="https://fluffyhandsome.threadless.com" target="_blank" rel="noopener noreferrer">T-shirts and more &#8599;</a></li>
+      </ul>
+    </div>
+  </footer>
+  <script src="/assets/js/lines.js" defer></script>
 </body>
 </html>
