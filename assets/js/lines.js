@@ -38,6 +38,7 @@
           <p class="label">${esc(KIND[line.kind] ?? '')} &middot; ${line.count} pages</p>
           <h2><a href="${href}">${esc(line.title)}</a></h2>
           ${line.credits ? `<p class="mute">${esc(line.credits)}</p>` : ''}
+          ${line.advisory ? `<p class="tag advisory">Service advisory: ${esc(line.advisory)}</p>` : ''}
           <div class="btns">${links.join('')}</div>
         </div>
       </li>`;

@@ -1,5 +1,5 @@
 {
-  "_howto": "Edit the words here and the Books page updates. Leave a field as \"\" to show a yellow placeholder. In 'blurb', a blank line (\\n\\n) starts a new paragraph. 'cover' is an image path with 'coverSize' [width, height]; leave 'cover' \"\" for a placeholder cover in the book's 'shape' (square, landscape or portrait). 'status' is available or coming-soon. 'luluButton' is the buy-button-id from Lulu's embed code: it shows Lulu's Add to Cart button (checkout happens through Lulu without leaving the site); 'lulu' is a plain link used only when there is no luluButton. 'price' is shown above the buy button as written (e.g. \"$21.00\"); \" + shipping\" is added after it. Leave it \"\" to show no price.",
+  "_howto": "Edit the words here and the Books page updates. Leave a field as \"\" to show a yellow placeholder. In 'blurb', a blank line (\\n\\n) starts a new paragraph. 'cover' is an image path with 'coverSize' [width, height]; leave 'cover' \"\" for a placeholder cover in the book's 'shape' (square, landscape or portrait). 'status' is available or coming-soon. 'luluButton' is the buy-button-id from Lulu's embed code: it shows Lulu's Add to Cart button (checkout happens through Lulu without leaving the site); 'lulu' is a plain link used only when there is no luluButton. 'price' is shown above the buy button as written (e.g. \"$21.00\"); \" + shipping\" is added after it. Leave it \"\" to show no price. 'reader' is the book's reader on this site (e.g. \"/read/brainrot/\"): it adds a Read the preview button to coming-soon books and Read online to the rest.",
   "books": [
     {
       "id": "fluffy",
@@ -69,9 +69,9 @@
     {
       "id": "brainrot",
       "title": "BadAss BrainRot",
-      "series": "brainrot",
+      "series": "BABR",
       "bullet": "B",
-      "color": "ring",
+      "color": "slime",
       "kicker": "",
       "subtitle": "",
       "blurb": "BadAss BrainRot is a title that tells all! A rag woven of the most purile [sic] pulp, the salacious first issue oozes with toilet humor, unicorns, cosmic alligators, all swirling in a grand Inferno of Cringe!",
@@ -80,6 +80,7 @@
       "specs": "",
       "price": "",
       "status": "coming-soon",
+      "reader": "/read/brainrot/",
       "lulu": "",
       "luluButton": "",
       "cover": "/books/covers/brainrot.jpg",

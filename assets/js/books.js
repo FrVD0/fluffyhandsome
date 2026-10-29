@@ -83,6 +83,10 @@
     }
 
     const btns = el('div', { class: 'btns' });
+    if (b.reader) {
+      btns.append(el('a', { class: soon ? `btn ${b.color}` : 'btn outline', href: b.reader },
+        soon ? 'Read the preview ' : 'Read online ', arrow('→')));
+    }
     if (soon) {
       btns.append(el('a', { class: 'btn outline', href: PATREON, target: '_blank', rel: 'noopener noreferrer' },
         'Get notified on Patreon ', arrow('→')));

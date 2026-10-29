@@ -11,6 +11,8 @@
 // last pages. For each original this makes:
 //   web/012.jpg   about 1200px wide, what readers see first
 //   full/012.jpg  full resolution, loaded only when a reader zooms in
+//                 (full/012.png instead when that is smaller, as it is for
+//                 black-and-white line art)
 // and rewrites series/<name>/pages.json, which is the list the reader shows.
 //
 // Then, for every series, it writes the reader page /read/<slug>/index.html
@@ -21,7 +23,7 @@
 // `sips`, so nothing needs installing.
 
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, unlinkSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -49,7 +51,9 @@ function pixelSize(file) {
   };
 }
 
-const isNewer = (src, out) => !existsSync(out) || statSync(src).mtimeMs > statSync(out).mtimeMs;
+const isNewer = (src, out) => !out || !existsSync(out) || statSync(src).mtimeMs > statSync(out).mtimeMs;
+// The zoom copy is a JPEG or a PNG, whichever came out smaller.
+const fullFile = (fullDir, key) => ['.jpg', '.png'].map(ext => path.join(fullDir, key + ext)).find(f => existsSync(f));
 const readJson = file => JSON.parse(readFileSync(file, 'utf8'));
 const pad = n => String(n).padStart(3, '0');
 // A page's name in file names, links (#12, #cover) and readers' saved places.
@@ -89,13 +93,20 @@ function processSeries(name) {
   for (const [key, file] of originals) {
     const src = path.join(dir, file);
     const web = path.join(webDir, key + '.jpg');
-    const full = path.join(fullDir, key + '.jpg');
-    if (!force && !isNewer(src, web) && !isNewer(src, full)) continue;
+    if (!force && !isNewer(src, web) && !isNewer(src, fullFile(fullDir, key))) continue;
 
     const { w } = pixelSize(src);
     const resize = w > WEB_WIDTH ? ['--resampleWidth', String(WEB_WIDTH)] : [];
     sips(['-s', 'format', 'jpeg', '-s', 'formatOptions', String(WEB_QUALITY), ...resize, src, '--out', web]);
-    sips(['-s', 'format', 'jpeg', '-s', 'formatOptions', String(FULL_QUALITY), src, '--out', full]);
+    const jpg = path.join(fullDir, key + '.jpg');
+    const png = path.join(fullDir, key + '.png');
+    sips(['-s', 'format', 'jpeg', '-s', 'formatOptions', String(FULL_QUALITY), src, '--out', jpg]);
+    if (/\.png$/i.test(file)) {
+      sips(['-s', 'format', 'png', src, '--out', png]);
+      unlinkSync(statSync(png).size < statSync(jpg).size ? jpg : png);
+    } else if (existsSync(png)) {
+      unlinkSync(png);
+    }
     made++;
     console.log(`  ${key}: ${file}`);
   }
@@ -113,7 +124,8 @@ function processSeries(name) {
   const entry = (key, extra) => {
     const { w, h } = pixelSize(path.join(webDir, key + '.jpg'));
     const old = byKey.get(extra.id ?? extra.n);
-    return { ...extra, web: `web/${key}.jpg`, full: `full/${key}.jpg`, w, h, added: old?.added ?? today() };
+    const full = fullFile(fullDir, key);
+    return { ...extra, web: `web/${key}.jpg`, full: full ? `full/${path.basename(full)}` : `web/${key}.jpg`, w, h, added: old?.added ?? today() };
   };
   const pages = [
     ...(has('cover') ? [entry('cover', { id: 'cover', label: 'Cover' })] : []),
@@ -164,6 +176,15 @@ function readerPage(name, info, lines) {
     endBook: end.bookHref
       ? `        <small>${esc(end.bookText)} <a class="book-link" href="${esc(end.bookHref)}"><i>${esc(end.bookTitle)}</i> &rarr;</a></small>\n`
       : '',
+    advisory: info.advisory ? `
+      <section class="r-advisory" hidden aria-labelledby="adv-h">
+        <p class="label"><span class="bullet ${esc(info.color)}" aria-hidden="true">${esc(info.bullet)}</span>Service advisory</p>
+        <h2 id="adv-h">${esc(info.advisory)}</h2>
+        <p>You&rsquo;ll see this notice once.</p>
+        <button type="button" class="btn ink board">Board the ${esc(info.bullet)} line <span class="arr" aria-hidden="true">&rarr;</span></button>
+        <a class="other" href="/read/">Choose another line</a>
+      </section>
+` : '',
     transfer: to
       ? `        <a class="r-transfer" href="/read/${esc(to.slug)}/"><span class="bullet ${esc(to.color)}" aria-hidden="true">${esc(to.bullet)}</span>Transfer to <i>${esc(to.title)}</i> <span aria-hidden="true">&rarr;</span></a>\n`
       : '',
@@ -190,6 +211,7 @@ function buildReaders(names) {
         color: info.color,
         kind: info.kind,
         credits: info.credits || '',
+        advisory: info.advisory || '',
         description: info.description || '',
         count: pages.filter(p => p.n != null).length,
         newest: pages.reduce((d, p) => (p.added > d ? p.added : d), ''),

@@ -42,7 +42,7 @@
     </div>
   </header>
 
-  <main id="main" class="reader" data-series="{{series}}" data-kind="{{kind}}" data-ground="paper">
+  <main id="main" class="reader" data-series="{{series}}" data-kind="{{kind}}" data-color="{{color}}" data-ground="paper">
     <div class="r-bar r-top">
       <div class="r-head">
         <a class="r-lines" href="/read/"><span aria-hidden="true">&larr;</span> All lines</a>
@@ -64,10 +64,11 @@
         <div class="stripe" aria-hidden="true"></div>
         <h2 id="end-h">{{endTitle}}</h2>
         <p>{{endText}}</p>
-        <a class="btn red" href="{{endButtonHref}}"{{endButtonTarget}}>{{endButton}} <span class="arr" aria-hidden="true">&rarr;</span></a>
+        <a class="btn {{color}}" href="{{endButtonHref}}"{{endButtonTarget}}>{{endButton}} <span class="arr" aria-hidden="true">&rarr;</span></a>
 {{endBook}}{{transfer}}        <button type="button" class="again">Back to the start</button>
       </section>
 
+{{advisory}}
       <div class="r-new" hidden role="status">
         <span class="msg"></span>
         <button type="button" class="jump">Jump to newest &rarr;</button>

@@ -1,0 +1,22 @@
+{
+  "_howto": "See series/fluffyhand/series.json for what each field does.",
+  "slug": "brainrot",
+  "order": 3,
+  "title": "BadAss BrainRot",
+  "bullet": "B",
+  "color": "slime",
+  "kind": "sample",
+  "credits": "Story by Luke Bauerlein · Art by Your Uncle Attaboy",
+  "advisory": "Adult language and humor.",
+  "description": "Read a preview of BadAss BrainRot #1, by Luke Bauerlein and Your Uncle Attaboy.",
+  "transfer": "fluffyhand",
+  "end": {
+    "title": "End of preview service.",
+    "text": "The full line opens soon. Fancy City Insiders hear first.",
+    "button": "Get notified on Patreon",
+    "buttonHref": "https://www.patreon.com/fluffyhandsome",
+    "bookText": "Read more about it on the shelf:",
+    "bookTitle": "BadAss BrainRot",
+    "bookHref": "/books/#brainrot"
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "pages": [
+    {
+      "id": "cover",
+      "label": "Cover",
+      "web": "web/cover.jpg",
+      "full": "full/cover.jpg",
+      "w": 1200,
+      "h": 1942,
+      "added": "2026-10-29"
+    },
+    {
+      "n": 1,
+      "web": "web/001.jpg",
+      "full": "full/001.png",
+      "w": 1200,
+      "h": 1944,
+      "added": "2026-10-29"
+    },
+    {
+      "n": 2,
+      "web": "web/002.jpg",
+      "full": "full/002.png",
+      "w": 1200,
+      "h": 1952,
+      "added": "2026-10-29"
+    },
+    {
+      "n": 3,
+      "web": "web/003.jpg",
+      "full": "full/003.png",
+      "w": 1200,
+      "h": 1955,
+      "added": "2026-10-29"
+    },
+    {
+      "n": 4,
+      "web": "web/004.jpg",
+      "full": "full/004.png",
+      "w": 1200,
+      "h": 1934,
+      "added": "2026-10-29"
+    },
+    {
+      "n": 5,
+      "web": "web/005.jpg",
+      "full": "full/005.png",
+      "w": 1200,
+      "h": 1937,
+      "added": "2026-10-29"
+    },
+    {
+      "n": 6,
+      "web": "web/006.jpg",
+      "full": "full/006.png",
+      "w": 1200,
+      "h": 1931,
+      "added": "2026-10-29"
+    },
+    {
+      "n": 7,
+      "web": "web/007.jpg",
+      "full": "full/007.png",
+      "w": 1200,
+      "h": 1946,
+      "added": "2026-10-29"
+    },
+    {
+      "n": 8,
+      "web": "web/008.jpg",
+      "full": "full/008.png",
+      "w": 1200,
+      "h": 1914,
+      "added": "2026-10-29"
+    },
+    {
+      "n": 9,
+      "web": "web/009.jpg",
+      "full": "full/009.png",
+      "w": 1200,
+      "h": 1915,
+      "added": "2026-10-29"
+    },
+    {
+      "id": "back",
+      "label": "Back cover",
+      "web": "web/back.jpg",
+      "full": "full/back.png",
+      "w": 1200,
+      "h": 1925,
+      "added": "2026-10-29"
+    }
+  ]
+}

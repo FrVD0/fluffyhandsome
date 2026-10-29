@@ -9,6 +9,7 @@
       "color": "red",
       "kind": "ongoing",
       "credits": "",
+      "advisory": "",
       "description": "Read the latest pages of The Fluffy Handsome Show by Your Uncle Attaboy.",
       "count": 11,
       "newest": "2026-10-22",
@@ -56,6 +57,68 @@
         {
           "key": 11,
           "web": "/series/fluffyhand/web/011.jpg"
+        }
+      ]
+    },
+    {
+      "series": "BABR",
+      "slug": "brainrot",
+      "order": 3,
+      "title": "BadAss BrainRot",
+      "bullet": "B",
+      "color": "slime",
+      "kind": "sample",
+      "credits": "Story by Luke Bauerlein · Art by Your Uncle Attaboy",
+      "advisory": "Adult language and humor.",
+      "description": "Read a preview of BadAss BrainRot #1, by Luke Bauerlein and Your Uncle Attaboy.",
+      "count": 9,
+      "newest": "2026-10-29",
+      "stops": [
+        {
+          "key": "cover",
+          "label": "Cover",
+          "web": "/series/BABR/web/cover.jpg"
+        },
+        {
+          "key": 1,
+          "web": "/series/BABR/web/001.jpg"
+        },
+        {
+          "key": 2,
+          "web": "/series/BABR/web/002.jpg"
+        },
+        {
+          "key": 3,
+          "web": "/series/BABR/web/003.jpg"
+        },
+        {
+          "key": 4,
+          "web": "/series/BABR/web/004.jpg"
+        },
+        {
+          "key": 5,
+          "web": "/series/BABR/web/005.jpg"
+        },
+        {
+          "key": 6,
+          "web": "/series/BABR/web/006.jpg"
+        },
+        {
+          "key": 7,
+          "web": "/series/BABR/web/007.jpg"
+        },
+        {
+          "key": 8,
+          "web": "/series/BABR/web/008.jpg"
+        },
+        {
+          "key": 9,
+          "web": "/series/BABR/web/009.jpg"
+        },
+        {
+          "key": "back",
+          "label": "Back cover",
+          "web": "/series/BABR/web/back.jpg"
         }
       ]
     }

@@ -28,6 +28,7 @@
   const bar = root.querySelector('.r-progress i');
   const status = root.querySelector('.r-status');
   const notice = root.querySelector('.r-new');
+  const advisory = root.querySelector('.r-advisory');   // only on series with a service advisory
   const title = root.querySelector('.r-title span:last-child').textContent.trim();
   const caughtUp = endTitle.textContent;
 
@@ -47,11 +48,12 @@
   // Only ongoing series can be read newest first; the rest always start at the start.
   let order = orderBtn && prefs.order === 'desc' ? 'desc' : 'asc';
   let pos = 0;                      // index into seq(); seq().length means the end card
+  let holding = false;              // the service advisory is up: no page turns until they board
   const seq = () => (order === 'asc' ? pages : [...pages].reverse());
   const atEnd = () => pos >= pages.length;
   // A page is known by its number, or by its id for covers ("cover", "back").
   const keyOf = p => p.id ?? p.n;
-  const nameOf = p => p.label ?? `page ${p.n}`;
+  const nameOf = p => p.label?.toLowerCase() ?? `page ${p.n}`;
   const HASH = /^#(\d+|cover|back|end)$/;
   const parseKey = k => (/^\d+$/.test(k) ? Number(k) : k);
 
@@ -143,6 +145,7 @@
 
   // --- turning pages ------------------------------------------------------
   function go(next, { quiet = false } = {}) {
+    if (holding) return;
     const s = seq();
     pos = Math.max(0, Math.min(s.length, next));
     resetZoom();
@@ -225,7 +228,7 @@
   // --- pointer gestures ---------------------------------------------------
   const pointers = new Map();
   let pinch = null, drag = null, tap = null, lastTap = { t: 0, x: 0, y: 0 }, tapTimer = 0;
-  const interactive = t => t.closest('button, a, .r-end, .r-new');
+  const interactive = t => t.closest('button, a, .r-end, .r-new, .r-advisory');
 
   stage.addEventListener('pointerdown', e => {
     if (interactive(e.target) || atEnd()) return;
@@ -314,7 +317,7 @@
 
   // --- controls fade while reading ----------------------------------------
   let idleTimer = 0;
-  function sleep() { if (!atEnd()) root.classList.add('idle'); }
+  function sleep() { if (!atEnd() && !holding) root.classList.add('idle'); }
   function wake(stay) {
     root.classList.remove('idle');
     clearTimeout(idleTimer);
@@ -336,6 +339,26 @@
       stage.focus();
     };
     notice.querySelector('.dismiss').onclick = () => { notice.hidden = true; };
+  }
+
+  // --- service advisory (shown once per series, before the first page) ----
+  function holdForAdvisory(then) {
+    holding = true;
+    root.classList.add('holding');
+    advisory.hidden = false;
+    where.innerHTML = '<b>Service advisory</b>';
+    prevBtn.disabled = nextBtn.disabled = true;
+    const board = advisory.querySelector('.board');
+    board.onclick = () => {
+      holding = false;
+      root.classList.remove('holding');
+      advisory.hidden = true;
+      memory.boarded = true;
+      save(SERIES_KEY, memory);
+      then();
+      stage.focus();
+    };
+    board.focus({ preventScroll: true });
   }
 
   // --- start --------------------------------------------------------------
@@ -366,7 +389,8 @@
       const known = memory.known;
       const fresh = kind === 'ongoing' && typeof known === 'number' ? pages.length - known : 0;
       memory.known = pages.length;
-      go(startPos(), { quiet: true });
+      if (advisory && !memory.boarded) holdForAdvisory(() => go(startPos()));
+      else go(startPos(), { quiet: true });
       if (fresh > 0) {
         const firstNew = keyOf(pages[Math.min(known, pages.length - 1)]);
         showNotice(fresh, firstNew);
