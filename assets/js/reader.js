@@ -24,6 +24,8 @@
   const orderBtn = root.querySelector('#order');
   const groundBtns = [...root.querySelectorAll('[data-ground]')].filter(b => b.tagName === 'BUTTON');
   const where = root.querySelector('.r-count .where');
+  const gotoForm = root.querySelector('.r-goto');   // missing on a reader page older than this script
+  const gotoInput = gotoForm?.querySelector('input');
   const hint = root.querySelector('.r-count .hint');
   const bar = root.querySelector('.r-progress i');
   const status = root.querySelector('.r-status');
@@ -34,6 +36,7 @@
 
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const coarse = matchMedia('(hover: none)');
+  const portrait = matchMedia('(orientation: portrait)');
 
   // --- per-viewer memory (optional: the reader works without it) ----------
   const PREFS_KEY = 'reader:prefs';
@@ -138,8 +141,11 @@
   }
 
   function renderHint() {
-    if (atEnd()) { hint.textContent = ''; return; }
-    if (scale > 1) hint.textContent = coarse.matches ? 'Double-tap to zoom out' : 'Double-click to zoom out';
+    if (atEnd() || holding) { hint.textContent = ''; return; }
+    const page = seq()[pos];
+    if (scale === 1 && coarse.matches && portrait.matches && page && page.w / page.h > 1.25) {
+      hint.textContent = 'Turn your phone sideways to read bigger';   // wide strips on an upright phone
+    } else if (scale > 1) hint.textContent = coarse.matches ? 'Double-tap to zoom out' : 'Double-click to zoom out';
     else hint.textContent = coarse.matches ? 'Double-tap to zoom' : 'Double-click or scroll to zoom';
   }
 
@@ -167,6 +173,7 @@
       img.alt = `${title}, ${nameOf(page)}`;
       img.src = base + page.web;
       where.innerHTML = page.label ? `<b>${page.label}</b>` : `<b>${page.n}</b> / ${numbered}`;
+      where.setAttribute('aria-label', `${page.label ?? `Page ${page.n} of ${numbered}`}. Go to another page`);
       memory.last = keyOf(page);
       history.replaceState(null, '', '#' + keyOf(page));
       // warm up the neighbours so the next turn is instant
@@ -182,6 +189,32 @@
   }
   const next = () => { if (!atEnd()) go(pos + 1); };
   const prev = () => { if (pos > 0) go(pos - 1); };
+
+  // --- go to a page: the counter opens a small box for a page number ------
+  function closeGoto() { gotoForm.hidden = true; where.hidden = false; }
+  where.addEventListener('click', () => {
+    if (holding || !gotoForm) return;
+    const nums = pages.filter(p => p.n != null).map(p => p.n);
+    gotoInput.min = Math.min(...nums);
+    gotoInput.max = Math.max(...nums);
+    gotoInput.value = '';
+    gotoInput.placeholder = atEnd() || seq()[pos].n == null ? '' : seq()[pos].n;
+    where.hidden = true;
+    gotoForm.hidden = false;
+    gotoInput.focus();
+  });
+  gotoForm?.addEventListener('submit', e => {
+    e.preventDefault();
+    const n = Math.round(Number(gotoInput.value));
+    closeGoto();
+    if (!gotoInput.value || !Number.isFinite(n)) { where.focus(); return; }
+    // the nearest page that exists, so a typo still lands somewhere sensible
+    const target = pages.filter(p => p.n != null).reduce((a, b) => (Math.abs(b.n - n) < Math.abs(a.n - n) ? b : a));
+    go(indexOf(target.n));
+    stage.focus();
+  });
+  gotoInput?.addEventListener('keydown', e => { if (e.key === 'Escape') { closeGoto(); where.focus(); } });
+  gotoForm?.addEventListener('focusout', e => { if (!gotoForm.contains(e.relatedTarget)) closeGoto(); });
 
   prevBtn.addEventListener('click', prev);
   nextBtn.addEventListener('click', next);
@@ -314,6 +347,7 @@
   // Keep iOS Safari from zooming the whole page; the reader does its own zoom.
   document.addEventListener('gesturestart', e => e.preventDefault());
   addEventListener('resize', () => { clampPan(); apply(); });
+  portrait.addEventListener('change', renderHint);
 
   // --- controls fade while reading ----------------------------------------
   let idleTimer = 0;

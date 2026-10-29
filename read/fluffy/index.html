@@ -67,6 +67,7 @@
         <p>The story continues in Fancy City. Insiders read it first.</p>
         <a class="btn red" href="https://www.patreon.com/fluffyhandsome" target="_blank" rel="noopener noreferrer">Become a Fancy City Insider <span class="arr" aria-hidden="true">&rarr;</span></a>
         <small>Or start from the beginning in print: <a class="book-link" href="/books/#fluffy"><i>The Fluffy Handsome Show</i> &rarr;</a></small>
+        <a class="r-transfer" href="/read/innersanities/"><span class="bullet blue" aria-hidden="true">I</span>Transfer to <i>IN(ner)SANITIES</i> <span aria-hidden="true">&rarr;</span></a>
         <button type="button" class="again">Back to the start</button>
       </section>
 
@@ -82,7 +83,15 @@
     </div>
 
     <div class="r-bar r-foot">
-      <div class="r-count"><span class="where"></span><span class="hint">Double-tap to zoom</span></div>
+      <div class="r-count">
+        <button type="button" class="where" title="Go to a page"></button>
+        <form class="r-goto" hidden>
+          <label for="goto-n">Go to page</label>
+          <input id="goto-n" type="number" inputmode="numeric" min="1" step="1" autocomplete="off">
+          <button type="submit">Go</button>
+        </form>
+        <span class="hint">Double-tap to zoom</span>
+      </div>
       <div class="r-progress" aria-hidden="true"><i></i></div>
     </div>
 

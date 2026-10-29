@@ -174,7 +174,7 @@ function readerPage(name, info, lines) {
       : '',
     endButtonTarget: external(end.buttonHref),
     endBook: end.bookHref
-      ? `        <small>${esc(end.bookText)} <a class="book-link" href="${esc(end.bookHref)}"><i>${esc(end.bookTitle)}</i> &rarr;</a></small>\n`
+      ? `        <small>${esc(end.bookText)} <a class="book-link" href="${esc(end.bookHref)}"${external(end.bookHref)}><i>${esc(end.bookTitle)}</i> &rarr;</a></small>\n`
       : '',
     advisory: info.advisory ? `
       <section class="r-advisory" hidden aria-labelledby="adv-h">

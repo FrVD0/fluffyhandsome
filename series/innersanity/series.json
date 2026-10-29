@@ -1,0 +1,22 @@
+{
+  "_howto": "See series/fluffyhand/series.json for what each field does.",
+  "slug": "innersanities",
+  "order": 2,
+  "title": "IN(ner)SANITIES",
+  "bullet": "I",
+  "color": "blue",
+  "kind": "archive",
+  "credits": "",
+  "advisory": "",
+  "description": "Read every IN(ner)SANITIES strip by Your Uncle Attaboy, from the first to the latest.",
+  "transfer": "BABR",
+  "end": {
+    "title": "End of the line.",
+    "text": "That’s every IN(ner)SANITY so far. The best of them are bound in print.",
+    "button": "See the book",
+    "buttonHref": "/books/#innersanities",
+    "bookText": "New work reaches Fancy City Insiders first:",
+    "bookTitle": "Patreon",
+    "bookHref": "https://www.patreon.com/fluffyhandsome"
+  }
+}

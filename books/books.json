@@ -15,6 +15,7 @@
       "specs": "Paperback · 8.5 × 8.5 in · Black and white",
       "price": "$21.00",
       "status": "available",
+      "reader": "/read/fluffy/",
       "lulu": "",
       "luluButton": "81197945-87d1-45c3-b3dd-e73ef5d19c49",
       "cover": "/books/covers/fluffy.jpg",
@@ -39,6 +40,7 @@
       "specs": "Paperback · 64 pages · 11 × 8.5 in · Black and white",
       "price": "$12.00",
       "status": "available",
+      "reader": "/read/innersanities/",
       "lulu": "https://www.lulu.com/shop/uncle-attaboy/selected-innersanities/paperback/product-2md842z.html",
       "luluButton": "7ed6d8ea-c790-4671-b7d5-d845fc17fa29",
       "cover": "/books/covers/innersanities.jpg",
@@ -50,19 +52,19 @@
       "samples": [
         {
           "thumb": "/series/innersanity/web/001.jpg",
-          "full": "/series/innersanity/img/001.png"
+          "full": "/series/innersanity/full/001.jpg"
         },
         {
           "thumb": "/series/innersanity/web/002.jpg",
-          "full": "/series/innersanity/img/002.png"
+          "full": "/series/innersanity/full/002.jpg"
         },
         {
           "thumb": "/series/innersanity/web/003.jpg",
-          "full": "/series/innersanity/img/003.png"
+          "full": "/series/innersanity/full/003.jpg"
         },
         {
           "thumb": "/series/innersanity/web/004.jpg",
-          "full": "/series/innersanity/img/004.png"
+          "full": "/series/innersanity/full/004.jpg"
         }
       ]
     },

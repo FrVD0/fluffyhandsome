@@ -91,7 +91,15 @@
     </div>
 
     <div class="r-bar r-foot">
-      <div class="r-count"><span class="where"></span><span class="hint">Double-tap to zoom</span></div>
+      <div class="r-count">
+        <button type="button" class="where" title="Go to a page"></button>
+        <form class="r-goto" hidden>
+          <label for="goto-n">Go to page</label>
+          <input id="goto-n" type="number" inputmode="numeric" min="1" step="1" autocomplete="off">
+          <button type="submit">Go</button>
+        </form>
+        <span class="hint">Double-tap to zoom</span>
+      </div>
       <div class="r-progress" aria-hidden="true"><i></i></div>
     </div>
 

@@ -61,6 +61,726 @@
       ]
     },
     {
+      "series": "innersanity",
+      "slug": "innersanities",
+      "order": 2,
+      "title": "IN(ner)SANITIES",
+      "bullet": "I",
+      "color": "blue",
+      "kind": "archive",
+      "credits": "",
+      "advisory": "",
+      "description": "Read every IN(ner)SANITIES strip by Your Uncle Attaboy, from the first to the latest.",
+      "count": 176,
+      "newest": "2026-10-29",
+      "stops": [
+        {
+          "key": 1,
+          "web": "/series/innersanity/web/001.jpg"
+        },
+        {
+          "key": 2,
+          "web": "/series/innersanity/web/002.jpg"
+        },
+        {
+          "key": 3,
+          "web": "/series/innersanity/web/003.jpg"
+        },
+        {
+          "key": 4,
+          "web": "/series/innersanity/web/004.jpg"
+        },
+        {
+          "key": 5,
+          "web": "/series/innersanity/web/005.jpg"
+        },
+        {
+          "key": 6,
+          "web": "/series/innersanity/web/006.jpg"
+        },
+        {
+          "key": 7,
+          "web": "/series/innersanity/web/007.jpg"
+        },
+        {
+          "key": 8,
+          "web": "/series/innersanity/web/008.jpg"
+        },
+        {
+          "key": 9,
+          "web": "/series/innersanity/web/009.jpg"
+        },
+        {
+          "key": 10,
+          "web": "/series/innersanity/web/010.jpg"
+        },
+        {
+          "key": 11,
+          "web": "/series/innersanity/web/011.jpg"
+        },
+        {
+          "key": 12,
+          "web": "/series/innersanity/web/012.jpg"
+        },
+        {
+          "key": 13,
+          "web": "/series/innersanity/web/013.jpg"
+        },
+        {
+          "key": 14,
+          "web": "/series/innersanity/web/014.jpg"
+        },
+        {
+          "key": 15,
+          "web": "/series/innersanity/web/015.jpg"
+        },
+        {
+          "key": 16,
+          "web": "/series/innersanity/web/016.jpg"
+        },
+        {
+          "key": 17,
+          "web": "/series/innersanity/web/017.jpg"
+        },
+        {
+          "key": 18,
+          "web": "/series/innersanity/web/018.jpg"
+        },
+        {
+          "key": 19,
+          "web": "/series/innersanity/web/019.jpg"
+        },
+        {
+          "key": 20,
+          "web": "/series/innersanity/web/020.jpg"
+        },
+        {
+          "key": 21,
+          "web": "/series/innersanity/web/021.jpg"
+        },
+        {
+          "key": 22,
+          "web": "/series/innersanity/web/022.jpg"
+        },
+        {
+          "key": 23,
+          "web": "/series/innersanity/web/023.jpg"
+        },
+        {
+          "key": 24,
+          "web": "/series/innersanity/web/024.jpg"
+        },
+        {
+          "key": 25,
+          "web": "/series/innersanity/web/025.jpg"
+        },
+        {
+          "key": 26,
+          "web": "/series/innersanity/web/026.jpg"
+        },
+        {
+          "key": 27,
+          "web": "/series/innersanity/web/027.jpg"
+        },
+        {
+          "key": 28,
+          "web": "/series/innersanity/web/028.jpg"
+        },
+        {
+          "key": 29,
+          "web": "/series/innersanity/web/029.jpg"
+        },
+        {
+          "key": 30,
+          "web": "/series/innersanity/web/030.jpg"
+        },
+        {
+          "key": 31,
+          "web": "/series/innersanity/web/031.jpg"
+        },
+        {
+          "key": 32,
+          "web": "/series/innersanity/web/032.jpg"
+        },
+        {
+          "key": 33,
+          "web": "/series/innersanity/web/033.jpg"
+        },
+        {
+          "key": 34,
+          "web": "/series/innersanity/web/034.jpg"
+        },
+        {
+          "key": 35,
+          "web": "/series/innersanity/web/035.jpg"
+        },
+        {
+          "key": 36,
+          "web": "/series/innersanity/web/036.jpg"
+        },
+        {
+          "key": 37,
+          "web": "/series/innersanity/web/037.jpg"
+        },
+        {
+          "key": 38,
+          "web": "/series/innersanity/web/038.jpg"
+        },
+        {
+          "key": 39,
+          "web": "/series/innersanity/web/039.jpg"
+        },
+        {
+          "key": 40,
+          "web": "/series/innersanity/web/040.jpg"
+        },
+        {
+          "key": 41,
+          "web": "/series/innersanity/web/041.jpg"
+        },
+        {
+          "key": 42,
+          "web": "/series/innersanity/web/042.jpg"
+        },
+        {
+          "key": 43,
+          "web": "/series/innersanity/web/043.jpg"
+        },
+        {
+          "key": 44,
+          "web": "/series/innersanity/web/044.jpg"
+        },
+        {
+          "key": 45,
+          "web": "/series/innersanity/web/045.jpg"
+        },
+        {
+          "key": 46,
+          "web": "/series/innersanity/web/046.jpg"
+        },
+        {
+          "key": 47,
+          "web": "/series/innersanity/web/047.jpg"
+        },
+        {
+          "key": 48,
+          "web": "/series/innersanity/web/048.jpg"
+        },
+        {
+          "key": 49,
+          "web": "/series/innersanity/web/049.jpg"
+        },
+        {
+          "key": 50,
+          "web": "/series/innersanity/web/050.jpg"
+        },
+        {
+          "key": 51,
+          "web": "/series/innersanity/web/051.jpg"
+        },
+        {
+          "key": 52,
+          "web": "/series/innersanity/web/052.jpg"
+        },
+        {
+          "key": 53,
+          "web": "/series/innersanity/web/053.jpg"
+        },
+        {
+          "key": 54,
+          "web": "/series/innersanity/web/054.jpg"
+        },
+        {
+          "key": 55,
+          "web": "/series/innersanity/web/055.jpg"
+        },
+        {
+          "key": 56,
+          "web": "/series/innersanity/web/056.jpg"
+        },
+        {
+          "key": 57,
+          "web": "/series/innersanity/web/057.jpg"
+        },
+        {
+          "key": 58,
+          "web": "/series/innersanity/web/058.jpg"
+        },
+        {
+          "key": 59,
+          "web": "/series/innersanity/web/059.jpg"
+        },
+        {
+          "key": 60,
+          "web": "/series/innersanity/web/060.jpg"
+        },
+        {
+          "key": 61,
+          "web": "/series/innersanity/web/061.jpg"
+        },
+        {
+          "key": 62,
+          "web": "/series/innersanity/web/062.jpg"
+        },
+        {
+          "key": 63,
+          "web": "/series/innersanity/web/063.jpg"
+        },
+        {
+          "key": 64,
+          "web": "/series/innersanity/web/064.jpg"
+        },
+        {
+          "key": 65,
+          "web": "/series/innersanity/web/065.jpg"
+        },
+        {
+          "key": 66,
+          "web": "/series/innersanity/web/066.jpg"
+        },
+        {
+          "key": 67,
+          "web": "/series/innersanity/web/067.jpg"
+        },
+        {
+          "key": 68,
+          "web": "/series/innersanity/web/068.jpg"
+        },
+        {
+          "key": 69,
+          "web": "/series/innersanity/web/069.jpg"
+        },
+        {
+          "key": 70,
+          "web": "/series/innersanity/web/070.jpg"
+        },
+        {
+          "key": 71,
+          "web": "/series/innersanity/web/071.jpg"
+        },
+        {
+          "key": 72,
+          "web": "/series/innersanity/web/072.jpg"
+        },
+        {
+          "key": 73,
+          "web": "/series/innersanity/web/073.jpg"
+        },
+        {
+          "key": 74,
+          "web": "/series/innersanity/web/074.jpg"
+        },
+        {
+          "key": 75,
+          "web": "/series/innersanity/web/075.jpg"
+        },
+        {
+          "key": 76,
+          "web": "/series/innersanity/web/076.jpg"
+        },
+        {
+          "key": 77,
+          "web": "/series/innersanity/web/077.jpg"
+        },
+        {
+          "key": 78,
+          "web": "/series/innersanity/web/078.jpg"
+        },
+        {
+          "key": 79,
+          "web": "/series/innersanity/web/079.jpg"
+        },
+        {
+          "key": 80,
+          "web": "/series/innersanity/web/080.jpg"
+        },
+        {
+          "key": 81,
+          "web": "/series/innersanity/web/081.jpg"
+        },
+        {
+          "key": 82,
+          "web": "/series/innersanity/web/082.jpg"
+        },
+        {
+          "key": 83,
+          "web": "/series/innersanity/web/083.jpg"
+        },
+        {
+          "key": 84,
+          "web": "/series/innersanity/web/084.jpg"
+        },
+        {
+          "key": 85,
+          "web": "/series/innersanity/web/085.jpg"
+        },
+        {
+          "key": 86,
+          "web": "/series/innersanity/web/086.jpg"
+        },
+        {
+          "key": 87,
+          "web": "/series/innersanity/web/087.jpg"
+        },
+        {
+          "key": 88,
+          "web": "/series/innersanity/web/088.jpg"
+        },
+        {
+          "key": 89,
+          "web": "/series/innersanity/web/089.jpg"
+        },
+        {
+          "key": 90,
+          "web": "/series/innersanity/web/090.jpg"
+        },
+        {
+          "key": 91,
+          "web": "/series/innersanity/web/091.jpg"
+        },
+        {
+          "key": 92,
+          "web": "/series/innersanity/web/092.jpg"
+        },
+        {
+          "key": 93,
+          "web": "/series/innersanity/web/093.jpg"
+        },
+        {
+          "key": 94,
+          "web": "/series/innersanity/web/094.jpg"
+        },
+        {
+          "key": 95,
+          "web": "/series/innersanity/web/095.jpg"
+        },
+        {
+          "key": 96,
+          "web": "/series/innersanity/web/096.jpg"
+        },
+        {
+          "key": 97,
+          "web": "/series/innersanity/web/097.jpg"
+        },
+        {
+          "key": 98,
+          "web": "/series/innersanity/web/098.jpg"
+        },
+        {
+          "key": 99,
+          "web": "/series/innersanity/web/099.jpg"
+        },
+        {
+          "key": 100,
+          "web": "/series/innersanity/web/100.jpg"
+        },
+        {
+          "key": 101,
+          "web": "/series/innersanity/web/101.jpg"
+        },
+        {
+          "key": 102,
+          "web": "/series/innersanity/web/102.jpg"
+        },
+        {
+          "key": 103,
+          "web": "/series/innersanity/web/103.jpg"
+        },
+        {
+          "key": 104,
+          "web": "/series/innersanity/web/104.jpg"
+        },
+        {
+          "key": 105,
+          "web": "/series/innersanity/web/105.jpg"
+        },
+        {
+          "key": 106,
+          "web": "/series/innersanity/web/106.jpg"
+        },
+        {
+          "key": 107,
+          "web": "/series/innersanity/web/107.jpg"
+        },
+        {
+          "key": 108,
+          "web": "/series/innersanity/web/108.jpg"
+        },
+        {
+          "key": 109,
+          "web": "/series/innersanity/web/109.jpg"
+        },
+        {
+          "key": 110,
+          "web": "/series/innersanity/web/110.jpg"
+        },
+        {
+          "key": 111,
+          "web": "/series/innersanity/web/111.jpg"
+        },
+        {
+          "key": 112,
+          "web": "/series/innersanity/web/112.jpg"
+        },
+        {
+          "key": 113,
+          "web": "/series/innersanity/web/113.jpg"
+        },
+        {
+          "key": 114,
+          "web": "/series/innersanity/web/114.jpg"
+        },
+        {
+          "key": 115,
+          "web": "/series/innersanity/web/115.jpg"
+        },
+        {
+          "key": 116,
+          "web": "/series/innersanity/web/116.jpg"
+        },
+        {
+          "key": 117,
+          "web": "/series/innersanity/web/117.jpg"
+        },
+        {
+          "key": 118,
+          "web": "/series/innersanity/web/118.jpg"
+        },
+        {
+          "key": 119,
+          "web": "/series/innersanity/web/119.jpg"
+        },
+        {
+          "key": 120,
+          "web": "/series/innersanity/web/120.jpg"
+        },
+        {
+          "key": 121,
+          "web": "/series/innersanity/web/121.jpg"
+        },
+        {
+          "key": 122,
+          "web": "/series/innersanity/web/122.jpg"
+        },
+        {
+          "key": 123,
+          "web": "/series/innersanity/web/123.jpg"
+        },
+        {
+          "key": 124,
+          "web": "/series/innersanity/web/124.jpg"
+        },
+        {
+          "key": 125,
+          "web": "/series/innersanity/web/125.jpg"
+        },
+        {
+          "key": 126,
+          "web": "/series/innersanity/web/126.jpg"
+        },
+        {
+          "key": 127,
+          "web": "/series/innersanity/web/127.jpg"
+        },
+        {
+          "key": 128,
+          "web": "/series/innersanity/web/128.jpg"
+        },
+        {
+          "key": 129,
+          "web": "/series/innersanity/web/129.jpg"
+        },
+        {
+          "key": 130,
+          "web": "/series/innersanity/web/130.jpg"
+        },
+        {
+          "key": 131,
+          "web": "/series/innersanity/web/131.jpg"
+        },
+        {
+          "key": 132,
+          "web": "/series/innersanity/web/132.jpg"
+        },
+        {
+          "key": 133,
+          "web": "/series/innersanity/web/133.jpg"
+        },
+        {
+          "key": 134,
+          "web": "/series/innersanity/web/134.jpg"
+        },
+        {
+          "key": 135,
+          "web": "/series/innersanity/web/135.jpg"
+        },
+        {
+          "key": 136,
+          "web": "/series/innersanity/web/136.jpg"
+        },
+        {
+          "key": 137,
+          "web": "/series/innersanity/web/137.jpg"
+        },
+        {
+          "key": 138,
+          "web": "/series/innersanity/web/138.jpg"
+        },
+        {
+          "key": 139,
+          "web": "/series/innersanity/web/139.jpg"
+        },
+        {
+          "key": 140,
+          "web": "/series/innersanity/web/140.jpg"
+        },
+        {
+          "key": 141,
+          "web": "/series/innersanity/web/141.jpg"
+        },
+        {
+          "key": 142,
+          "web": "/series/innersanity/web/142.jpg"
+        },
+        {
+          "key": 143,
+          "web": "/series/innersanity/web/143.jpg"
+        },
+        {
+          "key": 144,
+          "web": "/series/innersanity/web/144.jpg"
+        },
+        {
+          "key": 145,
+          "web": "/series/innersanity/web/145.jpg"
+        },
+        {
+          "key": 146,
+          "web": "/series/innersanity/web/146.jpg"
+        },
+        {
+          "key": 147,
+          "web": "/series/innersanity/web/147.jpg"
+        },
+        {
+          "key": 148,
+          "web": "/series/innersanity/web/148.jpg"
+        },
+        {
+          "key": 149,
+          "web": "/series/innersanity/web/149.jpg"
+        },
+        {
+          "key": 150,
+          "web": "/series/innersanity/web/150.jpg"
+        },
+        {
+          "key": 151,
+          "web": "/series/innersanity/web/151.jpg"
+        },
+        {
+          "key": 152,
+          "web": "/series/innersanity/web/152.jpg"
+        },
+        {
+          "key": 153,
+          "web": "/series/innersanity/web/153.jpg"
+        },
+        {
+          "key": 154,
+          "web": "/series/innersanity/web/154.jpg"
+        },
+        {
+          "key": 155,
+          "web": "/series/innersanity/web/155.jpg"
+        },
+        {
+          "key": 156,
+          "web": "/series/innersanity/web/156.jpg"
+        },
+        {
+          "key": 157,
+          "web": "/series/innersanity/web/157.jpg"
+        },
+        {
+          "key": 158,
+          "web": "/series/innersanity/web/158.jpg"
+        },
+        {
+          "key": 159,
+          "web": "/series/innersanity/web/159.jpg"
+        },
+        {
+          "key": 160,
+          "web": "/series/innersanity/web/160.jpg"
+        },
+        {
+          "key": 161,
+          "web": "/series/innersanity/web/161.jpg"
+        },
+        {
+          "key": 162,
+          "web": "/series/innersanity/web/162.jpg"
+        },
+        {
+          "key": 163,
+          "web": "/series/innersanity/web/163.jpg"
+        },
+        {
+          "key": 164,
+          "web": "/series/innersanity/web/164.jpg"
+        },
+        {
+          "key": 165,
+          "web": "/series/innersanity/web/165.jpg"
+        },
+        {
+          "key": 166,
+          "web": "/series/innersanity/web/166.jpg"
+        },
+        {
+          "key": 167,
+          "web": "/series/innersanity/web/167.jpg"
+        },
+        {
+          "key": 168,
+          "web": "/series/innersanity/web/168.jpg"
+        },
+        {
+          "key": 169,
+          "web": "/series/innersanity/web/169.jpg"
+        },
+        {
+          "key": 170,
+          "web": "/series/innersanity/web/170.jpg"
+        },
+        {
+          "key": 171,
+          "web": "/series/innersanity/web/171.jpg"
+        },
+        {
+          "key": 172,
+          "web": "/series/innersanity/web/172.jpg"
+        },
+        {
+          "key": 173,
+          "web": "/series/innersanity/web/173.jpg"
+        },
+        {
+          "key": 174,
+          "web": "/series/innersanity/web/174.jpg"
+        },
+        {
+          "key": 175,
+          "web": "/series/innersanity/web/175.jpg"
+        },
+        {
+          "key": 176,
+          "web": "/series/innersanity/web/176.jpg"
+        }
+      ]
+    },
+    {
       "series": "BABR",
       "slug": "brainrot",
       "order": 3,
