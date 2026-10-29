@@ -136,6 +136,7 @@
     html += '<div class="tm-tip" hidden><img alt=""><span></span></div>';
 
     return `<section class="tmap-frame" aria-labelledby="tmap-h">
+        <a class="skip-map" href="#tl-panels">Skip the map</a>
         <div class="tmap-head"><h2 id="tmap-h">Service map</h2>
           <span>${lines.map(l => esc(l.bullet)).join(', ').replace(/, ([^,]*)$/, ' and $1')} lines &middot; all lines meet at Fancy City Central</span></div>
         <div class="tmap-bg"><div class="tmap" style="height: ${height}px">${html}</div></div>
@@ -240,7 +241,7 @@
   fetch('/read/lines.json', { cache: 'no-cache' })
     .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(({ lines }) => {
-      root.innerHTML = serviceMap(lines) + `<div class="tl-panels">${lines.map(panel).join('')}</div>` + central;
+      root.innerHTML = serviceMap(lines) + `<div class="tl-panels" id="tl-panels" tabindex="-1">${lines.map(panel).join('')}</div>` + central;
       wireTips();
     })
     .catch(() => {});   // the plain list of lines already in the page still works

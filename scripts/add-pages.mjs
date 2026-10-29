@@ -166,6 +166,9 @@ function readerPage(name, info, lines) {
     endText: end.text,
     endButton: end.button,
     endButtonHref: end.buttonHref,
+    // link previews: a 1200 x 630 image; the site-wide one unless the series has its own
+    shareImage: info.share || '/assets/img/share.jpg',
+    shareAlt: info.shareAlt || 'Detail of The Fluffy Hand Some Vision #6: a radiating star of hearts and spirals with a tiny Fluffy at its center.',
   };
   const raw = {
     credits: info.credits ? `        <p class="r-credits">${esc(info.credits)}</p>\n` : '',
